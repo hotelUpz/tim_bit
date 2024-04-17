@@ -644,3 +644,5 @@
     #     matches = re.findall(r'\((.*?)\)', text)
     #     extracted_text = [re.sub(r'[\(\)\.,\-!]', '', match) for match in matches]
     #     return extracted_text 
+
+# pipreqs /путь_к_вашему_проекту --force --ignore .venv

@@ -102,4 +102,4 @@ class ANNONCEMENT(UTILS):
         # print(find_data)
         return sorted(find_data, key=lambda x: x["listing_time_ms"], reverse=False) 
     
-print(ANNONCEMENT().bitget_parser()) 
+# print(ANNONCEMENT().bitget_parser()) 

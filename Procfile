@@ -1,1 +1,1 @@
-worker: python info_pars.py
+worker: python main.py

@@ -105,10 +105,7 @@ class TEMPLATES(TG_ASSISTENT):
             print(f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}")
             print(f"buy_price {item_copy['symbol']}: {real_buy_price}")  
         else:
-            print(f"response_data['qnt_to_sell_start'] == 0")   
-
-        
- 
+            print(f"response_data['qnt_to_sell_start'] == 0") 
 
     @log_exceptions_decorator 
     def threads_executor_temp(self, arg_list, functionN):
@@ -353,11 +350,10 @@ class MAIN_CONTROLLER(MANAGER):
                     # //////////////////////////////////////////////////////////////////////
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
-                    # //////////////////////////////////////////////////////////////////////
-                    result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')
-                    print(result_time)               
-                    cur_time = int(time.time()* 1000)           
+                    # //////////////////////////////////////////////////////////////////////     
+                               
                     try:
+                        cur_time = int(time.time()* 1000)
                         result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
                         self.last_message.text = self.connector_func(self.last_message, result_time)
                         print(result_time)  
@@ -374,10 +370,10 @@ class MAIN_CONTROLLER(MANAGER):
                     except Exception as ex:
                         # message.text = self.connector_func(message, ex)
                         print(ex)
-                        pass
-                        print("pause 30 sec...")   
-                        time.sleep(30)
-                        continue
+
+                    print("pause 30 sec...")   
+                    time.sleep(30)
+                    continue
                     # ////////////////////////////////////////////////////////////////////////////  
                 self.last_message.text = self.connector_func(self.last_message, "pause...")
                 # print("pause...")
