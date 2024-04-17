@@ -9,18 +9,21 @@ from log import log_exceptions_decorator
 def server_to_utc_difference_counter():
     # Получаем текущее время на сервере без указания часового пояса
     server_time_naive = dttm.now()
-    print(server_time_naive)
+    print(f"server_time_naive: {server_time_naive}")
     # Получаем текущее время UTC
     utc_time = dttm.utcnow()
-    print(utc_time)
+    print(f"utc_time: {utc_time}")
     # Вычисляем разницу во времени
     time_difference = server_time_naive - utc_time
     # Преобразуем разницу в миллисекунды
     total_seconds = abs(time_difference.total_seconds()) * 1000
-    return math.ceil(total_seconds)
+    total_seconds = math.ceil(total_seconds)
+    if total_seconds < 10:
+        return 0
+    return total_seconds
 
 time_correction = server_to_utc_difference_counter()
-print("Разница в миллисекундах:", time_correction)
+print("ms difference:", time_correction)
 
 class UTILS():
     def __init__(self) -> None:
