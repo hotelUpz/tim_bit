@@ -11,14 +11,14 @@ class PARAMS():
         self.stop_flag = False
         self.work_to = 23 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
-        self.manual_data_time = "2024-04-17 22:57:00" # utc time
+        self.manual_data_time = "2024-04-17 23:14:00" # utc time
         self.time_correction = 10800000
         self.manual_symbol_list = ['ARBUSDT', 'BGBUSDT', 'TONCOINUSDT']
         self.default_test_symbol = 'ARBUSDT'
         self.response_data_list, self.response_success_list = [], []
         self.threads_flag = False
         self.max_symbol_list_slice = 1       
-        self.symbol_list_el_position = 1
+        self.symbol_list_el_position = 0
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
         self.depo = 11
