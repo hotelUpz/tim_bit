@@ -324,7 +324,7 @@ class MAIN_CONTROLLER(MANAGER):
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, "The pogramm was stoped!")
                     return
-                # self.work_sleep_manager(self.work_to, self.sleep_to)
+                self.work_sleep_manager(self.work_to, self.sleep_to)
                 start_data = ANNONCEMENT().bitget_parser() 
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
