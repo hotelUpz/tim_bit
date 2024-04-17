@@ -5,20 +5,20 @@ load_dotenv()
 class PARAMS():
     def __init__(self) -> None:
         self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!'      
-        self.controls_mode = 'a'
+        self.controls_mode = 'm'
         self.testnet_flag = False
-        self.calibrator_flag = True
+        self.calibrator_flag = False
         self.stop_flag = False
         self.work_to = 23 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
-        self.manual_data_time = "2024-04-15 19:11:00"
+        self.manual_data_time = "2024-04-17 0:59:00"
         self.time_correction = 10800000
         self.manual_symbol_list = ['ARBUSDT', 'BGBUSDT', 'TONCOINUSDT']
         self.default_test_symbol = 'ARBUSDT'
         self.response_data_list, self.response_success_list = [], []
         self.threads_flag = False
         self.max_symbol_list_slice = 1       
-        self.symbol_list_el_position = 2
+        self.symbol_list_el_position = 1
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
         self.depo = 11
@@ -49,12 +49,12 @@ class PARAMS():
         self.init_keys()
 
     def init_keys(self):  
-        print('dfhvkdfvdfjkvb')
+        # print('dfhvkdfvdfjkvb')
         self.api_key  = os.getenv(f"{self.market_place.upper()}_API_PUBLIC_KEY", "")
-        print(self.api_key)
+        # print(self.api_key)
         self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "") 
-        print(self.api_secret)
+        # print(self.api_secret)
         self.api_passphrase = os.getenv("API_PASSPHRASE", "")
-        print(self.api_passphrase)
+        # print(self.api_passphrase)
         self.tg_api_token = os.getenv("TG_TOKEN", "")
-        print(self.tg_api_token)
+        # print(self.tg_api_token)
