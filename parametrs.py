@@ -50,6 +50,10 @@ class PARAMS():
 
     def init_keys(self):  
         self.api_key  = os.getenv(f"{self.market_place.upper()}_API_PUBLIC_KEY", "")
+        print(self.api_key)
         self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "") 
+        print(self.api_secret)
         self.api_passphrase = os.getenv("API_PASSPHRASE", "")
+        print(self.api_passphrase)
         self.tg_api_token = os.getenv("TG_TOKEN", "")
+        print(self.tg_api_token)
