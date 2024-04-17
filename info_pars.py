@@ -3,13 +3,7 @@ from bs4 import BeautifulSoup
 from joblib import Parallel, delayed
 import time
 from random import choice
-from utils import UTILS, log_exceptions_decorator
-# import logging, os, inspect
-# logging.basicConfig(filename='log.log', level=logging.INFO)
-# current_file = os.path.basename(__file__) 
-
-time_correction = 10800000
-# time_correction = 7600000
+from utils import UTILS, log_exceptions_decorator, time_correction
 
 user_agents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",

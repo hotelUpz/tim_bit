@@ -1,17 +1,28 @@
 import time
 from datetime import datetime as dttm
 import datetime
+import math
 # import json
 import re
 from log import log_exceptions_decorator
 
-time_correction = 10800000
+def server_to_utc_difference_counter():
+    server_time_naive = dttm.now()
+    utc_time = dttm.utcnow()
+    time_difference = server_time_naive - utc_time
+    time_parts = str(time_difference).split('.')[0].strip().split(":")
+    total_seconds = (int(time_parts[0]) * 3600 + int(time_parts[1]) * 60 + int(time_parts[2]))* 1000 
+    return (math.ceil(total_seconds/3600000)*3600000)
+
+time_correction = server_to_utc_difference_counter()
 
 class UTILS():
     def __init__(self) -> None:
         pass
 
     # //////////////////////////////////////////////////////////////////////////////// 
+
+
     def datetime_to_milliseconds(self, datetime_str):           
         dt_obj = time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
         return int(time.mktime(dt_obj) * 1000)

@@ -11,7 +11,7 @@ class PARAMS():
         self.stop_flag = False
         self.work_to = 23 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
-        self.manual_data_time = "2024-04-17 1:07:00"
+        self.manual_data_time = "2024-04-17 1:39:00"
         self.time_correction = 10800000
         self.manual_symbol_list = ['ARBUSDT', 'BGBUSDT', 'TONCOINUSDT']
         self.default_test_symbol = 'ARBUSDT'

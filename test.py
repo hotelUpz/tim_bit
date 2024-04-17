@@ -129,3 +129,39 @@
 # }
 
 # print(list(timedelta_stamps.keys()))
+# from datetime import datetime as dttm
+# import time
+
+# def datetime_to_milliseconds(datetime_str):           
+#     dt_obj = time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+#     return int(time.mktime(dt_obj) * 1000)
+
+# def server_to_utc_difference_counter():
+#     # Получаем текущее время на сервере без указания часового пояса
+#     server_time_naive = dttm.now()
+#     # Получаем текущее время UTC
+#     utc_time = dttm.utcnow()
+#     # # Выводим полученные времена
+#     # print("Время на сервере:", server_time_naive)
+#     # print("Время в UTC:", utc_time)
+#     # # Вычисляем разницу между временами
+#     time_difference = server_time_naive - utc_time
+#     return  datetime_to_milliseconds(str(time_difference).split('.')[0].strip())
+
+# print(server_to_utc_difference_counter())
+
+from datetime import datetime as dttm
+import math
+
+def server_to_utc_difference_counter():
+    server_time_naive = dttm.now()
+    utc_time = dttm.utcnow()
+    time_difference = server_time_naive - utc_time
+    time_parts = str(time_difference).split('.')[0].strip().split(":")
+    total_seconds = (int(time_parts[0]) * 3600 + int(time_parts[1]) * 60 + int(time_parts[2]))* 1000 
+    return (math.ceil(total_seconds/3600000)*3600000)
+
+print(server_to_utc_difference_counter())
+
+
+
