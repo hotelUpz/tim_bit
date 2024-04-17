@@ -5,14 +5,14 @@ load_dotenv()
 class PARAMS():
     def __init__(self) -> None:
         self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!'      
-        self.controls_mode = 'm'
+        self.controls_mode = 'a'
         self.testnet_flag = False
-        self.calibrator_flag = False
+        self.calibrator_flag = True
         self.stop_flag = False
         self.work_to = 23 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
         self.manual_data_time = "2024-04-17 23:14:00" # utc time
-        self.time_correction = 10800000
+        # self.time_correction = 10800000
         self.manual_symbol_list = ['ARBUSDT', 'BGBUSDT', 'TONCOINUSDT']
         self.default_test_symbol = 'ARBUSDT'
         self.response_data_list, self.response_success_list = [], []
