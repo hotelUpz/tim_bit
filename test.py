@@ -150,18 +150,37 @@
 
 # print(server_to_utc_difference_counter())
 
+# from datetime import datetime as dttm
+# import math
+
+# def server_to_utc_difference_counter():
+#     server_time_naive = dttm.now()
+#     utc_time = dttm.utcnow()
+#     time_difference = server_time_naive - utc_time
+#     time_parts = str(time_difference).split('.')[0].strip().split(":")
+#     total_seconds = (int(time_parts[0]) * 3600 + int(time_parts[1]) * 60 + int(time_parts[2]))* 1000 
+#     return (math.ceil(total_seconds/3600000)*3600000)
+
+# print(server_to_utc_difference_counter())
+
+
 from datetime import datetime as dttm
 import math
 
 def server_to_utc_difference_counter():
+    # Получаем текущее время на сервере без указания часового пояса
     server_time_naive = dttm.now()
+    print(server_time_naive)
+    # Получаем текущее время UTC
     utc_time = dttm.utcnow()
+    print(utc_time)
+    # Вычисляем разницу во времени
     time_difference = server_time_naive - utc_time
-    time_parts = str(time_difference).split('.')[0].strip().split(":")
-    total_seconds = (int(time_parts[0]) * 3600 + int(time_parts[1]) * 60 + int(time_parts[2]))* 1000 
-    return (math.ceil(total_seconds/3600000)*3600000)
+    # Преобразуем разницу в миллисекунды
+    total_seconds = abs(time_difference.total_seconds()) * 1000
+    return math.ceil(total_seconds)
 
-print(server_to_utc_difference_counter())
-
+time_correction = server_to_utc_difference_counter()
+print("Разница в миллисекундах:", time_correction)
 
 
