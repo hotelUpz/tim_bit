@@ -120,12 +120,12 @@
 
 # # When calling the decorated function, any exceptions will be logged
 # result = example_function(10, 0)
-timedelta_stamps_value = 1
-timedelta_stamps = {
-    "days": "days",
-    "hours": "hours",
-    "minutes": "minutes",
-    "seconds": "seconds"
-}
+# timedelta_stamps_value = 1
+# timedelta_stamps = {
+#     "days": "days",
+#     "hours": "hours",
+#     "minutes": "minutes",
+#     "seconds": "seconds"
+# }
 
-print(list(timedelta_stamps.keys()))
+# print(list(timedelta_stamps.keys()))

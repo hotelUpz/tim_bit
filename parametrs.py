@@ -49,6 +49,7 @@ class PARAMS():
         self.init_keys()
 
     def init_keys(self):  
+        print('dfhvkdfvdfjkvb')
         self.api_key  = os.getenv(f"{self.market_place.upper()}_API_PUBLIC_KEY", "")
         print(self.api_key)
         self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "") 
