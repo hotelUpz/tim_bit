@@ -278,44 +278,44 @@ class MAIN_CONTROLLER(MANAGER):
 
     def main_func(self): 
         print(f'<<{self.market_place}>>') 
-        if self.last_message:
-            self.last_message.text = self.connector_func(self.last_message, f'<<{self.market_place}>>')            
-        if self.controls_mode == 'm':
-            if self.calibrator_flag:
-                self.delay_manager()
-            if self.testnet_flag:
-                self.depo = 11
-                ms_plus_two_min = self.next_two_minutes_ms()
-                start_data = [
-                    {
-                        "symbol_list": ["ARBUSDT"],
-                        "listing_time_ms": ms_plus_two_min,
-                        "listing_time": self.milliseconds_to_datetime(ms_plus_two_min)                       
-                    }
-                ]
-            else:
-                start_data = [
-                    {
-                        "symbol_list": self.manual_symbol_list,
-                        "listing_time_ms": self.datetime_to_milliseconds(self.manual_data_time),
-                        "listing_time": self.manual_data_time                        
-                    }
-                ]
-            set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
-            print(set_item)
-            self.last_message.text = self.connector_func(self.last_message, str(set_item))
-            self.trading_little_temp(set_item) 
-            result_time = 'x,m'
-            result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')        
-            self.last_message.text = self.connector_func(self.last_message, result_time)
-            cur_time = int(time.time()* 1000)
-            total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)
-            json_file = total_log_instance.get_json_data()                
-            self.bot.send_document(self.last_message.chat.id, json_file)
-            log_file = total_log_instance.get_logs()
-            self.bot.send_document(self.last_message.chat.id, log_file)
+        # if self.last_message:
+        #     self.last_message.text = self.connector_func(self.last_message, f'<<{self.market_place}>>')            
+        # if self.controls_mode == 'm':
+        #     if self.calibrator_flag:
+        #         self.delay_manager()
+        #     if self.testnet_flag:
+        #         self.depo = 11
+        #         ms_plus_two_min = self.next_two_minutes_ms()
+        #         start_data = [
+        #             {
+        #                 "symbol_list": ["ARBUSDT"],
+        #                 "listing_time_ms": ms_plus_two_min,
+        #                 "listing_time": self.milliseconds_to_datetime(ms_plus_two_min)                       
+        #             }
+        #         ]
+        #     else:
+        #         start_data = [
+        #             {
+        #                 "symbol_list": self.manual_symbol_list,
+        #                 "listing_time_ms": self.datetime_to_milliseconds(self.manual_data_time),
+        #                 "listing_time": self.manual_data_time                        
+        #             }
+        #         ]
+        #     set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
+        #     print(set_item)
+        #     self.last_message.text = self.connector_func(self.last_message, str(set_item))
+        #     self.trading_little_temp(set_item) 
+        #     result_time = 'x,m'
+        #     result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')        
+        #     self.last_message.text = self.connector_func(self.last_message, result_time)
+        #     cur_time = int(time.time()* 1000)
+        #     total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)
+        #     json_file = total_log_instance.get_json_data()                
+        #     self.bot.send_document(self.last_message.chat.id, json_file)
+        #     log_file = total_log_instance.get_logs()
+        #     self.bot.send_document(self.last_message.chat.id, log_file)
 
-            # ///////////////////////////////////////////////////////////////////////////////////////
+        #     # ///////////////////////////////////////////////////////////////////////////////////////
 
         if self.controls_mode == 'a':  
             from info_pars import ANNONCEMENT
@@ -324,7 +324,7 @@ class MAIN_CONTROLLER(MANAGER):
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, "The pogramm was stoped!")
                     return
-                self.work_sleep_manager(self.work_to, self.sleep_to)
+                # self.work_sleep_manager(self.work_to, self.sleep_to)
                 start_data = ANNONCEMENT().bitget_parser() 
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
