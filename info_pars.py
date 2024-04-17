@@ -63,7 +63,9 @@ class ANNONCEMENT(UTILS):
             bitget_headers['User-Agent'] = choice(user_agents)
             r = self.session.get(url=data_item['annUrl'], headers=bitget_headers)
             # print(r)
-            soup = BeautifulSoup(r.text, 'lxml')
+            # soup = BeautifulSoup(r.text, 'lxml')
+            soup = BeautifulSoup(r.text, 'html.parser')
+            # print(soup)
             listing_time_date_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').find_all('p')[3].get_text().strip().split(': ')[1].strip()      
             # print(listing_time_date_string)
             # if listing_time_date_string == 'TBD':
@@ -94,7 +96,7 @@ class ANNONCEMENT(UTILS):
         url = f"https://api.bitget.com/api/v2/public/annoucements?&annType=coin_listings&language=en_US"        
         data = self.session.get(url).json()["data"]
         data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]   
-        # print(sorted(data, key=lambda x: int(float(x["cTime"])), reverse=True)         
+        # print(sorted(data, key=lambda x: int(float(x["cTime"])), reverse=True))      
         cur_time = int(time.time()* 1000)
         find_data = self.links_multiprocessor(data, cur_time) 
         # print(find_data)

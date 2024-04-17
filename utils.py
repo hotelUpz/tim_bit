@@ -116,17 +116,17 @@ class UTILS():
     def symbol_extracter(self, text):
         # print(text)
         try:  
-            # unik_symbol_dict = {
-            #     "（": ' (',
-            #     "（ ": ' (',  
-            #     '）': ') ',
-            #     ' ）': ') ',  
-            #     "( ": '(',
-            #     " )": ')',
-            # } 
+            unik_symbol_dict = {
+                "（": ' (',
+                "（ ": ' (',  
+                '）': ') ',
+                ' ）': ') ',  
+                "( ": '(',
+                " )": ')',
+            } 
 
-            # for k, v in unik_symbol_dict.items():
-            #     text = text.replace(k, v)  
+            for k, v in unik_symbol_dict.items():
+                text = text.replace(k, v)  
             matches = re.findall(r'\((.*?)\)', text)
             return [re.sub(r'[\(\)\.,\-!]', '', match) for match in matches] 
         except:
