@@ -167,6 +167,6 @@ class UTILS():
         self_listing_time_ms = set_item["listing_time_ms"]
         set_item["delay_time_ms"] = delay_time_ms                
         set_item.update(default_params)
-        print(set_item)
+        # print(set_item)
         return set_item, self_listing_time_ms
     
