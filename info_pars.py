@@ -4,9 +4,9 @@ from joblib import Parallel, delayed
 import time
 from random import choice
 from utils import UTILS, log_exceptions_decorator
-import logging, os, inspect
-logging.basicConfig(filename='log.log', level=logging.INFO)
-current_file = os.path.basename(__file__) 
+# import logging, os, inspect
+# logging.basicConfig(filename='log.log', level=logging.INFO)
+# current_file = os.path.basename(__file__) 
 
 time_correction = 10800000
 # time_correction = 7600000
@@ -100,4 +100,4 @@ class ANNONCEMENT(UTILS):
         # print(find_data)
         return sorted(find_data, key=lambda x: x["listing_time_ms"], reverse=False) 
     
-# print(ANNONCEMENT().bitget_parser()) 
+print(ANNONCEMENT().bitget_parser()) 
