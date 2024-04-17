@@ -196,7 +196,7 @@ class MANAGER(TEMPLATES):
     @log_exceptions_decorator
     def buy_manager(self, set_item):
         print("It is waiting time for buy!..")        
-        self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!..")
+        self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
         self.response_data_list, self.response_success_list = [], [] 
         schedule_time_ms = self.listing_time_ms - 4000
         time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)
