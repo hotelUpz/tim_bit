@@ -9,7 +9,7 @@ class PARAMS():
         self.testnet_flag = False
         self.calibrator_flag = True
         self.stop_flag = False
-        self.work_to = 21 # hoor in UTC
+        self.work_to = 22 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
         self.manual_data_time = "2024-04-17 23:14:00" # utc time
         self.manual_symbol_list = ['ARBUSDT', 'BGBUSDT', 'TONCOINUSDT']
