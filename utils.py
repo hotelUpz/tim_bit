@@ -2,20 +2,15 @@ import time
 from datetime import datetime as dttm
 import datetime
 import math
-# import json
 import re
 from log import log_exceptions_decorator
 
 def server_to_utc_difference_counter():
-    # Получаем текущее время на сервере без указания часового пояса
     server_time_naive = dttm.now()
     print(f"server_time_naive: {server_time_naive}")
-    # Получаем текущее время UTC
     utc_time = dttm.utcnow()
     print(f"utc_time: {utc_time}")
-    # Вычисляем разницу во времени
     time_difference = server_time_naive - utc_time
-    # Преобразуем разницу в миллисекунды
     total_seconds = abs(time_difference.total_seconds()) * 1000
     total_seconds = math.ceil(total_seconds)
     if total_seconds < 10:
@@ -28,9 +23,6 @@ print("ms difference:", time_correction)
 class UTILS():
     def __init__(self) -> None:
         pass
-
-    # //////////////////////////////////////////////////////////////////////////////// 
-
 
     def datetime_to_milliseconds(self, datetime_str):           
         dt_obj = time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
@@ -54,7 +46,6 @@ class UTILS():
     def left_time_in_minutes_func(self, set_time):
         current_time_ms = int(time.time() * 1000)
         time_left_minutes = round((set_time - current_time_ms) / (1000 * 60), 2)
-        # print(f"{time_left_minutes} min is left...")    
         return time_left_minutes
             
     def show_trade_time_for_calibrator(self, response_data_list):
@@ -104,18 +95,15 @@ class UTILS():
     def get_start_of_day(self):
         now = datetime.datetime.now()
         start_of_day = datetime.datetime(now.year, now.month, now.day) - datetime.timedelta(days=4)
-        return int(start_of_day.timestamp() * 1000)  # Convert to Unix milliseconds
+        return int(start_of_day.timestamp() * 1000)
         # ////////////////////////////////////////////////////////////////////////////////
     
     @log_exceptions_decorator
     def from_string_to_date_time(self, date_time_str):
-        # print(date_time_str)
-        # pattern = r'(\d{1,2})(?:st|nd|rd|th) (\w+) (\d{4}), (\d{1,2}):(\d{2}) \(UTC\)'
         pattern = r'(\d{1,2})(?:st|nd|rd|th)? (\w+) (\d{4})(?:, (\d{1,2}):(\d{2}))? \(UTC\)'
 
         match = re.match(pattern, date_time_str)
         if match: 
-            # print('match')
             day = int(match.group(1))
             month_str = match.group(2)
             year = int(match.group(3))
@@ -130,11 +118,9 @@ class UTILS():
                 dt = dttm(year, month, day, hour, minute)
                 milliseconds = int(dt.timestamp() * 1000)
                 return milliseconds
-        # print('unmath')
         return
 
     def symbol_extracter(self, text):
-        # print(text)
         try:  
             unik_symbol_dict = {
                 "（": ' (',
@@ -182,11 +168,8 @@ class UTILS():
     @log_exceptions_decorator
     def params_gather(self, start_data, delay_time_ms, default_params):
         set_list = self.set_list_formator(start_data)
-        # print(set_list)
         set_item = set_list[0]        
         self_listing_time_ms = set_item["listing_time_ms"]
         set_item["delay_time_ms"] = delay_time_ms                
         set_item.update(default_params)
-        # print(set_item)
-        return set_item, self_listing_time_ms
-    
+        return set_item, self_listing_time_ms  

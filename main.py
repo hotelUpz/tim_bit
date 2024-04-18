@@ -258,66 +258,22 @@ class MANAGER(TEMPLATES):
     @log_exceptions_decorator 
     def trades_garbage(self):
         symbol = self.default_test_symbol.replace('USDT', '').strip()
-        # print(symbol)
         qty_garbare = self.get_balance(symbol).json().get('data')[0].get('balance')
-        # print(qty_garbare)
         item = {
             'data': [{'symbol': self.default_test_symbol}],
             'qnt_to_sell_start': round(float(qty_garbare)* 0.99, 2)
-        }
-        # print(item['data'][0]['symbol'])
-        # print(item['qnt_to_sell_start'])        
+        }     
         self.sell_market_temp(item)   
-        # print(self.response_data_list)
                         
 class MAIN_CONTROLLER(MANAGER):
     def __init__(self) -> None:
         super().__init__()
 
     def main_func(self): 
-        print(f'<<{self.market_place}>>') 
-        # if self.last_message:
-        #     self.last_message.text = self.connector_func(self.last_message, f'<<{self.market_place}>>')            
-        # if self.controls_mode == 'm':
-        #     if self.calibrator_flag:
-        #         self.delay_manager()
-        #     if self.testnet_flag:
-        #         self.depo = 11
-        #         ms_plus_two_min = self.next_two_minutes_ms()
-        #         start_data = [
-        #             {
-        #                 "symbol_list": ["ARBUSDT"],
-        #                 "listing_time_ms": ms_plus_two_min,
-        #                 "listing_time": self.milliseconds_to_datetime(ms_plus_two_min)                       
-        #             }
-        #         ]
-        #     else:
-        #         start_data = [
-        #             {
-        #                 "symbol_list": self.manual_symbol_list,
-        #                 "listing_time_ms": self.datetime_to_milliseconds(self.manual_data_time),
-        #                 "listing_time": self.manual_data_time                        
-        #             }
-        #         ]
-        #     set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
-        #     print(set_item)
-        #     self.last_message.text = self.connector_func(self.last_message, str(set_item))
-        #     self.trading_little_temp(set_item) 
-        #     result_time = 'x,m'
-        #     result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')        
-        #     self.last_message.text = self.connector_func(self.last_message, result_time)
-        #     cur_time = int(time.time()* 1000)
-        #     total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)
-        #     json_file = total_log_instance.get_json_data()                
-        #     self.bot.send_document(self.last_message.chat.id, json_file)
-        #     log_file = total_log_instance.get_logs()
-        #     self.bot.send_document(self.last_message.chat.id, log_file)
-
-        #     # ///////////////////////////////////////////////////////////////////////////////////////
-
+        print(f'<<{self.market_place}>>')
+        self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} <<{self.market_place}>>")
         if self.controls_mode == 'a':  
-            from info_pars import ANNONCEMENT
-             
+            from info_pars import ANNONCEMENT             
             while True:
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, "The pogramm was stoped!")
@@ -326,26 +282,10 @@ class MAIN_CONTROLLER(MANAGER):
                 start_data = ANNONCEMENT().bitget_parser() 
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
-                    # print(set_item)                                   
-                    # self.last_message.text = self.connector_func(self.last_message, str(set_item))                                         
-                    # try:
-                    #     cur_time = int(time.time()* 1000)
-                    #     total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
-                    #     cur_time = int(time.time()* 1000)
-                    #     set_item_for_write = [set_item]
-                    #     total_log_instance.json_to_buffer('START', cur_time, set_item_for_write)  
-                    #     json_file = total_log_instance.get_json_data()                
-                    #     self.bot.send_document(self.last_message.chat.id, json_file)   
-                    #     log_file = total_log_instance.get_logs()
-                    #     self.bot.send_document(self.last_message.chat.id, log_file)
-                    # except Exception as ex:
-                    #     # message.text = self.connector_func(message, ex)
-                    #     print(ex)
-                    #     pass
                 else:
-                    print("pause2...")
-                    time.sleep(random.randrange(169, 179))
-                if 14 <= self.left_time_in_minutes_func(self.listing_time_ms) <= 19:
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
+                    time.sleep(random.randrange(239, 299))
+                if self.left_time_in_minutes_func(self.listing_time_ms) <= 19:
                     if self.calibrator_flag:
                         self.delay_manager()
                     # //////////////////////////////////////////////////////////////////////
@@ -376,9 +316,9 @@ class MAIN_CONTROLLER(MANAGER):
                     time.sleep(30)
                     continue
                     # ////////////////////////////////////////////////////////////////////////////  
-                self.last_message.text = self.connector_func(self.last_message, "pause...")
+                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause...")
                 # print("pause...")
-                time.sleep(random.randrange(169, 179)) 
+                time.sleep(random.randrange(239, 299)) 
         # ////////////////////////////////////////////////////////////   
         # print(self.SOLI_DEO_GLORIA)
         self.last_message.text = self.connector_func(self.last_message, self.SOLI_DEO_GLORIA)

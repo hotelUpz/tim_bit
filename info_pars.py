@@ -41,7 +41,6 @@ class ANNONCEMENT(UTILS):
     @log_exceptions_decorator
     def links_multiprocessor(self, data, cur_time, cpu_count=18): 
         total_list = []
-        # Используем lambda для создания анонимной функции с предопределенным аргументом cur_time
         res = Parallel(n_jobs=cpu_count, prefer="threads")(delayed(lambda item: self.bitget_links_handler(item, cur_time))(item) for item in data)
         for x in res: 
             if x:               
@@ -56,20 +55,11 @@ class ANNONCEMENT(UTILS):
             data_set = []
             bitget_headers['User-Agent'] = choice(user_agents)
             r = self.session.get(url=data_item['annUrl'], headers=bitget_headers)
-            # print(r)
-            # soup = BeautifulSoup(r.text, 'lxml')
             soup = BeautifulSoup(r.text, 'html.parser')
-            # print(soup)
             listing_time_date_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').find_all('p')[3].get_text().strip().split(': ')[1].strip()      
-            # print(listing_time_date_string)
-            # if listing_time_date_string == 'TBD':
-            #     print(data_item['annUrl'])
             listing_time = self.from_string_to_date_time(listing_time_date_string)  
-            # print(listing_time)      
             if listing_time > cur_time - time_correction:     
-                # print(data_item['annTitle'])    
-                symbol_data = self.symbol_extracter(data_item['annTitle'])    
-                # print(symbol_data)            
+                symbol_data = self.symbol_extracter(data_item['annTitle'])     
                 if symbol_data:
                     data_set.append(
                         {                                
@@ -89,11 +79,7 @@ class ANNONCEMENT(UTILS):
         start_time = self.get_start_of_day()
         url = f"https://api.bitget.com/api/v2/public/annoucements?&annType=coin_listings&language=en_US"        
         data = self.session.get(url).json()["data"]
-        data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]   
-        # print(sorted(data, key=lambda x: int(float(x["cTime"])), reverse=True))      
+        data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]
         cur_time = int(time.time()* 1000)
         find_data = self.links_multiprocessor(data, cur_time) 
-        # print(find_data)
         return sorted(find_data, key=lambda x: x["listing_time_ms"], reverse=False) 
-    
-# print(ANNONCEMENT().bitget_parser()) 

@@ -12,7 +12,6 @@ class PARAMS():
         self.work_to = 20 # hoor in UTC
         self.sleep_to = 7 # hoor in UTC
         self.manual_data_time = "2024-04-17 23:14:00" # utc time
-        # self.time_correction = 10800000
         self.manual_symbol_list = ['ARBUSDT', 'BGBUSDT', 'TONCOINUSDT']
         self.default_test_symbol = 'ARBUSDT'
         self.response_data_list, self.response_success_list = [], []
@@ -49,12 +48,7 @@ class PARAMS():
         self.init_keys()
 
     def init_keys(self):  
-        # print('dfhvkdfvdfjkvb')
         self.api_key  = os.getenv(f"{self.market_place.upper()}_API_PUBLIC_KEY", "")
-        # print(self.api_key)
         self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "") 
-        # print(self.api_secret)
         self.api_passphrase = os.getenv("API_PASSPHRASE", "")
-        # print(self.api_passphrase)
         self.tg_api_token = os.getenv("TG_TOKEN", "")
-        # print(self.tg_api_token)
