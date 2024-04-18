@@ -179,7 +179,7 @@ class MANAGER(TEMPLATES):
             }
         ]        
         try:
-            set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
+            set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
             delay_manager_return = delay_calibrator(set_item)
         except Exception as ex:
             print(ex)
@@ -284,7 +284,7 @@ class MAIN_CONTROLLER(MANAGER):
                 # log_file = total_log_instance.get_logs()
                 # self.bot.send_document(self.last_message.chat.id, log_file) 
                 if start_data:            
-                    set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
+                    set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
                     self.last_message.text = self.connector_func(self.last_message, str(set_item))
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
@@ -322,8 +322,8 @@ class MAIN_CONTROLLER(MANAGER):
                     # ////////////////////////////////////////////////////////////////////////////  
                 self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause...")
                 # print("pause...")
-                # time.sleep(random.randrange(239, 299)) 
-                time.sleep(random.randrange(9, 14)) 
+                time.sleep(random.randrange(239, 299)) 
+                # time.sleep(random.randrange(9, 14)) 
         # ////////////////////////////////////////////////////////////   
         # print(self.SOLI_DEO_GLORIA)
         self.last_message.text = self.connector_func(self.last_message, self.SOLI_DEO_GLORIA)
@@ -362,26 +362,6 @@ class TG_MANAGER(MAIN_CONTROLLER):
                     self.bot.send_message(message.chat.id, "Please waiting...")                   
                 else:
                     self.bot.send_message(message.chat.id, "Program was not stopped.")  
-            # @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
-            # def handle_stop(message):
-            #     try:
-            #         message.text = self.connector_func(self.last_message, "Are you sure you want to stop programm? (y/n)")
-            #         self.stop_redirect_flag = True
-            #     except Exception as ex:
-            #         print(ex)
-
-            # @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
-            # def handle_stop_redirect(message):
-            #     self.stop_redirect_flag = False 
-            #     try: 
-            #         print(message.text.strip().upper)              
-            #         if message.text.strip().upper == 'Y':
-            #             self.stop_flag = True 
-            #             message.text = self.connector_func(message, "Please waiting...")
-            #         else:
-            #             message.text = self.connector_func(message, "Programm was not stoped...")
-            #     except Exception as ex:
-            #         print(ex)
 
             @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
             def handle_settings(message):
@@ -415,5 +395,5 @@ if __name__=="__main__":
     bot.run()
 
 # git add . 
-# git commit -m "test5"
+# git commit -m "betta1"
 # git push -u origin master 

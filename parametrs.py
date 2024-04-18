@@ -37,7 +37,6 @@ class PARAMS():
             "testnet_flag": self.testnet_flag,
             "calibrator_flag": self.calibrator_flag,
             "market_place": self.market_place,
-            "depo": self.depo,
             "sell_mode": self.sell_mode,
             "delay_flag": self.delay_flag,
             "incriment_time_ms": self.incriment_time_ms,
