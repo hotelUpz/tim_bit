@@ -347,9 +347,11 @@ class MAIN_CONTROLLER(MANAGER):
                 else:
                     print("pause2...")
                     time.sleep(random.randrange(169, 179))
-                if self.calibrator_flag and 14 <= self.left_time_in_minutes_func(self.listing_time_ms) <= 19:
-                    self.delay_manager()
+                if 14 <= self.left_time_in_minutes_func(self.listing_time_ms) <= 19:
+                    if self.calibrator_flag:
+                        self.delay_manager()
                     # //////////////////////////////////////////////////////////////////////
+                    self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
                     # //////////////////////////////////////////////////////////////////////     
