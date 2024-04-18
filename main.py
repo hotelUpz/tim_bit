@@ -280,6 +280,8 @@ class MAIN_CONTROLLER(MANAGER):
                     return
                 self.work_sleep_manager(self.work_to, self.sleep_to)
                 start_data = ANNONCEMENT().bitget_parser() 
+                log_file = total_log_instance.get_logs()
+                self.bot.send_document(self.last_message.chat.id, log_file) 
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
                     self.last_message.text = self.connector_func(self.last_message, str(set_item))
@@ -293,7 +295,7 @@ class MAIN_CONTROLLER(MANAGER):
                     self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
-                    # //////////////////////////////////////////////////////////////////////                              
+                    # //////////////////////////////////////////////////////////////////////                            
                     try:
                         cur_time = int(time.time()* 1000)
                         result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
@@ -338,35 +340,39 @@ class TG_MANAGER(MAIN_CONTROLLER):
                 response_message = 'God bless you Nik!'
                 print(response_message) 
                 self.bot.send_message(message.chat.id, response_message, reply_markup=self.menu_markup)
-                self.last_message = message
+                self.last_message = message                
                 self.main_func()                
                 return   
+
             @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
             def handle_stop(message):
-                message.text = self.connector_func(self.last_message, "Are you sure you want to stop programm? (y/n)")
+                self.bot.send_message(message.chat.id, "Are you sure you want to stop the program? (y/n)")
                 self.stop_redirect_flag = True
 
             @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
             def handle_stop_redirect(message):
                 self.stop_redirect_flag = False
-                message.text = self.connector_func(self.last_message, "Please waiting...")
-                if message.text.strip().upper == 'Y':
+                if message.text.strip().upper() == 'Y':
                     self.stop_flag = True 
+                    self.bot.send_message(message.chat.id, "Program stopped.")
                 else:
-                    message.text = self.connector_func(self.last_message, "Programm was not stoped...")
+                    self.bot.send_message(message.chat.id, "Program was not stopped.")
 
             @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
             def handle_settings(message):
-                message.text = self.connector_func(self.last_message, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
+                self.bot.send_message(message.chat.id, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
                 self.settings_redirect_flag = True
 
             @self.bot.message_handler(func=lambda message: self.settings_redirect_flag)             
             def handle_settings_redirect(message):
                 self.settings_redirect_flag = False
-                dataa = [x for x in message.text.strip().split(' ') if x.strip()]  
-                self.default_delay_time_ms = self.delay_time_ms = dataa[0]    
-                self.depo = dataa[1]        
-                message.text = self.connector_func(self.last_message, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
+                dataa = [x for x in message.text.strip().split(' ') if x.strip()]
+                if len(dataa) == 2:
+                    self.delay_time_ms = dataa[0]    
+                    self.depo = dataa[1]        
+                    self.bot.send_message(message.chat.id, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
+                else:
+                    self.bot.send_message(message.chat.id, "Please enter both delay time and depo size.")
 
             self.bot.polling()
         except Exception as ex:
