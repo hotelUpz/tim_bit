@@ -74,13 +74,11 @@ class ANNONCEMENT(UTILS):
         return data_set
         
     @log_exceptions_decorator                   
-    def bitget_parser(self):   
-        # print(int('djvkjdfvbk'))     
+    def bitget_parser(self):
         print('Start parser')
         start_time = self.get_start_of_day()
         url = f"https://api.bitget.com/api/v2/public/annoucements?&annType=coin_listings&language=en_US"        
         data = self.session.get(url).json()["data"]
         data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]
         cur_time = int(time.time()* 1000)
-        find_data = self.links_multiprocessor(data, cur_time) 
-        return sorted(find_data, key=lambda x: x["listing_time_ms"], reverse=False) 
+        return self.links_multiprocessor(data, cur_time)  

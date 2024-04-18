@@ -166,10 +166,10 @@ class UTILS():
         return list(unique_data.values())      
 
     @log_exceptions_decorator
-    def params_gather(self, start_data, delay_time_ms, default_params):
-        set_list = self.set_list_formator(start_data)
+    def params_gather(self, start_data, delay_time_ms, default_params):         
+        set_list = sorted(self.set_list_formator(start_data), key=lambda x: x["listing_time_ms"], reverse=False) 
         set_item = set_list[0]        
         self_listing_time_ms = set_item["listing_time_ms"]
         set_item["delay_time_ms"] = delay_time_ms                
         set_item.update(default_params)
-        return set_item, self_listing_time_ms  
+        return set_item, self_listing_time_ms
