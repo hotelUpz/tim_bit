@@ -322,8 +322,8 @@ class MAIN_CONTROLLER(MANAGER):
                     # ////////////////////////////////////////////////////////////////////////////  
                 self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause...")
                 # print("pause...")
-                # time.sleep(random.randrange(239, 299)) 
-                time.sleep(random.randrange(9, 14)) 
+                time.sleep(random.randrange(239, 299)) 
+                # time.sleep(random.randrange(9, 14)) 
         # ////////////////////////////////////////////////////////////   
         # print(self.SOLI_DEO_GLORIA)
         self.last_message.text = self.connector_func(self.last_message, self.SOLI_DEO_GLORIA)
@@ -395,5 +395,5 @@ if __name__=="__main__":
     bot.run()
 
 # git add . 
-# git commit -m "betta1"
+# git commit -m "betta5"
 # git push -u origin master 
