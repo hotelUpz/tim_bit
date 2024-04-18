@@ -348,26 +348,40 @@ class TG_MANAGER(MAIN_CONTROLLER):
                     self.main_func()  
                 except Exception as ex:
                     print(ex)              
-                return   
+                return 
             @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
             def handle_stop(message):
-                try:
-                    message.text = self.connector_func(self.last_message, "Are you sure you want to stop programm? (y/n)")
-                    self.stop_redirect_flag = True
-                except Exception as ex:
-                    print(ex)
+                self.bot.send_message(message.chat.id, "Are you sure you want to stop the program? (y/n)")
+                self.stop_redirect_flag = True
 
             @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
             def handle_stop_redirect(message):
-                self.stop_redirect_flag = False 
-                try:               
-                    if message.text.strip().upper == 'Y':
-                        self.stop_flag = True 
-                        message.text = self.connector_func(message, "Please waiting...")
-                    else:
-                        message.text = self.connector_func(message, "Programm was not stoped...")
-                except Exception as ex:
-                    print(ex)
+                self.stop_redirect_flag = False
+                if message.text.strip().upper() == 'Y':
+                    self.stop_flag = True 
+                    self.bot.send_message(message.chat.id, "Please waiting...")                   
+                else:
+                    self.bot.send_message(message.chat.id, "Program was not stopped.")  
+            # @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
+            # def handle_stop(message):
+            #     try:
+            #         message.text = self.connector_func(self.last_message, "Are you sure you want to stop programm? (y/n)")
+            #         self.stop_redirect_flag = True
+            #     except Exception as ex:
+            #         print(ex)
+
+            # @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
+            # def handle_stop_redirect(message):
+            #     self.stop_redirect_flag = False 
+            #     try: 
+            #         print(message.text.strip().upper)              
+            #         if message.text.strip().upper == 'Y':
+            #             self.stop_flag = True 
+            #             message.text = self.connector_func(message, "Please waiting...")
+            #         else:
+            #             message.text = self.connector_func(message, "Programm was not stoped...")
+            #     except Exception as ex:
+            #         print(ex)
 
             @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
             def handle_settings(message):
@@ -401,5 +415,5 @@ if __name__=="__main__":
     bot.run()
 
 # git add . 
-# git commit -m "test4"
+# git commit -m "test5"
 # git push -u origin master 
