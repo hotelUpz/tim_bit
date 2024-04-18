@@ -328,22 +328,22 @@ class MAIN_CONTROLLER(MANAGER):
                 start_data = ANNONCEMENT().bitget_parser() 
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.delay_time_ms, self.default_params)
-                    print(set_item)                                   
-                    self.last_message.text = self.connector_func(self.last_message, str(set_item))                                         
-                    try:
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
-                        cur_time = int(time.time()* 1000)
-                        set_item_for_write = [set_item]
-                        total_log_instance.json_to_buffer('START', cur_time, set_item_for_write)  
-                        json_file = total_log_instance.get_json_data()                
-                        self.bot.send_document(self.last_message.chat.id, json_file)   
-                        log_file = total_log_instance.get_logs()
-                        self.bot.send_document(self.last_message.chat.id, log_file)
-                    except Exception as ex:
-                        # message.text = self.connector_func(message, ex)
-                        print(ex)
-                        pass
+                    # print(set_item)                                   
+                    # self.last_message.text = self.connector_func(self.last_message, str(set_item))                                         
+                    # try:
+                    #     cur_time = int(time.time()* 1000)
+                    #     total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
+                    #     cur_time = int(time.time()* 1000)
+                    #     set_item_for_write = [set_item]
+                    #     total_log_instance.json_to_buffer('START', cur_time, set_item_for_write)  
+                    #     json_file = total_log_instance.get_json_data()                
+                    #     self.bot.send_document(self.last_message.chat.id, json_file)   
+                    #     log_file = total_log_instance.get_logs()
+                    #     self.bot.send_document(self.last_message.chat.id, log_file)
+                    # except Exception as ex:
+                    #     # message.text = self.connector_func(message, ex)
+                    #     print(ex)
+                    #     pass
                 else:
                     print("pause2...")
                     time.sleep(random.randrange(169, 179))
@@ -362,7 +362,7 @@ class MAIN_CONTROLLER(MANAGER):
                         cur_time = int(time.time()* 1000)
                         total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
                         cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('START', cur_time, set_item_for_write)  
+                        total_log_instance.json_to_buffer('START', cur_time, [set_item])  
                         cur_time = int(time.time()* 1000)
                         total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)   
                         json_file = total_log_instance.get_json_data()                
