@@ -276,7 +276,7 @@ class MAIN_CONTROLLER(MANAGER):
             from info_pars import ANNONCEMENT             
             while True:
                 if self.stop_flag:
-                    self.last_message.text = self.connector_func(self.last_message, "The pogramm was stoped!")
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
                     return
                 self.work_sleep_manager(self.work_to, self.sleep_to)
                 start_data = ANNONCEMENT().bitget_parser() 
@@ -298,7 +298,7 @@ class MAIN_CONTROLLER(MANAGER):
                         cur_time = int(time.time()* 1000)
                         result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
                         self.last_message.text = self.connector_func(self.last_message, result_time)
-                        print(result_time)  
+                        # print(result_time)  
                         cur_time = int(time.time()* 1000)
                         total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
                         cur_time = int(time.time()* 1000)
@@ -326,7 +326,9 @@ class MAIN_CONTROLLER(MANAGER):
 
 class TG_MANAGER(MAIN_CONTROLLER):
     def __init__(self):
-        super().__init__()        
+        super().__init__()  
+        self.stop_redirect_flag = False  
+        self.settings_redirect_flag = False    
 
     def run(self):  
         try:          
@@ -341,7 +343,30 @@ class TG_MANAGER(MAIN_CONTROLLER):
                 return   
             @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
             def handle_stop(message):
-                self.stop_flag = True
+                message.text = self.connector_func(self.last_message, "Are you sure you want to stop programm? (y/n)")
+                self.stop_redirect_flag = True
+
+            @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
+            def handle_stop_redirect(message):
+                self.stop_redirect_flag = False
+                message.text = self.connector_func(self.last_message, "Please waiting...")
+                if message.text.strip().upper == 'Y':
+                    self.stop_flag = True 
+                else:
+                    message.text = self.connector_func(self.last_message, "Programm was not stoped...")
+
+            @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
+            def handle_settings(message):
+                message.text = self.connector_func(self.last_message, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
+                self.settings_redirect_flag = True
+
+            @self.bot.message_handler(func=lambda message: self.settings_redirect_flag)             
+            def handle_settings_redirect(message):
+                self.settings_redirect_flag = False
+                dataa = [x for x in message.text.strip().split(' ') if x.strip()]  
+                self.default_delay_time_ms = self.delay_time_ms = dataa[0]    
+                self.depo = dataa[1]        
+                message.text = self.connector_func(self.last_message, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
 
             self.bot.polling()
         except Exception as ex:

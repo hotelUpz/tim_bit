@@ -51,35 +51,35 @@ class Total_Logger(JsonLogger):
 
 total_log_instance = Total_Logger()
 
-def log_exceptions_decorator(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as ex:
-            timestamp = datetime.utcnow()
-            frame = sys._getframe(1)
-            file_name = frame.f_code.co_filename
-            line_number = frame.f_lineno
-            exception_message = str(ex)
-            error_info = (file_name, line_number, exception_message)
-            total_log_instance.log_to_buffer(*error_info)
-            total_log_instance.log_all_errors(file_name, timestamp, exception_message)
-            print(f"Error occurred in file '{file_name}', line {line_number}: {exception_message}")
-    return wrapper
-
-
-
 # def log_exceptions_decorator(func):
 #     def wrapper(*args, **kwargs):
 #         try:
 #             return func(*args, **kwargs)
 #         except Exception as ex:
 #             timestamp = datetime.utcnow()
-#             current_frame = inspect.currentframe()
-#             caller_frame = current_frame.f_back
-#             file_name = caller_frame.f_code.co_filename
-#             line_number = caller_frame.f_lineno
+#             frame = sys._getframe(1)
+#             file_name = frame.f_code.co_filename
+#             line_number = frame.f_lineno
 #             exception_message = str(ex)
 #             error_info = (file_name, line_number, exception_message)
+#             total_log_instance.log_to_buffer(*error_info)
+#             total_log_instance.log_all_errors(file_name, timestamp, exception_message)
 #             print(f"Error occurred in file '{file_name}', line {line_number}: {exception_message}")
 #     return wrapper
+
+
+
+def log_exceptions_decorator(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as ex:
+            timestamp = datetime.utcnow()
+            current_frame = inspect.currentframe()
+            caller_frame = current_frame.f_back
+            file_name = caller_frame.f_code.co_filename
+            line_number = caller_frame.f_lineno
+            exception_message = str(ex)
+            error_info = (file_name, line_number, exception_message)
+            print(f"Error occurred in file '{file_name}', line {line_number}: {exception_message}")
+    return wrapper

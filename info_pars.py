@@ -74,7 +74,8 @@ class ANNONCEMENT(UTILS):
         return data_set
         
     @log_exceptions_decorator                   
-    def bitget_parser(self):        
+    def bitget_parser(self):   
+        print(int('djvkjdfvbk'))     
         print('Start parser')
         start_time = self.get_start_of_day()
         url = f"https://api.bitget.com/api/v2/public/annoucements?&annType=coin_listings&language=en_US"        
