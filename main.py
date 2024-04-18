@@ -196,33 +196,31 @@ class MANAGER(TEMPLATES):
         self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
         self.response_data_list, self.response_success_list = [], [] 
         schedule_time_ms = self.listing_time_ms - 4000
-        time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)
-        symbol_list = set_item["symbol_list"]
-        len_symbol_list = len(symbol_list)
-        if self.symbol_list_el_position >= len_symbol_list:
-            self.symbol_list_el_position = len_symbol_list - 1        
-        # print(symbol_list)
-        len_symbol_list = self.max_symbol_list_slice
-        delay_upgrated = 0 if self.delay_time_ms == 0 else self.delay_time_ms + ((len_symbol_list-1)*119)            
-        buy_time_ms = self.listing_time_ms - delay_upgrated if delay_upgrated != 0 else self.listing_time_ms
-        if len_symbol_list == 1:                
-            symbol = symbol_list[self.symbol_list_el_position]    
+        time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)             
+        if not self.threads_flag:     
+            buy_time_ms = self.listing_time_ms - self.delay_time_ms  
+            try:              
+                symbol = set_item["symbol_list"][self.symbol_list_el_position]  
+            except Exception as ex:
+                print(ex) 
+                symbol = set_item["symbol_list"][0]               
             self.send_fake_request(self.symbol_fake) 
-            # self.last_message.text = self.connector_func(self.last_message, "Fake request!")
-            time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)
+            time.sleep((buy_time_ms - int(time.time()*1000))/ 1000) 
             if self.pre_start_pause != 0:
-                pre_start_increment = 0 if delay_upgrated == 0 else delay_upgrated/1000
+                pre_start_increment = 0 if self.delay_time_ms == 0 else self.delay_time_ms/1000
                 time.sleep(self.pre_start_pause + pre_start_increment)                  
             self.buy_market_temp(symbol)  
-        else:               
-            self.threads_flag = True
-            symbol_list_for_fake_requests = [self.symbol_fake for _ in range(len((symbol_list)))]
+        else:
+            set_item["symbol_list"] = set_item["symbol_list"][:self.max_symbol_list_slice]
+            delay_upgrated = 0 if self.delay_time_ms == 0 else self.delay_time_ms + ((len(set_item["symbol_list"]-1))*119)            
+            buy_time_ms = self.listing_time_ms - delay_upgrated if delay_upgrated != 0 else self.listing_time_ms
+            symbol_list_for_fake_requests = [self.symbol_fake for _ in range(len(set_item["symbol_list"]))]
             self.threads_executor_temp(symbol_list_for_fake_requests, self.send_fake_request)
             time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)  
             if self.pre_start_pause != 0:
                 pre_start_increment = 0 if delay_upgrated == 0 else delay_upgrated/1000
                 time.sleep(self.pre_start_pause + pre_start_increment)               
-            self.threads_executor_temp(symbol_list, self.buy_market_temp)              
+            self.threads_executor_temp(set_item["symbol_list"], self.buy_market_temp)               
 
     @log_exceptions_decorator   
     def sell_manager(self, set_item):
@@ -354,8 +352,7 @@ class MAIN_CONTROLLER(MANAGER):
                     self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
-                    # //////////////////////////////////////////////////////////////////////     
-                               
+                    # //////////////////////////////////////////////////////////////////////                              
                     try:
                         cur_time = int(time.time()* 1000)
                         result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
