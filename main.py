@@ -353,8 +353,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
             def handle_stop_redirect(message):
                 self.stop_redirect_flag = False
                 if message.text.strip().upper() == 'Y':
-                    self.stop_flag = True 
-                    self.bot.send_message(message.chat.id, "Program stopped.")
+                    self.stop_flag = True                    
                 else:
                     self.bot.send_message(message.chat.id, "Program was not stopped.")
 

@@ -20,7 +20,7 @@ class Logger():
             self.all_errors[file_name] = [(timestamp, exception_message)]
 
     def get_logs(self):
-        # print(self.logs_buffer)
+        print(f"logs list 23str: {self.logs_buffer}")
         file = BytesIO()
         file.write(str(self.logs_buffer).encode('utf-8'))
         file.name = "logs.txt"
@@ -67,8 +67,6 @@ total_log_instance = Total_Logger()
 #             print(f"Error occurred in file '{file_name}', line {line_number}: {exception_message}")
 #     return wrapper
 
-
-
 def log_exceptions_decorator(func):
     def wrapper(*args, **kwargs):
         try:
@@ -81,5 +79,7 @@ def log_exceptions_decorator(func):
             line_number = caller_frame.f_lineno
             exception_message = str(ex)
             error_info = (file_name, line_number, exception_message)
+            total_log_instance.log_to_buffer(*error_info)
+            total_log_instance.log_all_errors(file_name, timestamp, exception_message)
             print(f"Error occurred in file '{file_name}', line {line_number}: {exception_message}")
     return wrapper
