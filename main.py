@@ -280,9 +280,9 @@ class MAIN_CONTROLLER(MANAGER):
                     return
                 self.work_sleep_manager(self.work_to, self.sleep_to)
                 start_data = ANNONCEMENT().bitget_parser()
-                print(start_data)
-                log_file = total_log_instance.get_logs()
-                self.bot.send_document(self.last_message.chat.id, log_file) 
+                # print(start_data)
+                # log_file = total_log_instance.get_logs()
+                # self.bot.send_document(self.last_message.chat.id, log_file) 
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
                     self.last_message.text = self.connector_func(self.last_message, str(set_item))
@@ -395,5 +395,5 @@ if __name__=="__main__":
     bot.run()
 
 # git add . 
-# git commit -m "betta5"
+# git commit -m "betta6"
 # git push -u origin master 
