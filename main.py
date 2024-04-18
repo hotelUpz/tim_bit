@@ -338,53 +338,63 @@ class TG_MANAGER(MAIN_CONTROLLER):
         try:          
             @self.bot.message_handler(commands=['start'])
             @self.bot.message_handler(func=lambda message: message.text == 'START')
-            def handle_start_input(message):                            
-                response_message = 'God bless you Nik!'
-                print(response_message) 
-                self.bot.send_message(message.chat.id, response_message, reply_markup=self.menu_markup)
-                self.last_message = message                
-                self.main_func()                
+            def handle_start_input(message): 
+                try:
+                    self.stop_flag = False                           
+                    response_message = 'God bless you Nik!'
+                    print(response_message) 
+                    self.bot.send_message(message.chat.id, response_message, reply_markup=self.menu_markup)
+                    self.last_message = message
+                    self.main_func()  
+                except Exception as ex:
+                    print(ex)              
                 return   
-
             @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
             def handle_stop(message):
-                self.bot.send_message(message.chat.id, "Are you sure you want to stop the program? (y/n)")
-                self.stop_redirect_flag = True
+                try:
+                    message.text = self.connector_func(self.last_message, "Are you sure you want to stop programm? (y/n)")
+                    self.stop_redirect_flag = True
+                except Exception as ex:
+                    print(ex)
 
             @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
             def handle_stop_redirect(message):
-                self.stop_redirect_flag = False
-                if message.text.strip().upper() == 'Y':
-                    self.stop_flag = True                    
-                else:
-                    self.bot.send_message(message.chat.id, "Program was not stopped.")
+                self.stop_redirect_flag = False 
+                try:               
+                    if message.text.strip().upper == 'Y':
+                        self.stop_flag = True 
+                        message.text = self.connector_func(message, "Please waiting...")
+                    else:
+                        message.text = self.connector_func(message, "Programm was not stoped...")
+                except Exception as ex:
+                    print(ex)
 
             @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
             def handle_settings(message):
-                self.bot.send_message(message.chat.id, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
-                self.settings_redirect_flag = True
+                try:
+                    message.text = self.connector_func(message, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
+                    self.settings_redirect_flag = True
+                except Exception as ex:
+                    print(ex)
 
             @self.bot.message_handler(func=lambda message: self.settings_redirect_flag)             
             def handle_settings_redirect(message):
-                self.settings_redirect_flag = False
-                dataa = [x for x in message.text.strip().split(' ') if x.strip()]
-                if len(dataa) == 2:
-                    self.delay_time_ms = dataa[0]    
-                    self.depo = dataa[1]        
-                    self.bot.send_message(message.chat.id, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
-                else:
-                    self.bot.send_message(message.chat.id, "Please enter both delay time and depo size.")
+                try:
+                    self.settings_redirect_flag = False
+                    dataa = [x for x in message.text.strip().split(' ') if x.strip()]  
+                    self.default_delay_time_ms = self.delay_time_ms = dataa[0]    
+                    self.depo = dataa[1]  
+                    if len(dataa) == 2:     
+                        message.text = self.connector_func(message, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
+                    else:
+                        message.text = self.connector_func(message, f"Please enter a valid options...")
+                except Exception as ex:
+                    print(ex)
 
             self.bot.polling()
         except Exception as ex:
             print(ex)
 
-if __name__=="__main__":    
-    print('Please go to the Telegram bot interface!')     
-    bot = TG_MANAGER()   
-    bot.run()
-
-
-
 # git add . 
-# git commit -m "test1"
+# git commit -m "test3"
+# git push -u origin master 
