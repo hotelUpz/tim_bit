@@ -385,7 +385,8 @@ class TG_MANAGER(MAIN_CONTROLLER):
                 except Exception as ex:
                     print(ex)
 
-            self.bot.polling()
+            # self.bot.polling()
+            self.bot.infinity_polling()
         except Exception as ex:
             print(ex)
 
