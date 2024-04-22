@@ -160,7 +160,7 @@ class MANAGER(TEMPLATES):
                     
                     self.last_message.text = self.connector_func(self.last_message, f"self.delay_time_ms: {self.delay_time_ms}")
                     print(f"self.delay_time_ms: {self.delay_time_ms}")
-                    self.listing_time_ms += 60000
+                    self.listing_time_ms += 30000
                     time.sleep(0.1)
                 except Exception as ex:
                     # print(f"main 117: {ex}")
@@ -289,7 +289,7 @@ class MAIN_CONTROLLER(MANAGER):
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
                     time.sleep(random.randrange(239, 299))
-                if self.left_time_in_minutes_func(self.listing_time_ms) <= 19:
+                if self.left_time_in_minutes_func(self.listing_time_ms) <= 12:
                     if self.calibrator_flag:
                         self.delay_manager()
                     # //////////////////////////////////////////////////////////////////////
@@ -396,5 +396,5 @@ if __name__=="__main__":
     bot.run()
 
 # git add . 
-# git commit -m "betta6"
+# git commit -m "betta9"
 # git push -u origin master 
