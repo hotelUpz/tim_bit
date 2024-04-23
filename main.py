@@ -121,8 +121,8 @@ class MANAGER(TEMPLATES):
             self.max_symbol_list_slice = 1
             good_test_flag = False     
             good_test_counter = 0
-            retry_limit_counter = 6
-            self.delay_time_ms = self.default_delay_time_ms
+            retry_limit_counter = 6 
+            # self.delay_time_ms = self.delay_default_time_ms           
 
             for i in range(retry_limit_counter):   
                 try:         
@@ -144,12 +144,12 @@ class MANAGER(TEMPLATES):
                     result_time_data_time, result_time_ms = self.show_trade_time_for_calibrator(self.response_data_list)
                     self.last_message.text = self.connector_func(self.last_message, result_time_data_time)
                     print(result_time_data_time)
-                    if -1 <= result_time_ms - self.listing_time_ms <= 20:
+                    if -4 <= result_time_ms - self.listing_time_ms <= 20:
                         good_test_flag = True
                         self.last_message.text = self.connector_func(self.last_message, f"good_test_flag: {str(good_test_flag)}")
                         print(f"good_test_flag: {good_test_flag}")
                         good_test_counter += 1
-                    elif result_time_ms - self.listing_time_ms < -1:
+                    elif result_time_ms - self.listing_time_ms < -4:
                         self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms < 4")
                         print("self.listing_time_ms - result_time_ms < 4")
                         self.delay_time_ms -= 7
@@ -272,6 +272,7 @@ class MAIN_CONTROLLER(MANAGER):
     def main_func(self): 
         print(f'<<{self.market_place}>>')
         self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} <<{self.market_place}>>")
+        show_counter = 0
         if self.controls_mode == 'a':  
             from info_pars import ANNONCEMENT             
             while True:
@@ -285,14 +286,18 @@ class MAIN_CONTROLLER(MANAGER):
                 # self.bot.send_document(self.last_message.chat.id, log_file) 
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
-                    self.last_message.text = self.connector_func(self.last_message, str(set_item))
+                    show_counter += 1
+                    if show_counter == 5:
+                        self.last_message.text = self.connector_func(self.last_message, str(set_item))
+                        show_counter = 0
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
                     time.sleep(random.randrange(239, 299))
-                if self.left_time_in_minutes_func(self.listing_time_ms) <= 12:
+                if self.left_time_in_minutes_func(self.listing_time_ms) <= 14:
                     if self.calibrator_flag:
                         self.delay_manager()
                     # //////////////////////////////////////////////////////////////////////
+                    set_item["delay_time_ms"] = self.delay_time_ms
                     self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
@@ -376,7 +381,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                 try:
                     self.settings_redirect_flag = False
                     dataa = [x for x in message.text.strip().split(' ') if x.strip()]  
-                    self.default_delay_time_ms = self.delay_time_ms = dataa[0]    
+                    self.delay_time_ms = dataa[0]    
                     self.depo = dataa[1]  
                     if len(dataa) == 2:     
                         message.text = self.connector_func(message, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
@@ -396,5 +401,5 @@ if __name__=="__main__":
     bot.run()
 
 # git add . 
-# git commit -m "betta9"
+# git commit -m "betta10"
 # git push -u origin master 

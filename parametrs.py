@@ -9,7 +9,7 @@ class PARAMS():
         self.testnet_flag = False
         self.calibrator_flag = True
         self.stop_flag = False
-        self.work_to = 23 # hoor in UTC
+        self.work_to = 18 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
         self.manual_data_time = "2024-04-17 23:14:00" # utc time
         self.manual_symbol_list = ['ARBUSDT', 'BGBUSDT', 'TONCOINUSDT']
@@ -22,9 +22,9 @@ class PARAMS():
         self.symbol_fake = 'T'
         self.depo = 11
         self.sell_mode = 't100' # t100 -- sell for all qty by time
-        self.delay_flag = True # True 
-        self.default_delay_time_ms = 111        
-        self.delay_time_ms = 111
+        self.delay_flag = True # True  
+        self.delay_default_time_ms = 97   
+        self.delay_time_ms = 97
         self.listing_time_ms = None
         self.incriment_time_ms = 1
         self.pre_start_pause = 0 
