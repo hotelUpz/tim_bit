@@ -17,7 +17,7 @@ class PARAMS():
         self.response_data_list, self.response_success_list = [], []
         self.threads_flag = False
         self.max_symbol_list_slice = 2       
-        self.symbol_list_el_position = 0
+        self.symbol_list_el_position = 1
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
         self.depo = 10
