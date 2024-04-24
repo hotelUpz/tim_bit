@@ -283,7 +283,7 @@ class MAIN_CONTROLLER(MANAGER):
             while True:
                 start_data = []
                 set_item = {}
-                print('asdcjhc,vjbkvbjkcxvm b')
+                print('asdc')
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Render#{self.symbol_list_el_position} was stoped!")
                     return
