@@ -278,6 +278,7 @@ class MAIN_CONTROLLER(MANAGER):
         print(f'<<{self.market_place}>>')
         self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} <<{self.market_place}>>")
         show_counter = 0
+        first_req_flag = True
         if self.controls_mode == 'a':  
             from info_pars import ANNONCEMENT             
             while True:
@@ -287,7 +288,13 @@ class MAIN_CONTROLLER(MANAGER):
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
                     return
-                self.work_sleep_manager(self.work_to, self.sleep_to)
+                if self.work_sleep_manager(self.work_to, self.sleep_to):
+                    self.last_message.text = self.connector_func(self.last_message, "It is time to rest! Let's go to bed!")
+                else:
+                    if first_req_flag:
+                        first_req_flag = False
+                        self.last_message.text = self.connector_func(self.last_message, "It is work time!")                       
+
                 start_data = ANNONCEMENT().bitget_parser()
                 # print(start_data)
                 # log_file = total_log_instance.get_logs()
