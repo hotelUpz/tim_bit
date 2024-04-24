@@ -282,7 +282,8 @@ class MAIN_CONTROLLER(MANAGER):
             from info_pars import ANNONCEMENT             
             while True:
                 start_data = []
-                set_item = {}
+                set_item = {}  
+                print()
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
                     return
