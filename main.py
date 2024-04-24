@@ -281,6 +281,8 @@ class MAIN_CONTROLLER(MANAGER):
         if self.controls_mode == 'a':  
             from info_pars import ANNONCEMENT             
             while True:
+                start_data = []
+                set_item = {}
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
                     return
@@ -298,6 +300,7 @@ class MAIN_CONTROLLER(MANAGER):
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
                     time.sleep(random.randrange(239, 299))
+                    continue
                 if self.left_time_in_minutes_func(self.listing_time_ms) <= 12:
                     if self.calibrator_flag:
                         self.delay_manager()
@@ -406,5 +409,5 @@ if __name__=="__main__":
     bot.run()
 
 # git add . 
-# git commit -m "betta14"
+# git commit -m "betta15"
 # git push -u origin master 
