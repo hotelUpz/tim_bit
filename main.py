@@ -168,6 +168,8 @@ class MANAGER(TEMPLATES):
                     return 0
             return 1
         
+        start_max_symbol_list_slice = self.max_symbol_list_slice
+        self.max_symbol_list_slice = 1
         start_listing_time_ms = self.listing_time_ms
         start_depo = self.depo
         self.depo = 10
@@ -179,10 +181,13 @@ class MANAGER(TEMPLATES):
             }
         ]        
         try:
+            delay_manager_return = False
             set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
             delay_manager_return = delay_calibrator(set_item)
         except Exception as ex:
             print(ex)
+        # self.threads_flag = start_threads_flag
+        self.max_symbol_list_slice = start_max_symbol_list_slice
         self.depo = start_depo
         self.listing_time_ms = start_listing_time_ms
         if not delay_manager_return:
@@ -212,7 +217,7 @@ class MANAGER(TEMPLATES):
             self.buy_market_temp(symbol)  
         else:
             set_item["symbol_list"] = set_item["symbol_list"][:self.max_symbol_list_slice]
-            delay_upgrated = 0 if self.delay_time_ms == 0 else self.delay_time_ms + ((len(set_item["symbol_list"]-1))*119)            
+            delay_upgrated = 0 if self.delay_time_ms == 0 else self.delay_time_ms + ((len(set_item["symbol_list"])-1)*119)            
             buy_time_ms = self.listing_time_ms - delay_upgrated if delay_upgrated != 0 else self.listing_time_ms
             symbol_list_for_fake_requests = [self.symbol_fake for _ in range(len(set_item["symbol_list"]))]
             self.threads_executor_temp(symbol_list_for_fake_requests, self.send_fake_request)
@@ -381,8 +386,8 @@ class TG_MANAGER(MAIN_CONTROLLER):
                 try:
                     self.settings_redirect_flag = False
                     dataa = [x for x in message.text.strip().split(' ') if x.strip()]  
-                    self.delay_time_ms = dataa[0]    
-                    self.depo = dataa[1]  
+                    self.delay_time_ms = int(float(dataa[0]))   
+                    self.depo = int(float(dataa[1]))
                     if len(dataa) == 2:     
                         message.text = self.connector_func(message, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
                     else:
@@ -401,5 +406,5 @@ if __name__=="__main__":
     bot.run()
 
 # git add . 
-# git commit -m "betta10"
+# git commit -m "betta12"
 # git push -u origin master 
