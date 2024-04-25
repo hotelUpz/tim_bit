@@ -80,17 +80,16 @@ class UTILS():
       
     def work_sleep_manager(self, work_to, sleep_to):
         if not work_to or not sleep_to:
-            return False
+            return None
         current_time_utc = time.gmtime(time.time())
         current_hour = current_time_utc.tm_hour
         if not (sleep_to <= current_hour < work_to):
             current_time_utc = time.gmtime(time.time())
             desired_time_utc = time.struct_time((current_time_utc.tm_year, current_time_utc.tm_mon, current_time_utc.tm_mday + 1, sleep_to, 0, 0, 0, 0, 0))
             time_diff_seconds = time.mktime(desired_time_utc) - time.mktime(current_time_utc)
-            print("It is time to rest! Let's go to bed!")            
-            time.sleep(time_diff_seconds)
-            return True
-        return False
+            print("It is time to rest! Let's go to bed!")
+            return time_diff_seconds
+        return None
 
     def get_start_of_day(self):
         now = datetime.datetime.now()
