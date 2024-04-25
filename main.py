@@ -276,18 +276,24 @@ class MAIN_CONTROLLER(MANAGER):
 
     def main_func(self): 
         print(f'<<{self.market_place}>>')
-        self.last_message.text = self.connector_func(self.last_message, f"Server #Render#{self.symbol_list_el_position} <<{self.market_place}>>")
+        self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} <<{self.market_place}>>")
         show_counter = 0
+        first_req_flag = True
         if self.controls_mode == 'a':  
             from info_pars import ANNONCEMENT             
             while True:
                 start_data = []
-                set_item = {}
-                print('asdc')
+                set_item = {}                
                 if self.stop_flag:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Render#{self.symbol_list_el_position} was stoped!")
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
                     return
-                self.work_sleep_manager(self.work_to, self.sleep_to)
+                if self.work_sleep_manager(self.work_to, self.sleep_to):
+                    self.last_message.text = self.connector_func(self.last_message, "It is time to rest! Let's go to bed!")
+                else:
+                    if first_req_flag:
+                        first_req_flag = False
+                        self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
+
                 start_data = ANNONCEMENT().bitget_parser()
                 # print(start_data)
                 # log_file = total_log_instance.get_logs()
@@ -299,7 +305,7 @@ class MAIN_CONTROLLER(MANAGER):
                         self.last_message.text = self.connector_func(self.last_message, str(set_item))
                         show_counter = 0
                 else:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Render#{self.symbol_list_el_position} pause2...")
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
                     time.sleep(random.randrange(239, 299))
                     continue
                 if self.left_time_in_minutes_func(self.listing_time_ms) <= 12:
@@ -334,7 +340,7 @@ class MAIN_CONTROLLER(MANAGER):
                     time.sleep(30)
                     continue
                     # ////////////////////////////////////////////////////////////////////////////  
-                self.last_message.text = self.connector_func(self.last_message, f"Server #Render#{self.symbol_list_el_position} pause...")
+                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause...")
                 # print("pause...")
                 time.sleep(random.randrange(239, 299)) 
                 # time.sleep(random.randrange(9, 14)) 
