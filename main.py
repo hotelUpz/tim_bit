@@ -283,17 +283,18 @@ class MAIN_CONTROLLER(MANAGER):
             from info_pars import ANNONCEMENT             
             while True:
                 start_data = []
-                set_item = {}  
-                print()
+                set_item = {}                
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
                     return
-                if self.work_sleep_manager(self.work_to, self.sleep_to):
-                    self.last_message.text = self.connector_func(self.last_message, "It is time to rest! Let's go to bed!")
+                time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
+                if time_diff_seconds:
+                    self.last_message.text = self.connector_func(self.last_message, "It is time to rest! Let's go to bed!")        
+                    time.sleep(time_diff_seconds)
                 else:
                     if first_req_flag:
                         first_req_flag = False
-                        self.last_message.text = self.connector_func(self.last_message, "It is work time!")                       
+                        self.last_message.text = self.connector_func(self.last_message, "It is time to work!")                      
 
                 start_data = ANNONCEMENT().bitget_parser()
                 # print(start_data)
