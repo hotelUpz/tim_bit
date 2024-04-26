@@ -1,4 +1,5 @@
 import time
+import random
 from datetime import datetime as dttm
 import datetime
 import math
@@ -148,7 +149,7 @@ class UTILS():
                 unique_data[time_ms] = {
                     "symbol_list": item["symbol_list"],
                     "delay_time_ms": "",
-                    "t100_mode_pause": 1.6,
+                    "t100_mode_pause": random.randrange(12, 22)/ 10,
                     "listing_time_ms": time_ms,
                     "listing_time": item["listing_time"]
                 }
