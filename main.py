@@ -294,7 +294,7 @@ class MAIN_CONTROLLER(MANAGER):
                 else:
                     if first_req_flag:
                         first_req_flag = False
-                        self.last_message.text = self.connector_func(self.last_message, "It is time to work!")                      
+                        self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
 
                 start_data = ANNONCEMENT().bitget_parser()
                 # print(start_data)
