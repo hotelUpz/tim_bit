@@ -287,6 +287,7 @@ class MAIN_CONTROLLER(MANAGER):
                 set_item = {}                
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
+                    self.run_flag = False
                     return
                 time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
                 if time_diff_seconds:
@@ -353,7 +354,7 @@ class MAIN_CONTROLLER(MANAGER):
 
 class TG_MANAGER(MAIN_CONTROLLER):
     def __init__(self):
-        super().__init__() 
+        super().__init__()
         
     def run(self): 
         try: 
@@ -382,9 +383,10 @@ class TG_MANAGER(MAIN_CONTROLLER):
 
                     if value_token == self.seq_control_token and not self.block_acess_flag:
                         self.seq_control_flag = True 
+                        self.start_flag = False
+                        self.stop_flag = False
                         # ////////////////////////////////////////////////////////////////////
-                        try:
-                            self.stop_flag = False                           
+                        try:                                                       
                             response_message = 'God bless you Nik!'
                             # print(response_message) 
                             self.bot.send_message(message.chat.id, response_message, reply_markup=self.menu_markup)
@@ -392,17 +394,13 @@ class TG_MANAGER(MAIN_CONTROLLER):
                             if self.run_flag:
                                 message.text = self.connector_func(message, "Bot is run at current moment. Please stop bot firstable than try again...")
                             else:
-                                self.default_trade_vars()
-                                self.default_tg_vars()
+                                self.default_trade_vars()                                
                                 self.main_func()  
                         except Exception as ex:
                             print(ex) 
-                        # ////////////////////////////////////////////////////////////////////    
-                        self.start_flag = False
+                        # ////////////////////////////////////////////////////////////////////                       
 
-                    elif value_token != self.seq_control_token and not self.block_acess_flag:
-                        self.dont_seq_control = True
-        
+                    elif value_token != self.seq_control_token and not self.block_acess_flag:                               
                         self.block_acess_counter += 1
                         if self.block_acess_counter >= 3:
                             self.block_acess_flag = True
@@ -412,9 +410,6 @@ class TG_MANAGER(MAIN_CONTROLLER):
                         else:
                             response_message = "Please put a valid token!"
                             message.text = self.connector_func(message, response_message)
-
-                    else:
-                        print('something else...')
                 except Exception as ex:
                     print(ex)        
 
@@ -426,7 +421,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
             @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
             def handle_stop_redirect(message):
                 self.stop_redirect_flag = False
-                if message.text.strip().upper() == 'Y':
+                if message.text.strip().upper() == 'Y':                    
                     self.stop_flag = True 
                     self.bot.send_message(message.chat.id, "Please waiting...")                   
                 else:
