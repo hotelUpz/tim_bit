@@ -287,10 +287,11 @@ class TG_MANAGER(MAIN_CONTROLLER):
         except Exception as ex: 
             print(ex)
 
-if __name__=="__main__":    
-    print('Please go to the Telegram bot interface!')     
-    bot = TG_MANAGER()   
-    bot.run()
+if __name__=="__main__": 
+    print('Server2 is refactoring')   
+    # print('Please go to the Telegram bot interface!')     
+    # bot = TG_MANAGER()   
+    # bot.run()
 
 # git add . 
 # git commit -m "betta15"
