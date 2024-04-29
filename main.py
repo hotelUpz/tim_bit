@@ -413,10 +413,13 @@ class TG_MANAGER(MAIN_CONTROLLER):
                 except Exception as ex:
                     print(ex)        
 
-            @self.bot.message_handler(func=lambda message: message.text == 'STOP' and self.seq_control_flag and not self.block_acess_flag)             
+            @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
             def handle_stop(message):
-                self.bot.send_message(message.chat.id, "Are you sure you want to stop the program? (y/n)")
-                self.stop_redirect_flag = True
+                if self.seq_control_flag and not self.block_acess_flag:
+                    self.bot.send_message(message.chat.id, "Are you sure you want to stop the program? (y/n)")
+                    self.stop_redirect_flag = True
+                else:
+                    self.bot.send_message(message.chat.id, "Please enter START for verification")
 
             @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
             def handle_stop_redirect(message):
@@ -427,13 +430,16 @@ class TG_MANAGER(MAIN_CONTROLLER):
                 else:
                     self.bot.send_message(message.chat.id, "Program was not stopped.")  
 
-            @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS' and self.seq_control_flag and not self.block_acess_flag)             
+            @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
             def handle_settings(message):
-                try:
-                    message.text = self.connector_func(message, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
-                    self.settings_redirect_flag = True
-                except Exception as ex:
-                    print(ex)
+                if self.seq_control_flag and not self.block_acess_flag:
+                    try:
+                        message.text = self.connector_func(message, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
+                        self.settings_redirect_flag = True
+                    except Exception as ex:
+                        print(ex)
+                else:
+                    self.bot.send_message(message.chat.id, "Please enter START for verification")               
 
             @self.bot.message_handler(func=lambda message: self.settings_redirect_flag)             
             def handle_settings_redirect(message):
