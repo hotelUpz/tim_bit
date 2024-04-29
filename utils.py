@@ -98,7 +98,7 @@ class UTILS():
         # ////////////////////////////////////////////////////////////////////////////////
     def date_of_the_month(self):        
         current_time = time.time()        
-        datetime_object = datetime.fromtimestamp(current_time)       
+        datetime_object = dttm.fromtimestamp(current_time)       
         formatted_time = datetime_object.strftime('%d')
         return int(formatted_time) 
     
