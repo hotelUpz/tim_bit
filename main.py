@@ -54,7 +54,7 @@ class TEMPLATES(TG_ASSISTENT):
         response['status'] = 'filled'                           
         self.response_data_list.append(response)                   
         if response['msg'] == 'success': 
-            print('buy success!')
+            # print('buy success!')
             self.last_message.text = self.connector_func(self.last_message, 'buy success!')
             self.response_success_list.append(response)
 
@@ -68,10 +68,10 @@ class TEMPLATES(TG_ASSISTENT):
         response['status'] = 'filled' 
         self.response_data_list.append(response)   
         if response['msg'] == 'success':   
-            print('sell success!')   
+            # print('sell success!')   
             self.last_message.text = self.connector_func(self.last_message, 'sell success!') 
         else:                
-            print(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order") 
+            # print(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order") 
             self.last_message.text = self.connector_func(self.last_message, f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
                                          
     @log_exceptions_decorator        
@@ -102,10 +102,11 @@ class TEMPLATES(TG_ASSISTENT):
             real_buy_price = decimal.Decimal(str(item_copy['real_price']))
             real_buy_price = format(real_buy_price, 'f')
             self.last_message.text = self.connector_func(self.last_message, f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}" + '\n\n' + f"buy_price {item_copy['symbol']}: {real_buy_price}")
-            print(f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}")
-            print(f"buy_price {item_copy['symbol']}: {real_buy_price}")  
+            # print(f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}")
+            # print(f"buy_price {item_copy['symbol']}: {real_buy_price}")  
         else:
-            print(f"response_data['qnt_to_sell_start'] == 0") 
+            self.last_message.text = self.connector_func(self.last_message, "response_data['qnt_to_sell_start'] == 0")
+            # print(f"response_data['qnt_to_sell_start'] == 0") 
 
 class MANAGER(TEMPLATES):
     def __init__(self) -> None:
@@ -117,26 +118,23 @@ class MANAGER(TEMPLATES):
         self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
         self.response_data_list, self.response_success_list = [], [] 
         schedule_time_ms = self.listing_time_ms - 4000
-        time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)             
-        if not self.threads_flag:     
-            buy_time_ms = self.listing_time_ms - self.delay_time_ms  
-            try:              
-                symbol = set_item["symbol_list"][self.symbol_list_el_position]  
-            except Exception as ex:
-                print(ex) 
-                symbol = set_item["symbol_list"][0]               
-            self.send_fake_request(self.symbol_fake) 
-            time.sleep((buy_time_ms - int(time.time()*1000))/ 1000) 
-            if self.pre_start_pause != 0:
-                pre_start_increment = 0 if self.delay_time_ms == 0 else self.delay_time_ms/1000
-                time.sleep(self.pre_start_pause + pre_start_increment)                  
-            self.buy_market_temp(symbol)  
-            
+        time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)  
+        buy_time_ms = self.listing_time_ms - self.delay_time_ms
+        try:              
+            symbol = set_item["symbol_list"][self.symbol_list_el_position]  
+        except Exception as ex:
+            # print(ex)
+            if self.trade_duble_flag:
+                symbol = set_item["symbol_list"][0]  
+            else:
+                return             
+        self.send_fake_request(self.symbol_fake) 
+        time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)             
+        self.buy_market_temp(symbol)            
 
     @log_exceptions_decorator   
     def sell_manager(self, set_item):
-        self.extract_data_temp(self.response_success_list[0]) 
-         
+        self.extract_data_temp(self.response_success_list[0])        
         # ///////////////////////////////////////////////////////
         if self.sell_mode == 't100':
             time.sleep(set_item["t100_mode_pause"])                    
@@ -155,7 +153,7 @@ class MANAGER(TEMPLATES):
             self.sell_manager(set_item)        
         else:
             self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders...')
-            print('Some problems with placing buy market orders...')             
+            # print('Some problems with placing buy market orders...')             
         return True
         # ////////////////////////////////////////////////////////  
                         
@@ -164,82 +162,68 @@ class MAIN_CONTROLLER(MANAGER):
         super().__init__()
 
     def main_func(self): 
-        print(f'<<{self.market_place}>>')
-        self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} <<{self.market_place}>>")
+        from db_coordinator import DB_COOORDINATOR
+        db_coordinator = DB_COOORDINATOR() 
+        self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
         show_counter = 0
         first_req_flag = True
-        if self.controls_mode == 'a':  
-            from db_coordinator import DB_COOORDINATOR
-            db_coordinator = DB_COOORDINATOR() 
-          
-            while True:
-                start_data = []
-                set_item = {}                
-                if self.stop_flag:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
-                    return
-                time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
-                if time_diff_seconds:
-                    self.last_message.text = self.connector_func(self.last_message, "It is time to rest! Let's go to bed!")        
-                    time.sleep(time_diff_seconds)
-                else:
-                    if first_req_flag:
-                        first_req_flag = False
-                        self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
 
-                start_data = db_coordinator.fetch_settings_data()
-                # print(start_data)
-                # log_file = total_log_instance.get_logs()
-                # self.bot.send_document(self.last_message.chat.id, log_file) 
-                if start_data:            
-                    set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
-                    show_counter += 1
-                    if show_counter == 5:
-                        self.last_message.text = self.connector_func(self.last_message, str(set_item))
-                        show_counter = 0
-                else:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
-                    time.sleep(random.randrange(239, 299))
-                    continue
-                if self.left_time_in_minutes_func(self.listing_time_ms) <= 12:
-                    if self.calibrator_flag:
-                        self.delay_manager()
-                    # //////////////////////////////////////////////////////////////////////
-                    set_item["delay_time_ms"] = self.delay_time_ms
-                    self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
-                    # //////////////////////////////////////////////////////////////////////
-                    self.trading_little_temp(set_item) # main func
-                    # //////////////////////////////////////////////////////////////////////                            
-                    try:
-                        cur_time = int(time.time()* 1000)
-                        result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
-                        self.last_message.text = self.connector_func(self.last_message, result_time)
-                        # print(result_time)  
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('START', cur_time, [set_item])  
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)   
-                        json_file = total_log_instance.get_json_data()                
-                        self.bot.send_document(self.last_message.chat.id, json_file)   
-                        log_file = total_log_instance.get_logs()
-                        self.bot.send_document(self.last_message.chat.id, log_file)       
-                    except Exception as ex:
-                        # message.text = self.connector_func(message, ex)
-                        print(ex)
+        while True:
+            set_item = {}                
+            if self.stop_flag:
+                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} was stoped!")
+                return
+            time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
+            if time_diff_seconds:
+                self.last_message.text = self.connector_func(self.last_message, "It is time to rest! Let's go to bed!")        
+                time.sleep(time_diff_seconds)
+                continue
+            else:
+                if first_req_flag:
+                    first_req_flag = False
+                    self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
+            try:
+                set_item, self.listing_time_ms = db_coordinator.fetch_settings_data()
+            except Exception as ex:
+                print(ex)     
 
-                    print("pause 30 sec...")   
-                    time.sleep(30)
-                    continue
-                    # ////////////////////////////////////////////////////////////////////////////  
-                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause...")
-                # print("pause...")
-                time.sleep(random.randrange(239, 299)) 
-                # time.sleep(random.randrange(9, 14)) 
-        # ////////////////////////////////////////////////////////////   
-        # print(self.SOLI_DEO_GLORIA)
-        self.last_message.text = self.connector_func(self.last_message, self.SOLI_DEO_GLORIA)
+            if set_item and self.listing_time_ms:            
+                show_counter += 1
+                if show_counter == 5:
+                    self.last_message.text = self.connector_func(self.last_message, str(set_item))
+                    show_counter = 0
+            else:
+                time.sleep(random.randrange(59, 69))
+                continue
+            if self.left_time_in_minutes_func(self.listing_time_ms) <= 20:
+                # //////////////////////////////////////////////////////////////////////
+                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{str(set_item)}") 
+                # //////////////////////////////////////////////////////////////////////
+                set_item['delay_time_ms'] = set_item.get('delay_time_ms') + (self.incriment_time_ms*2)
+                # //////////////////////////////////////////////////////////////////////
+                self.trading_little_temp(set_item) # main func
+                # //////////////////////////////////////////////////////////////////////                            
+                try:
+                    cur_time = int(time.time()* 1000)
+                    result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
+                    self.last_message.text = self.connector_func(self.last_message, result_time)
+                    cur_time = int(time.time()* 1000)
+                    total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)   
+                    json_file = total_log_instance.get_json_data()                
+                    self.bot.send_document(self.last_message.chat.id, json_file)   
+                    log_file = total_log_instance.get_logs()
+                    self.bot.send_document(self.last_message.chat.id, log_file)       
+                except Exception as ex:
+                    # message.text = self.connector_func(message, ex)
+                    print(ex)
+
+                # print("pause 30 sec...")   
+                time.sleep(30)
+                continue
+                # ////////////////////////////////////////////////////////////////////////////
+            # print("pause...")
+            time.sleep(random.randrange(59, 69)) 
+            # time.sleep(random.randrange(9, 14)) 
 
 class TG_MANAGER(MAIN_CONTROLLER):
     def __init__(self):

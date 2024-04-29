@@ -7,9 +7,6 @@ import requests
 from urllib.parse import urlencode
 from parametrs import PARAMS
 from utils import log_exceptions_decorator
-# import logging, os, inspect
-# logging.basicConfig(filename='log.log', level=logging.INFO)
-# current_file = os.path.basename(__file__)
 
 class BITGET_API(PARAMS):
     def __init__(self):
@@ -28,7 +25,7 @@ class BITGET_API(PARAMS):
         
     def get_post_params(self, symbol, side, size, target_price, market_type):
         # print(symbol, side, size, target_price, market_type)
-        timestamp = str(self.listing_time_ms + self.incriment_time_ms) if self.delay_flag and side == 'BUY' else str(int(time.time() * 1000))
+        timestamp = str(self.listing_time_ms + self.incriment_time_ms) if side == 'BUY' else str(int(time.time() * 1000))
         # timestamp = str(int(time.time() * 1000))
         payload = {
             "symbol": symbol,
@@ -90,24 +87,4 @@ class BITGET_API(PARAMS):
             "locale": "en-US"
         }
         return self.session.get(self.base_url + request_path, headers=headers)      
-
-    @log_exceptions_decorator
-    def get_balance(self, symbol):
-
-        timestamp = str(int(time.time() * 1000)) 
-        params = {
-            "coin": symbol
-        }     
-        request_path = '/api/v2/spot/account/bills' + '?' + urlencode(sorted(params.items()))
-        body = ""
-        message = self.pre_hash(timestamp, "GET", request_path, body)
-        signature = self.sign_order_data_bitget(message, self.api_secret)
-        headers = {
-            "ACCESS-KEY": self.api_key,
-            "ACCESS-SIGN": signature,
-            "ACCESS-TIMESTAMP": timestamp,
-            "ACCESS-PASSPHRASE": self.api_passphrase,
-            "Content-Type": "application/json",
-            "locale": "en-US"
-        }
-        return requests.get(self.base_url + request_path, headers=headers)        
+      

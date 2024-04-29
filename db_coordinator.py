@@ -5,4 +5,5 @@ class DB_COOORDINATOR(UTILS):
         super().__init__() 
 
     def fetch_settings_data(self):
-        pass
+        set_item, self_listing_time_ms = 1,1
+        return set_item, self_listing_time_ms
