@@ -26,11 +26,11 @@ class PARAMS():
         self.symbol_list_el_position = 0 #fj,bh
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
-        self.depo = 10
+        self.depo = 20
         self.sell_mode = 't100' # t100 -- sell for all qty by time
         self.delay_flag = True # True  
-        self.delay_default_time_ms = 90   
-        self.delay_time_ms = 90
+        self.delay_default_time_ms = 93   
+        self.delay_time_ms = 93
         self.listing_time_ms = None
         self.incriment_time_ms = 1
         self.pre_start_pause = 0 
