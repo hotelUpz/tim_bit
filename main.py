@@ -372,7 +372,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
             def handle_start_redirect(message):                
                 try:
                     cur_day_date = None                    
-                    self.value_token = message.text.strip()
+                    value_token = message.text.strip()
                     cur_day_date = self.date_of_the_month()
 
                     if self.start_day_date != cur_day_date:
@@ -380,7 +380,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                         self.block_acess_flag = False 
                         self.block_acess_counter = 0
 
-                    if self.value_token == self.seq_control_token and not self.block_acess_flag:
+                    if value_token == self.seq_control_token and not self.block_acess_flag:
                         self.seq_control_flag = True 
                         # ////////////////////////////////////////////////////////////////////
                         try:
@@ -400,7 +400,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                         # ////////////////////////////////////////////////////////////////////    
                         self.start_flag = False
 
-                    elif self.value_token != self.seq_control_token and not self.block_acess_flag:
+                    elif value_token != self.seq_control_token and not self.block_acess_flag:
                         self.dont_seq_control = True
         
                         self.block_acess_counter += 1

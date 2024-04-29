@@ -67,4 +67,4 @@ class PARAMS():
         self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "") 
         self.api_passphrase = os.getenv("API_PASSPHRASE", "")
         self.tg_api_token = os.getenv("TG_TOKEN", "")
-        self.value_token = os.getenv("ACESS_TOKEN", "")
+        self.seq_control_token = os.getenv("ACESS_TOKEN", "")
