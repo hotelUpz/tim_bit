@@ -96,6 +96,11 @@ class UTILS():
         start_of_day = datetime.datetime(now.year, now.month, now.day) - datetime.timedelta(days=4)
         return int(start_of_day.timestamp() * 1000)
         # ////////////////////////////////////////////////////////////////////////////////
+    def date_of_the_month(self):        
+        current_time = time.time()        
+        datetime_object = datetime.fromtimestamp(current_time)       
+        formatted_time = datetime_object.strftime('%d')
+        return int(formatted_time) 
     
     @log_exceptions_decorator
     def from_string_to_date_time(self, date_time_str):

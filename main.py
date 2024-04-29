@@ -275,6 +275,7 @@ class MAIN_CONTROLLER(MANAGER):
         super().__init__()
 
     def main_func(self): 
+        self.run_flag = True
         print(f'<<{self.market_place}>>')
         self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} <<{self.market_place}>>")
         show_counter = 0
@@ -352,26 +353,72 @@ class MAIN_CONTROLLER(MANAGER):
 
 class TG_MANAGER(MAIN_CONTROLLER):
     def __init__(self):
-        super().__init__()  
-        self.stop_redirect_flag = False  
-        self.settings_redirect_flag = False    
-
-    def run(self):  
-        try:          
+        super().__init__() 
+        
+    def run(self): 
+        try: 
             @self.bot.message_handler(commands=['start'])
             @self.bot.message_handler(func=lambda message: message.text == 'START')
-            def handle_start_input(message): 
+            def handle_start_input(message):
+                if self.block_acess_flag:
+                    response_message = "Don't bullshit!"
+                    message.text = self.connector_func(message, response_message)
+                else:   
+                    self.start_day_date = self.date_of_the_month()          
+                    self.bot.send_message(message.chat.id, "Please enter a secret token...", reply_markup=self.menu_markup)                   
+                    self.start_flag = True
+
+            @self.bot.message_handler(func=lambda message: self.start_flag)
+            def handle_start_redirect(message):                
                 try:
-                    self.stop_flag = False                           
-                    response_message = 'God bless you Nik!'
-                    print(response_message) 
-                    self.bot.send_message(message.chat.id, response_message, reply_markup=self.menu_markup)
-                    self.last_message = message
-                    self.main_func()  
+                    cur_day_date = None                    
+                    self.value_token = message.text.strip()
+                    cur_day_date = self.date_of_the_month()
+
+                    if self.start_day_date != cur_day_date:
+                        self.start_day_date = cur_day_date
+                        self.block_acess_flag = False 
+                        self.block_acess_counter = 0
+
+                    if self.value_token == self.seq_control_token and not self.block_acess_flag:
+                        self.seq_control_flag = True 
+                        # ////////////////////////////////////////////////////////////////////
+                        try:
+                            self.stop_flag = False                           
+                            response_message = 'God bless you Nik!'
+                            # print(response_message) 
+                            self.bot.send_message(message.chat.id, response_message, reply_markup=self.menu_markup)
+                            self.last_message = message
+                            if self.run_flag:
+                                message.text = self.connector_func(message, "Bot is run at current moment. Please stop bot firstable than try again...")
+                            else:
+                                self.default_trade_vars()
+                                self.default_tg_vars()
+                                self.main_func()  
+                        except Exception as ex:
+                            print(ex) 
+                        # ////////////////////////////////////////////////////////////////////    
+                        self.start_flag = False
+
+                    elif self.value_token != self.seq_control_token and not self.block_acess_flag:
+                        self.dont_seq_control = True
+        
+                        self.block_acess_counter += 1
+                        if self.block_acess_counter >= 3:
+                            self.block_acess_flag = True
+                            self.start_flag = False 
+                            response_message = "The number of attempts has been exhausted. Please try again later..."
+                            message.text = self.connector_func(message, response_message)
+                        else:
+                            response_message = "Please put a valid token!"
+                            message.text = self.connector_func(message, response_message)
+
+                    else:
+                        print('something else...')
                 except Exception as ex:
-                    print(ex)              
-                return 
-            @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
+                    print(ex)        
+
+            @self.bot.message_handler(func=lambda message: message.text == 'STOP' and self.seq_control_flag and not self.block_acess_flag)             
             def handle_stop(message):
                 self.bot.send_message(message.chat.id, "Are you sure you want to stop the program? (y/n)")
                 self.stop_redirect_flag = True
@@ -385,7 +432,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                 else:
                     self.bot.send_message(message.chat.id, "Program was not stopped.")  
 
-            @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
+            @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS' and self.seq_control_flag and not self.block_acess_flag)             
             def handle_settings(message):
                 try:
                     message.text = self.connector_func(message, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
