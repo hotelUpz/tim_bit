@@ -280,7 +280,9 @@ class MAIN_CONTROLLER(MANAGER):
         show_counter = 0
         first_req_flag = True
         if self.controls_mode == 'a':  
-            from info_pars import ANNONCEMENT             
+            from db_coordinator import DB_COOORDINATOR
+            db_coordinator = DB_COOORDINATOR() 
+          
             while True:
                 start_data = []
                 set_item = {}                
@@ -296,7 +298,7 @@ class MAIN_CONTROLLER(MANAGER):
                         first_req_flag = False
                         self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
 
-                start_data = ANNONCEMENT().bitget_parser()
+                start_data = db_coordinator.fetch_settings_data()
                 # print(start_data)
                 # log_file = total_log_instance.get_logs()
                 # self.bot.send_document(self.last_message.chat.id, log_file) 

@@ -16,7 +16,7 @@ class PARAMS():
         self.default_test_symbol = 'ARBUSDT'
         self.response_data_list, self.response_success_list = [], []
         self.threads_flag = False
-        self.max_symbol_list_slice = 2       
+        self.max_symbol_list_slice = 4       
         self.symbol_list_el_position = 1 #xfjbnlj
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
