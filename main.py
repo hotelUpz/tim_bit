@@ -284,7 +284,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
 
             # self.bot.polling()
             self.bot.infinity_polling()
-        except Exception as ex:
+        except Exception as ex: 
             print(ex)
 
 if __name__=="__main__":    
