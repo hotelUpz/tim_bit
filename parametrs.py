@@ -5,7 +5,7 @@ load_dotenv()
 class PARAMS():
     def __init__(self) -> None:
         self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!'  
-        self.railway_server_number = 2            
+        self.railway_server_number = 1            
         self.stop_flag = False
         self.work_to = 17 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
