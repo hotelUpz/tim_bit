@@ -3,6 +3,7 @@ from datetime import datetime as dttm
 import datetime
 import math
 import re
+import random
 from log import log_exceptions_decorator
 
 def server_to_utc_difference_counter():
@@ -40,8 +41,9 @@ class UTILS():
         time = datetime.datetime.utcfromtimestamp(seconds)        
         return time.strftime('%Y-%m-%d %H:%M:%S')
       
-    def next_two_minutes_ms(self):
-        return ((int(time.time() * 1000) + 120000) // 60000) * 60000    
+    def next_one_minutes_ms(self):
+        # for one and half min round min:
+        return ((int(time.time() * 1000) + 90000) // 60000) * 60000
 
     def left_time_in_minutes_func(self, set_time):
         current_time_ms = int(time.time() * 1000)
@@ -152,16 +154,20 @@ class UTILS():
             if time_ms not in unique_data:
                 unique_data[time_ms] = {
                     "symbol_list": item["symbol_list"],
-                    "delay_time_ms": "",
-                    "t100_mode_pause": 1.6,
+                    "t100_mode_pause_server1": 1.6,
+                    "t100_mode_pause_server2": random.randrange(12,22)/ 10,
+                    "t100_mode_pause_server3": random.randrange(12,22)/ 10,
+                    "t100_mode_pause_server4": random.randrange(12,22)/ 10,
                     "listing_time_ms": time_ms,
                     "listing_time": item["listing_time"]
                 }
             else:                
                 new_item = {
                     "symbol_list": unique_data[time_ms]["symbol_list"] + item["symbol_list"],
-                    "delay_time_ms": unique_data[time_ms]["delay_time_ms"],
-                    "t100_mode_pause": unique_data[time_ms]["t100_mode_pause"],
+                    "t100_mode_pause_server1": unique_data[time_ms]["t100_mode_pause_server1"],
+                    "t100_mode_pause_server2": unique_data[time_ms]["t100_mode_pause_server2"],
+                    "t100_mode_pause_server3": unique_data[time_ms]["t100_mode_pause_server3"],
+                    "t100_mode_pause_server4": unique_data[time_ms]["t100_mode_pause_server4"],
                     "listing_time_ms": time_ms,
                     "listing_time": item["listing_time"]
                 }
@@ -170,12 +176,13 @@ class UTILS():
         return list(unique_data.values())      
 
     @log_exceptions_decorator
-    def params_gather(self, start_data, depo, delay_time_ms, default_params):         
-        set_list = sorted(self.set_list_formator(start_data), key=lambda x: x["listing_time_ms"], reverse=False) 
-        # print(set_list)
-        set_item = set_list[0]
-        self_listing_time_ms = set_item["listing_time_ms"]
-        set_item["delay_time_ms"] = delay_time_ms  
-        set_item["depo"] = depo              
-        set_item.update(default_params)
-        return set_item, self_listing_time_ms
+    def start_data_to_item(self, start_data):
+        set_list = sorted(self.set_list_formator(start_data), key=lambda x: x["listing_time_ms"], reverse=False)
+        try:
+            return set_list[0]
+        except Exception as ex:
+            print(ex)
+        return {}
+    
+
+# set_item.update(default_params)

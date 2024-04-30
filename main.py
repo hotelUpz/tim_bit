@@ -48,7 +48,7 @@ class TEMPLATES(TG_ASSISTENT):
     @log_exceptions_decorator
     def buy_market_temp(self, symbol):  
         # int('dfjgfj,')   
-        response = self.place_market_order(symbol, 'BUY', self.depo)                
+        response = self.place_market_order(symbol, 'BUY', self.depo_test)                
         response = response.json() 
         response['symbol'] = symbol
         response['side'] = 'BUY'
@@ -74,160 +74,99 @@ class TEMPLATES(TG_ASSISTENT):
         else:                
             # print(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order") 
             self.last_message.text = self.connector_func(self.last_message, f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
-                                         
-    @log_exceptions_decorator        
-    def extract_data_temp(self, item):            
-        orderId = item['data']['orderId']           
-        response_data = self.get_order_data(orderId)   
-        response_data = response_data.json()                
-        response_data['done'] = False
-        response_data['real_price'] = float(response_data['data'][0]['quoteVolume'])/float(response_data['data'][0]['baseVolume'])                              
-        response_data['qnt_to_sell_start'] = 0
-        fills = response_data["data"]
-        for fill in fills:
-            try:
-                response_data['qnt_to_sell_start'] += float(fill["baseVolume"])
-            except:   
-                pass   
-        if response_data['qnt_to_sell_start'] > 10:   
-            response_data['qnt_to_sell_start'] = int(response_data['qnt_to_sell_start']* 0.98)
-        else:
-            response_data['qnt_to_sell_start'] = round(response_data['qnt_to_sell_start']* 0.98, 2)
-        if response_data['qnt_to_sell_start'] !=0:
-            response_data['done'] = True
-            item_copy = item.copy()
-            item_copy.update(response_data)        
-            self.response_data_list.append(item_copy)      
-            de_qnt_to_sell_start = decimal.Decimal(str(item_copy['qnt_to_sell_start']))
-            formatted_qnt_to_sell_start = format(de_qnt_to_sell_start, 'f')
-            real_buy_price = decimal.Decimal(str(item_copy['real_price']))
-            real_buy_price = format(real_buy_price, 'f')
-            self.last_message.text = self.connector_func(self.last_message, f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}" + '\n\n' + f"buy_price {item_copy['symbol']}: {real_buy_price}")
-            # print(f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}")
-            # print(f"buy_price {item_copy['symbol']}: {real_buy_price}")  
-        else:
-            self.last_message.text = self.connector_func(self.last_message, f"response_data['qnt_to_sell_start'] == 0")
-            # print(f"response_data['qnt_to_sell_start'] == 0") 
 
 class MANAGER(TEMPLATES):
     def __init__(self) -> None:
         super().__init__()
 
     def delay_manager(self):
-        def delay_calibrator(set_item):
-            self.max_symbol_list_slice = 1
+        def delay_calibrator(test_set_item):            
             good_test_flag = False     
             good_test_counter = 0
-            retry_limit_counter = 6 
-            # self.delay_time_ms = self.delay_default_time_ms           
+            retry_limit_counter = 5       
 
             for i in range(retry_limit_counter):   
                 try:         
                     if (good_test_counter == 2):                                            
-                        return 1
+                        return True
                     elif not good_test_flag:
                         good_test_counter = 0
-                    
-                    self.last_message.text = self.connector_func(self.last_message, f"retry_counter_: {i}")
-                    print(f"retry_counter_: {i}")
-                    good_test_flag = False                  
-                    if not self.trading_little_temp(set_item):
-                        self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders on calibration step...' + '\n\n' + f"self.delay_time_ms: {self.delay_time_ms}")
+
+                    good_test_flag = False
+                    self.last_message.text = self.connector_func(self.last_message, f"retry_counter_: {i+1}")
+                    # print(f"retry_counter_: {i}")
+                                      
+                    if not self.trading_little_temp(test_set_item):
+                        self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders on calibration step...' + '\n\n' + f"self.common_delay_time_ms: {self.common_delay_time_ms}")
                         # print('Some problems with placing buy market orders on calibration step...')
-                        # print(f"self.delay_time_ms: {self.delay_time_ms}")
-                        self.listing_time_ms += 60000
+                        # print(f"self.common_delay_time_ms: {self.common_delay_time_ms}")
+                        self.listing_time_ms += 30000
                         time.sleep(0.1)
                         continue
                     result_time_data_time, result_time_ms = self.show_trade_time_for_calibrator(self.response_data_list)
                     self.last_message.text = self.connector_func(self.last_message, result_time_data_time)
                     # print(result_time_data_time)
-                    if -4 <= result_time_ms - self.listing_time_ms <= 20:
+                    if -5 <= result_time_ms - self.listing_time_ms <= 20:
                         good_test_flag = True
                         self.last_message.text = self.connector_func(self.last_message, f"good_test_flag: {str(good_test_flag)}")
-                        print(f"good_test_flag: {good_test_flag}")
+                        # print(f"good_test_flag: {good_test_flag}")
                         good_test_counter += 1
-                    elif result_time_ms - self.listing_time_ms < -4:
+                    elif result_time_ms - self.listing_time_ms < -5:
                         self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms < 4")
                         # print("self.listing_time_ms - result_time_ms < 4")
-                        self.delay_time_ms -= 7
+                        self.common_delay_time_ms -= 5
                     elif result_time_ms - self.listing_time_ms > 20:
                         self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms > 20")
                         # print("self.listing_time_ms - result_time_ms > 20")
-                        self.delay_time_ms += 7
+                        self.common_delay_time_ms += 5
                     
-                    self.last_message.text = self.connector_func(self.last_message, f"self.delay_time_ms: {self.delay_time_ms}")
-                    # print(f"self.delay_time_ms: {self.delay_time_ms}")
+                    self.last_message.text = self.connector_func(self.last_message, f"self.common_delay_time_ms: {self.common_delay_time_ms}")
+                    # print(f"self.common_delay_time_ms: {self.common_delay_time_ms}")
                     self.listing_time_ms += 30000
                     time.sleep(0.1)
                 except Exception as ex:
                     # print(f"main 117: {ex}")
                     self.last_message.text = self.connector_func(self.last_message, ex)
-                    return 0
-            return 1
-        
-        start_max_symbol_list_slice = self.max_symbol_list_slice
-        self.max_symbol_list_slice = 1
+                    return False
+            return True
         start_listing_time_ms = self.listing_time_ms
-        start_depo = self.depo
-        self.depo = 10
-        start_data = [
-            {
+        test_set_item = {
                 "symbol_list": [self.default_test_symbol],
-                "listing_time_ms": self.next_two_minutes_ms(),
-                "listing_time": ""                        
+                "listing_time_ms": self.next_one_minutes_ms()                    
             }
-        ]        
+                
         try:
-            delay_manager_return = False
-            set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
-            delay_manager_return = delay_calibrator(set_item)
+            delay_manager_return = False            
+            self.listing_time_ms = test_set_item['listing_time_ms']
+            delay_manager_return = delay_calibrator(test_set_item)
         except Exception as ex:
             print(ex)
-        self.max_symbol_list_slice = start_max_symbol_list_slice
-        self.depo = start_depo
-        self.listing_time_ms = start_listing_time_ms
         if not delay_manager_return:
             self.last_message.text = self.connector_func(self.last_message, "Some problems with calibration...")
             print("Some problems with calibration...")
+        self.listing_time_ms = start_listing_time_ms
         self.trades_garbage()
 
     @log_exceptions_decorator
-    def buy_manager(self, set_item):
-        # print("It is waiting time for buy!..")        
+    def buy_manager(self, set_item):      
         self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
         self.response_data_list, self.response_success_list = [], [] 
         schedule_time_ms = self.listing_time_ms - 4000
         time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)            
-        buy_time_ms = self.listing_time_ms - self.delay_time_ms  
+        buy_time_ms = self.listing_time_ms - self.common_delay_time_ms  
         try:              
-            symbol = set_item["symbol_list"][self.symbol_list_el_position]  
+            symbol = set_item["symbol_list"][0]  
         except Exception as ex:
             print(ex)             
         self.send_fake_request(self.symbol_fake) 
         time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)                
         self.buy_market_temp(symbol)            
 
-    @log_exceptions_decorator   
-    def sell_manager(self, set_item):
-        self.extract_data_temp(self.response_success_list[0]) 
-        # ///////////////////////////////////////////////////////
-        if self.sell_mode == 't100':
-            time.sleep(set_item["t100_mode_pause"])                    
-            if all(not item.get('done', False) for item in self.response_data_list):
-                self.last_message.text = self.connector_func(self.last_message, "Some problems with fetching trades data...")
-                # print("Some problems with fetching trades data...")
-            else:
-                for item in self.response_data_list:
-                    if item.get('done'):            
-                        self.sell_market_temp(item)
-                        break 
-
     def trading_little_temp(self, set_item):                                
         self.buy_manager(set_item)
-        if len(self.response_success_list) != 0:
-            self.sell_manager(set_item)        
-        else:
+        if len(self.response_success_list) == 0:
             self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders...')
+            return False
             # print('Some problems with placing buy market orders...')             
         return True
         # ////////////////////////////////////////////////////////
@@ -248,19 +187,29 @@ class MAIN_CONTROLLER(MANAGER):
     def main_func(self): 
         self.run_flag = True
         print(f'<<{self.market_place}>>')
-        self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} <<{self.market_place}>>")
+        self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
+        start_data = []
+        set_item = {}
         show_counter = 0
         first_req_flag = True
+        previous_set_item = {}
         if self.controls_mode == 'a':  
             from info_pars import ANNONCEMENT 
-            bg_parser = ANNONCEMENT()            
+            from db_coordinator import DB_COOORDINATOR
+            bg_parser = ANNONCEMENT()
+            dbb_coordinator = DB_COOORDINATOR()            
             while True:
+                previous_set_item = set_item
                 start_data = []
-                set_item = {}                
+                set_item = {} 
+                # ///////////////// stop logic ///////////////////////////  
                 if self.stop_flag:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} was stoped!")
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} was stoped!")
                     self.run_flag = False
                     return
+                # ///////////////// stop logic end /////////////////////////// 
+                # ///////////////// ************* /////////////////////////// 
+                # ///////////////// sleep logic //////////////////////////////  
                 time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
                 if time_diff_seconds:
                     self.last_message.text = self.connector_func(self.last_message, "It is time to rest! Let's go to bed!")        
@@ -269,37 +218,49 @@ class MAIN_CONTROLLER(MANAGER):
                     if first_req_flag:
                         first_req_flag = False
                         self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
-
+                # ///////////////// sleep logic end /////////////////////////////
+                # ///////////////// ***************** ///////////////////////////
+                # ///////////////// pars logic //////////////////////////////////
                 start_data = bg_parser.bitget_parser()
                 if start_data:            
-                    set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
+                    set_item = self.start_data_to_item(start_data) 
+                    try:
+                        if set_item.get('listing_time_ms', None) > previous_set_item.get('listing_time_ms', None):
+                            set_item = previous_set_item
+                    except:
+                        pass
+                    self.listing_time_ms = set_item.get('listing_time_ms', None)  
+                    # ///////////////// show set info logic /////////////////// 
                     show_counter += 1
-                    if show_counter == 5:
+                    if show_counter == 3:
                         self.last_message.text = self.connector_func(self.last_message, str(set_item))
                         show_counter = 0
                 else:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
-                    time.sleep(random.randrange(239, 299))
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause2...")
+                    # ///////////////// show set info logic end ///////////////////
+                    # time.sleep(random.randrange(239, 299)) 
+                    time.sleep(random.randrange(51, 61))
                     continue
-                if self.left_time_in_minutes_func(self.listing_time_ms) <= 14:
-                    if self.calibrator_flag:
-                        self.delay_manager()
-                    # //////////////////////////////////////////////////////////////////////
-                    set_item["delay_time_ms"] = self.delay_time_ms
-                    self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
-                    # //////////////////////////////////////////////////////////////////////
+                if self.listing_time_ms:
+                    if self.left_time_in_minutes_func(self.listing_time_ms) <= 111115:
+                        if self.calibrator_flag:
+                            self.delay_manager()
+                        # ////////////////////////////////////////////////////////////////////// 
+                        set_item.update(self.set_item)                   
+                        self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
+                        # //////////////////////////////////////////////////////////////////////
+                        dbb_coordinator_repl = dbb_coordinator.db_writer(set_item) 
+                        set_item = {}                   
+                        continue
+                        # ////////////////////////////////////////////////////////////////////////////  
+                else:
+                    self.last_message.text = self.connector_func(self.last_message, "oops,... self.listing_time_ms == None")
 
-
-                    print("pause 30 sec...")   
-                    time.sleep(30)
-                    continue
-                    # ////////////////////////////////////////////////////////////////////////////  
-                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause...")
+                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause...")
                 # print("pause...")
-                time.sleep(random.randrange(239, 299)) 
-                # time.sleep(random.randrange(9, 14)) 
-        # ////////////////////////////////////////////////////////////   
-        # print(self.SOLI_DEO_GLORIA)
+                # time.sleep(random.randrange(239, 299))
+                time.sleep(random.randrange(51, 61)) 
+        # ///////////////////////////////////////////////////////////////////////////////////
         self.last_message.text = self.connector_func(self.last_message, self.SOLI_DEO_GLORIA)
 
 class TG_MANAGER(MAIN_CONTROLLER):
@@ -379,12 +340,12 @@ class TG_MANAGER(MAIN_CONTROLLER):
                     self.bot.send_message(message.chat.id, "Please waiting...")                   
                 else:
                     self.bot.send_message(message.chat.id, "Program was not stopped.")  
-
+            # /////////////////////////////////////////////////////////////////////////////////////////////////////
             @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
             def handle_settings(message):
                 if self.seq_control_flag and not self.block_acess_flag:
                     try:
-                        message.text = self.connector_func(message, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
+                        message.text = self.connector_func(message, "Please enter a delay_ms, depo size and server_number using shift (e.g: 111 21 1)")
                         self.settings_redirect_flag = True
                     except Exception as ex:
                         print(ex)
@@ -395,15 +356,27 @@ class TG_MANAGER(MAIN_CONTROLLER):
             def handle_settings_redirect(message):
                 try:
                     self.settings_redirect_flag = False
+                    delay_time_ms = None
+                    depo = None
                     dataa = [x for x in message.text.strip().split(' ') if x.strip()]  
-                    self.delay_time_ms = int(float(dataa[0]))   
-                    self.depo = int(float(dataa[1]))
-                    if len(dataa) == 2:     
-                        message.text = self.connector_func(message, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
+                    delay_time_ms = int(float(dataa[0]))   
+                    depo = int(float(dataa[1]))
+                    server_index = int(float(dataa[2]))
+                    if len(dataa) == 3:
+                        for i in range(1, 5, 1):  
+                            if i == server_index: 
+                                self.set_item[f'depo_server{i}'] = depo
+                                self.set_item[f'delay_time_ms_server{i}'] = delay_time_ms 
+                            else:
+                                self.set_item[f'depo_server{i}'] = self.common_depo
+                                self.set_item[f'delay_time_ms_server{i}'] = self.common_delay_time_ms
+                        mess_temp = '\n'.join(list(f"{k}: {v}" for k, v in self.set_item.items()))
+                        message.text = self.connector_func(message, mess_temp)
                     else:
                         message.text = self.connector_func(message, f"Please enter a valid options...")
                 except Exception as ex:
                     print(ex)
+            # /////////////////////////////////////////////////////////////////////////////////////////////////////
 
             # self.bot.polling()
             self.bot.infinity_polling()
@@ -418,3 +391,6 @@ if __name__=="__main__":
 # git add . 
 # git commit -m "betta15"
 # git push -u origin master 
+
+        # set_item["delay_time_ms"] = delay_time_ms  
+        # set_item["depo"] = depo 

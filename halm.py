@@ -18,3 +18,15 @@
                     # except Exception as ex:
                     #     # message.text = self.connector_func(message, ex)
                     #     print(ex)
+
+
+
+
+
+    # def next_one_minutes_ms(self):
+    #     # for one and half min round min:
+    #     return ((int(time.time() * 1000) + 90000) // 60000) * 60000
+    #     # for one min:
+    #     # return ((int(time.time() * 1000) + 60000) // 60000) * 60000
+    #     # for two min:
+    #     # return ((int(time.time() * 1000) + 120000) // 60000) * 60000 
