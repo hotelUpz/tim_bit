@@ -11,6 +11,7 @@ from log import total_log_instance, log_exceptions_decorator
 class CONNECTOR_TG(BITGET_API, UTILS):
     def __init__(self):  
         super().__init__()  
+        # dfjvn
         self.bot = telebot.TeleBot(self.tg_api_token)
         self.menu_markup = self.create_menu() 
         self.last_message = None
