@@ -54,7 +54,7 @@ class TEMPLATES(TG_ASSISTENT):
         response['status'] = 'filled'                           
         self.response_data_list.append(response)                   
         if response['msg'] == 'success': 
-            print('buy success!')
+            # print('buy success!')
             self.last_message.text = self.connector_func(self.last_message, 'buy success!')
             self.response_success_list.append(response)
 
@@ -68,10 +68,10 @@ class TEMPLATES(TG_ASSISTENT):
         response['status'] = 'filled' 
         self.response_data_list.append(response)   
         if response['msg'] == 'success':   
-            print('sell success!')   
+            # print('sell success!')   
             self.last_message.text = self.connector_func(self.last_message, 'sell success!') 
         else:                
-            print(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order") 
+            # print(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order") 
             self.last_message.text = self.connector_func(self.last_message, f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
                                          
     @log_exceptions_decorator        
@@ -102,15 +102,11 @@ class TEMPLATES(TG_ASSISTENT):
             real_buy_price = decimal.Decimal(str(item_copy['real_price']))
             real_buy_price = format(real_buy_price, 'f')
             self.last_message.text = self.connector_func(self.last_message, f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}" + '\n\n' + f"buy_price {item_copy['symbol']}: {real_buy_price}")
-            print(f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}")
-            print(f"buy_price {item_copy['symbol']}: {real_buy_price}")  
+            # print(f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}")
+            # print(f"buy_price {item_copy['symbol']}: {real_buy_price}")  
         else:
-            print(f"response_data['qnt_to_sell_start'] == 0") 
-
-    @log_exceptions_decorator 
-    def threads_executor_temp(self, arg_list, functionN):
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(arg_list)) as executor:
-            executor.map(functionN, arg_list)
+            self.last_message.text = self.connector_func(self.last_message, f"response_data['qnt_to_sell_start'] == 0")
+            # print(f"response_data['qnt_to_sell_start'] == 0") 
 
 class MANAGER(TEMPLATES):
     def __init__(self) -> None:
@@ -136,14 +132,14 @@ class MANAGER(TEMPLATES):
                     good_test_flag = False                  
                     if not self.trading_little_temp(set_item):
                         self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders on calibration step...' + '\n\n' + f"self.delay_time_ms: {self.delay_time_ms}")
-                        print('Some problems with placing buy market orders on calibration step...')
-                        print(f"self.delay_time_ms: {self.delay_time_ms}")
+                        # print('Some problems with placing buy market orders on calibration step...')
+                        # print(f"self.delay_time_ms: {self.delay_time_ms}")
                         self.listing_time_ms += 60000
                         time.sleep(0.1)
                         continue
                     result_time_data_time, result_time_ms = self.show_trade_time_for_calibrator(self.response_data_list)
                     self.last_message.text = self.connector_func(self.last_message, result_time_data_time)
-                    print(result_time_data_time)
+                    # print(result_time_data_time)
                     if -4 <= result_time_ms - self.listing_time_ms <= 20:
                         good_test_flag = True
                         self.last_message.text = self.connector_func(self.last_message, f"good_test_flag: {str(good_test_flag)}")
@@ -151,15 +147,15 @@ class MANAGER(TEMPLATES):
                         good_test_counter += 1
                     elif result_time_ms - self.listing_time_ms < -4:
                         self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms < 4")
-                        print("self.listing_time_ms - result_time_ms < 4")
+                        # print("self.listing_time_ms - result_time_ms < 4")
                         self.delay_time_ms -= 7
                     elif result_time_ms - self.listing_time_ms > 20:
                         self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms > 20")
-                        print("self.listing_time_ms - result_time_ms > 20")
+                        # print("self.listing_time_ms - result_time_ms > 20")
                         self.delay_time_ms += 7
                     
                     self.last_message.text = self.connector_func(self.last_message, f"self.delay_time_ms: {self.delay_time_ms}")
-                    print(f"self.delay_time_ms: {self.delay_time_ms}")
+                    # print(f"self.delay_time_ms: {self.delay_time_ms}")
                     self.listing_time_ms += 30000
                     time.sleep(0.1)
                 except Exception as ex:
@@ -186,7 +182,6 @@ class MANAGER(TEMPLATES):
             delay_manager_return = delay_calibrator(set_item)
         except Exception as ex:
             print(ex)
-        # self.threads_flag = start_threads_flag
         self.max_symbol_list_slice = start_max_symbol_list_slice
         self.depo = start_depo
         self.listing_time_ms = start_listing_time_ms
@@ -197,59 +192,34 @@ class MANAGER(TEMPLATES):
 
     @log_exceptions_decorator
     def buy_manager(self, set_item):
-        print("It is waiting time for buy!..")        
+        # print("It is waiting time for buy!..")        
         self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
         self.response_data_list, self.response_success_list = [], [] 
         schedule_time_ms = self.listing_time_ms - 4000
-        time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)             
-        if not self.threads_flag:     
-            buy_time_ms = self.listing_time_ms - self.delay_time_ms  
-            try:              
-                symbol = set_item["symbol_list"][self.symbol_list_el_position]  
-            except Exception as ex:
-                print(ex) 
-                symbol = set_item["symbol_list"][0]               
-            self.send_fake_request(self.symbol_fake) 
-            time.sleep((buy_time_ms - int(time.time()*1000))/ 1000) 
-            if self.pre_start_pause != 0:
-                pre_start_increment = 0 if self.delay_time_ms == 0 else self.delay_time_ms/1000
-                time.sleep(self.pre_start_pause + pre_start_increment)                  
-            self.buy_market_temp(symbol)  
-        else:
-            set_item["symbol_list"] = set_item["symbol_list"][:self.max_symbol_list_slice]
-            delay_upgrated = 0 if self.delay_time_ms == 0 else self.delay_time_ms + ((len(set_item["symbol_list"])-1)*119)            
-            buy_time_ms = self.listing_time_ms - delay_upgrated if delay_upgrated != 0 else self.listing_time_ms
-            symbol_list_for_fake_requests = [self.symbol_fake for _ in range(len(set_item["symbol_list"]))]
-            self.threads_executor_temp(symbol_list_for_fake_requests, self.send_fake_request)
-            time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)  
-            if self.pre_start_pause != 0:
-                pre_start_increment = 0 if delay_upgrated == 0 else delay_upgrated/1000
-                time.sleep(self.pre_start_pause + pre_start_increment)               
-            self.threads_executor_temp(set_item["symbol_list"], self.buy_market_temp)               
+        time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)            
+        buy_time_ms = self.listing_time_ms - self.delay_time_ms  
+        try:              
+            symbol = set_item["symbol_list"][self.symbol_list_el_position]  
+        except Exception as ex:
+            print(ex)             
+        self.send_fake_request(self.symbol_fake) 
+        time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)                
+        self.buy_market_temp(symbol)            
 
     @log_exceptions_decorator   
     def sell_manager(self, set_item):
-        if not self.threads_flag:
-            self.extract_data_temp(self.response_success_list[0]) 
-        else:                    
-            self.threads_executor_temp(self.response_success_list, self.extract_data_temp)             
+        self.extract_data_temp(self.response_success_list[0]) 
         # ///////////////////////////////////////////////////////
         if self.sell_mode == 't100':
             time.sleep(set_item["t100_mode_pause"])                    
-            worker_list = []
             if all(not item.get('done', False) for item in self.response_data_list):
                 self.last_message.text = self.connector_func(self.last_message, "Some problems with fetching trades data...")
-                print("Some problems with fetching trades data...")
+                # print("Some problems with fetching trades data...")
             else:
                 for item in self.response_data_list:
-                    if item.get('done'):                            
-                        worker_list.append(item)  
-                        if not self.threads_flag:                     
-                            self.sell_market_temp(item)
-                            break 
-
-                if self.threads_flag:
-                    self.threads_executor_temp(worker_list, self.sell_market_temp)
+                    if item.get('done'):            
+                        self.sell_market_temp(item)
+                        break 
 
     def trading_little_temp(self, set_item):                                
         self.buy_manager(set_item)
@@ -257,7 +227,7 @@ class MANAGER(TEMPLATES):
             self.sell_manager(set_item)        
         else:
             self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders...')
-            print('Some problems with placing buy market orders...')             
+            # print('Some problems with placing buy market orders...')             
         return True
         # ////////////////////////////////////////////////////////
     @log_exceptions_decorator 
@@ -299,9 +269,6 @@ class MAIN_CONTROLLER(MANAGER):
                         self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
 
                 start_data = ANNONCEMENT().bitget_parser()
-                # print(start_data)
-                # log_file = total_log_instance.get_logs()
-                # self.bot.send_document(self.last_message.chat.id, log_file) 
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
                     show_counter += 1
@@ -312,7 +279,7 @@ class MAIN_CONTROLLER(MANAGER):
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.symbol_list_el_position} pause2...")
                     time.sleep(random.randrange(239, 299))
                     continue
-                if self.left_time_in_minutes_func(self.listing_time_ms) <= 12:
+                if self.left_time_in_minutes_func(self.listing_time_ms) <= 14:
                     if self.calibrator_flag:
                         self.delay_manager()
                     # //////////////////////////////////////////////////////////////////////
