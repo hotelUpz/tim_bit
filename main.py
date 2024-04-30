@@ -252,7 +252,8 @@ class MAIN_CONTROLLER(MANAGER):
         show_counter = 0
         first_req_flag = True
         if self.controls_mode == 'a':  
-            from info_pars import ANNONCEMENT             
+            from info_pars import ANNONCEMENT 
+            bg_parser = ANNONCEMENT()            
             while True:
                 start_data = []
                 set_item = {}                
@@ -269,7 +270,7 @@ class MAIN_CONTROLLER(MANAGER):
                         first_req_flag = False
                         self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
 
-                start_data = ANNONCEMENT().bitget_parser()
+                start_data = bg_parser.bitget_parser()
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
                     show_counter += 1
@@ -287,26 +288,7 @@ class MAIN_CONTROLLER(MANAGER):
                     set_item["delay_time_ms"] = self.delay_time_ms
                     self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                     # //////////////////////////////////////////////////////////////////////
-                    self.trading_little_temp(set_item) # main func
-                    # //////////////////////////////////////////////////////////////////////                            
-                    try:
-                        cur_time = int(time.time()* 1000)
-                        result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
-                        self.last_message.text = self.connector_func(self.last_message, result_time)
-                        # print(result_time)  
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('START', cur_time, [set_item])  
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)   
-                        json_file = total_log_instance.get_json_data()                
-                        self.bot.send_document(self.last_message.chat.id, json_file)   
-                        log_file = total_log_instance.get_logs()
-                        self.bot.send_document(self.last_message.chat.id, log_file)       
-                    except Exception as ex:
-                        # message.text = self.connector_func(message, ex)
-                        print(ex)
+
 
                     print("pause 30 sec...")   
                     time.sleep(30)
