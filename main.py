@@ -250,7 +250,8 @@ class MAIN_CONTROLLER(MANAGER):
                         self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                         # //////////////////////////////////////////////////////////////////////
                         dbb_coordinator_repl = dbb_coordinator.db_writer(set_item) 
-                        set_item = {}                   
+                        set_item = {}  
+                        time.sleep(30)                 
                         continue
                         # ////////////////////////////////////////////////////////////////////////////  
                 else:
@@ -366,10 +367,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                         for i in range(1, 5, 1):  
                             if i == server_index: 
                                 self.set_item[f'depo_server{i}'] = depo
-                                self.set_item[f'delay_time_ms_server{i}'] = delay_time_ms 
-                            else:
-                                self.set_item[f'depo_server{i}'] = self.common_depo
-                                self.set_item[f'delay_time_ms_server{i}'] = self.common_delay_time_ms
+                                self.set_item[f'delay_time_ms_server{i}'] = delay_time_ms
                         mess_temp = '\n'.join(list(f"{k}: {v}" for k, v in self.set_item.items()))
                         message.text = self.connector_func(message, mess_temp)
                     else:
