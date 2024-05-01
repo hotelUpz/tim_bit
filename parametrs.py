@@ -74,3 +74,6 @@ class PARAMS():
         self.db_port = os.getenv("DB_PORT", "")
 
 
+# p = PARAMS()
+
+

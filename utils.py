@@ -8,9 +8,9 @@ from log import log_exceptions_decorator
 
 def server_to_utc_difference_counter():
     server_time_naive = dttm.now()
-    print(f"server_time_naive: {server_time_naive}")
+    # print(f"server_time_naive: {server_time_naive}")
     utc_time = dttm.utcnow()
-    print(f"utc_time: {utc_time}")
+    # print(f"utc_time: {utc_time}")
     time_difference = server_time_naive - utc_time
     total_seconds = abs(time_difference.total_seconds()) * 1000
     total_seconds = math.ceil(total_seconds)
@@ -19,7 +19,7 @@ def server_to_utc_difference_counter():
     return total_seconds
 
 time_correction = server_to_utc_difference_counter()
-print("ms difference:", time_correction)
+# print("ms difference:", time_correction)
 
 class UTILS():
     def __init__(self) -> None:

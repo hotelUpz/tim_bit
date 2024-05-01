@@ -187,7 +187,7 @@ class MAIN_CONTROLLER(MANAGER):
     def main_func(self): 
         self.run_flag = True
         print(f'<<{self.market_place}>>')
-        self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
+        # self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
         start_data = []
         set_item = {}
         show_counter = 0
@@ -197,11 +197,13 @@ class MAIN_CONTROLLER(MANAGER):
             from info_pars import ANNONCEMENT 
             from db_coordinator import DB_COOORDINATOR
             bg_parser = ANNONCEMENT()
+            # print(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
             dbb_coordinator = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name) 
 
-            data = {'symbol_list': ['STYLEUSDT'], 't100_mode_pause_server1': 1.6, 't100_mode_pause_server2': 1.2, 't100_mode_pause_server3': 2.1, 't100_mode_pause_server4': 1.6, 'listing_time_ms': 1714561200000, 'listing_time': '2024-05-01 14:00:00', 'depo_server1': 400, 'delay_time_ms_server1': 400, 'depo_server2': 300, 'delay_time_ms_server2': 300, 'depo_server3': 20, 'delay_time_ms_server3': 95, 'depo_server4': 100, 'delay_time_ms_server4': 100, 'market_place': 'bitget', 'calibrator_flag': False, 'sell_mode': 't100', 'incriment_time_ms': 0}
-            dbb_coordinator.db_writer(data)
-            return
+            # data = {'symbol_list': ['STYLEUSDT'], 't100_mode_pause_server1': 1.6, 't100_mode_pause_server2': 1.2, 't100_mode_pause_server3': 2.1, 't100_mode_pause_server4': 1.6, 'listing_time_ms': 1714561200000, 'listing_time': '2024-05-01 14:00:00', 'depo_server1': 400, 'delay_time_ms_server1': 400, 'depo_server2': 300, 'delay_time_ms_server2': 300, 'depo_server3': 20, 'delay_time_ms_server3': 95, 'depo_server4': 100, 'delay_time_ms_server4': 100, 'market_place': 'bitget', 'calibrator_flag': False, 'sell_mode': 't100', 'incriment_time_ms': 0}
+            # # dbb_coordinator.create_table()
+            # dbb_coordinator.db_writer(data)
+            # return
             while True:
                 previous_set_item = set_item
                 start_data = []
@@ -253,7 +255,16 @@ class MAIN_CONTROLLER(MANAGER):
                         set_item.update(self.set_item)                   
                         self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                         # //////////////////////////////////////////////////////////////////////
-                        dbb_coordinator_repl = dbb_coordinator.db_writer(set_item) 
+                        db_connect_true = dbb_coordinator.db_connector()
+                        if db_connect_true:
+                            dbb_coordinator_repl = dbb_coordinator.db_writer(set_item) 
+                            if dbb_coordinator_repl:
+                                self.last_message.text = self.connector_func(self.last_message, 'Writing set_item data was making successfully!')
+                            else:
+                                self.last_message.text = self.connector_func(self.last_message, 'Some problems with writing set_item data...')
+                        else:
+                            self.last_message.text = self.connector_func(self.last_message, 'Some problem with db connecting...')
+
                         set_item = {}  
                         time.sleep(30)                 
                         continue
@@ -385,10 +396,11 @@ class TG_MANAGER(MAIN_CONTROLLER):
         except Exception as ex:
             print(ex)
 
-if __name__=="__main__":    
-    print('Please go to the Telegram bot interface!')     
-    bot = TG_MANAGER()   
-    bot.run()
+if __name__=="__main__":   
+    MAIN_CONTROLLER().main_func() 
+    # print('Please go to the Telegram bot interface!')     
+    # bot = TG_MANAGER()   
+    # bot.run()
 
 # git add . 
 # git commit -m "betta15"
