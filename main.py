@@ -264,9 +264,17 @@ class MAIN_CONTROLLER(MANAGER):
                                 self.last_message.text = self.connector_func(self.last_message, 'Some problems with writing set_item data...')
                         else:
                             self.last_message.text = self.connector_func(self.last_message, 'Some problem with db connecting...')
+                        cur_time = int(time.time()* 1000)
+                        total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
+                        cur_time = int(time.time()* 1000)
+                        total_log_instance.json_to_buffer('START', cur_time, [set_item]) 
+                        json_file = total_log_instance.get_json_data()                
+                        self.bot.send_document(self.last_message.chat.id, json_file)   
+                        log_file = total_log_instance.get_logs()
+                        self.bot.send_document(self.last_message.chat.id, log_file) 
 
                         set_item = {}  
-                        time.sleep(30)                 
+                        time.sleep(40)                 
                         continue
                         # ////////////////////////////////////////////////////////////////////////////  
                 else:
@@ -397,14 +405,11 @@ class TG_MANAGER(MAIN_CONTROLLER):
             print(ex)
 
 if __name__=="__main__":   
-    MAIN_CONTROLLER().main_func() 
-    # print('Please go to the Telegram bot interface!')     
-    # bot = TG_MANAGER()   
-    # bot.run()
+    # MAIN_CONTROLLER().main_func() 
+    print('Please go to the Telegram bot interface!')     
+    bot = TG_MANAGER()   
+    bot.run()
 
 # git add . 
 # git commit -m "betta15"
-# git push -u origin master 
-
-        # set_item["delay_time_ms"] = delay_time_ms  
-        # set_item["depo"] = depo 
+# git push -u origin master
