@@ -228,8 +228,20 @@ class MAIN_CONTROLLER(MANAGER):
                 # ///////////////// ***************** ///////////////////////////
                 # ///////////////// pars logic //////////////////////////////////
                 start_data = bg_parser.bitget_parser()
+                start_data = True
                 if start_data:            
-                    set_item = self.start_data_to_item(start_data) 
+                    # set_item = self.start_data_to_item(start_data) 
+                    set_item = {
+                        'symbol_list': ['STYLEUSDT'],
+                        't100_mode_pause_server1': 1.6,
+                        't100_mode_pause_server2': 2.0,
+                        't100_mode_pause_server3': 1.5,
+                        't100_mode_pause_server4': 1.2,
+                        'listing_time_ms': 1714561200000,
+                        'listing_time': '2024-05-03 14:00:00'
+                    }
+
+                    
                     try:
                         if set_item.get('listing_time_ms', None) > previous_set_item.get('listing_time_ms', None):
                             set_item = previous_set_item
@@ -264,8 +276,8 @@ class MAIN_CONTROLLER(MANAGER):
                                 self.last_message.text = self.connector_func(self.last_message, 'Some problems with writing set_item data...')
                         else:
                             self.last_message.text = self.connector_func(self.last_message, 'Some problem with db connecting...')
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
+                        # cur_time = int(time.time()* 1000)
+                        # total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
                         cur_time = int(time.time()* 1000)
                         total_log_instance.json_to_buffer('START', cur_time, [set_item]) 
                         json_file = total_log_instance.get_json_data()                
@@ -405,7 +417,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
             print(ex)
 
 if __name__=="__main__": 
-    pass  
+    pass #2  
     # MAIN_CONTROLLER().main_func() 
     # print('Please go to the Telegram bot interface!')     
     # bot = TG_MANAGER()   

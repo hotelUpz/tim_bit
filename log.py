@@ -20,7 +20,7 @@ class Logger():
             self.all_errors[file_name] = [(timestamp, exception_message)]
 
     def get_logs(self):
-        print(f"logs list 23str: {self.logs_buffer}")
+        # print(f"logs list 23str: {self.logs_buffer}")
         file = BytesIO()
         file.write(str(self.logs_buffer).encode('utf-8'))
         file.name = "logs.txt"

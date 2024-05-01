@@ -44,8 +44,7 @@ class DB_COOORDINATOR():
     #     print(f"table DB_BITGET_COORDINSTOR_LISTING_DATA was created")
 
     def db_writer(self, set_item):  
-        try:
-            self.db_connector()      
+        try:    
             listing_time_ms = set_item.get('listing_time_ms')
             set_item = str(set_item)
             self.cursor.execute("SELECT * FROM DB_BITGET_COORDINSTOR_LISTING_DATA")
