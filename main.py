@@ -162,11 +162,16 @@ class MAIN_CONTROLLER(MANAGER):
         super().__init__()
 
     def main_func(self): 
-        from db_coordinator import DB_COOORDINATOR
-        db_coordinator = DB_COOORDINATOR() 
+        from db_coordinator import DB_COOORDINATOR       
         self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
         show_counter = 0
         first_req_flag = True
+
+        dbb = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
+        true_conn = dbb.db_connector()
+        db_reading_data = dbb.read_db_data()
+        print(dbb.formate_db_data(db_reading_data))
+        return
 
         while True:
             set_item = {}                

@@ -51,9 +51,5 @@ class DB_COOORDINATOR():
             print(ex)
         return set_item_dict, fetching_list_time_ms
 
-
-dbb = DB_COOORDINATOR()
-db_reading_data = dbb.read_db_data()
-print(dbb.formate_db_data(db_reading_data))
             
 
