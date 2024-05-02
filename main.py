@@ -166,6 +166,7 @@ class MAIN_CONTROLLER(MANAGER):
         super().__init__()
 
     def main_func(self): 
+        self.run_flag = True
         from db_coordinator import DB_COOORDINATOR   
         dbb = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)    
         self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
@@ -177,6 +178,7 @@ class MAIN_CONTROLLER(MANAGER):
             self.listing_time_ms = None               
             if self.stop_flag:
                 self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} was stoped!")
+                self.run_flag = False
                 return
             time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
             if time_diff_seconds:
