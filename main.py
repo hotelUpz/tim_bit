@@ -162,17 +162,12 @@ class MAIN_CONTROLLER(MANAGER):
         super().__init__()
 
     def main_func(self): 
-        from db_coordinator import DB_COOORDINATOR       
+        from db_coordinator import DB_COOORDINATOR   
+        dbb = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)    
         self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
         show_counter = 0
         first_req_flag = True
-
-        dbb = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
-        true_conn = dbb.db_connector()
-        db_reading_data = dbb.read_db_data()
-        print(dbb.formate_db_data(db_reading_data))
-        return
-
+        # ////////////////////////////////////////////////////////////////////////
         while True:
             set_item = {}                
             if self.stop_flag:
@@ -188,19 +183,24 @@ class MAIN_CONTROLLER(MANAGER):
                     first_req_flag = False
                     self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
             try:
-                set_item, self.listing_time_ms = db_coordinator.fetch_settings_data()
-            except Exception as ex:
-                print(ex)     
+                true_conn = dbb.db_connector()
+                if true_conn:
+                    db_reading_data = dbb.read_db_data()
+                    set_item, self.listing_time_ms = dbb.formate_db_data(db_reading_data)
+                else:
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} some problems with db connecting...")   
 
-            if set_item and self.listing_time_ms:            
-                show_counter += 1
-                if show_counter == 5:
-                    self.last_message.text = self.connector_func(self.last_message, str(set_item))
-                    show_counter = 0
-            else:
-                time.sleep(random.randrange(59, 69))
-                continue
-            if self.left_time_in_minutes_func(self.listing_time_ms) <= 20:
+                if set_item and self.listing_time_ms:            
+                    show_counter += 1
+                    if show_counter == 5:
+                        self.last_message.text = self.connector_func(self.last_message, str(set_item))
+                        show_counter = 0
+                else:
+                    time.sleep(random.randrange(59, 69))
+                    continue
+            except Exception as ex:
+                print(ex) 
+            if self.left_time_in_minutes_func(self.listing_time_ms) <= 10:
                 # //////////////////////////////////////////////////////////////////////
                 self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{str(set_item)}") 
                 # //////////////////////////////////////////////////////////////////////
@@ -293,10 +293,10 @@ class TG_MANAGER(MAIN_CONTROLLER):
             print(ex)
 
 if __name__=="__main__": 
-    print('Server2 is refactoring')   
-    # print('Please go to the Telegram bot interface!')     
-    # bot = TG_MANAGER()   
-    # bot.run()
+    # print('Server2 is refactoring')   
+    print('Please go to the Telegram bot interface!')     
+    bot = TG_MANAGER()   
+    bot.run()
 
 # git add . 
 # git commit -m "betta15"

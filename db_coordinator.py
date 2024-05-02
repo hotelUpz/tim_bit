@@ -41,8 +41,7 @@ class DB_COOORDINATOR():
         finally:
             self.connection.close()
             return records
-     
-    @log_exceptions_decorator
+
     def formate_db_data(self, db_reading_data):
         set_item_dict, fetching_list_time_ms = None, None
         try:            
