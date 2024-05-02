@@ -5,6 +5,7 @@ load_dotenv()
 class PARAMS():
     def __init__(self) -> None:
         self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!'
+        self.run_flag = False
         self.default_trade_vars()
         self.default_tg_vars()
         self.init_keys()
