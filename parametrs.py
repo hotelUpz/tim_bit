@@ -4,7 +4,12 @@ load_dotenv()
 
 class PARAMS():
     def __init__(self) -> None:
-        self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!' 
+        self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!'
+        self.default_trade_vars()
+        self.default_tg_vars()
+        self.init_keys()
+
+    def default_trade_vars(self):
         self.market_place = 'bitget'  
         self.response_data_list, self.response_success_list = [], []  
         self.incriment_time_ms = self.railway_server_number = 1  
@@ -19,8 +24,6 @@ class PARAMS():
         self.sleep_to = 5 # hoor in UTC 
         self.timedelta_stamps = 'hours'
         self.timedelta_stamps_value = 1
-        self.default_tg_vars()
-        self.init_keys()
 
     def default_tg_vars(self):    
         self.block_acess_flag = False
