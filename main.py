@@ -208,6 +208,7 @@ class MAIN_CONTROLLER(MANAGER):
                 previous_set_item = set_item
                 start_data = []
                 set_item = {} 
+                self.listing_time_ms = None
                 # ///////////////// stop logic ///////////////////////////  
                 if self.stop_flag:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} was stoped!")
@@ -228,19 +229,18 @@ class MAIN_CONTROLLER(MANAGER):
                 # ///////////////// ***************** ///////////////////////////
                 # ///////////////// pars logic //////////////////////////////////
                 start_data = bg_parser.bitget_parser()
-                start_data = True
+                # start_data = True
                 if start_data:            
-                    # set_item = self.start_data_to_item(start_data) 
-                    set_item = {
-                        'symbol_list': ['STYLEUSDT'],
-                        't100_mode_pause_server1': 1.6,
-                        't100_mode_pause_server2': 2.0,
-                        't100_mode_pause_server3': 1.5,
-                        't100_mode_pause_server4': 1.2,
-                        'listing_time_ms': 1714561200000,
-                        'listing_time': '2024-05-03 14:00:00'
-                    }
-
+                    # # set_item = self.start_data_to_item(start_data) 
+                    # set_item = {
+                    #     'symbol_list': ['STYLEUSDT'],
+                    #     't100_mode_pause_server1': 1.6,
+                    #     't100_mode_pause_server2': 2.0,
+                    #     't100_mode_pause_server3': 1.5,
+                    #     't100_mode_pause_server4': 1.2,
+                    #     'listing_time_ms': 1714561200000,
+                    #     'listing_time': '2024-05-03 14:00:00'
+                    # }
                     
                     try:
                         if set_item.get('listing_time_ms', None) > previous_set_item.get('listing_time_ms', None):
@@ -256,8 +256,8 @@ class MAIN_CONTROLLER(MANAGER):
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause2...")
                     # ///////////////// show set info logic end ///////////////////
-                    # time.sleep(random.randrange(239, 299)) 
-                    time.sleep(random.randrange(51, 61))
+                    time.sleep(random.randrange(239, 299)) 
+                    # time.sleep(random.randrange(51, 61))
                     continue
                 if self.listing_time_ms:
                     if self.left_time_in_minutes_func(self.listing_time_ms) <= 111115:
@@ -286,7 +286,7 @@ class MAIN_CONTROLLER(MANAGER):
                         self.bot.send_document(self.last_message.chat.id, log_file) 
 
                         set_item = {}  
-                        time.sleep(40)                 
+                        time.sleep((self.listing_time_ms-int(time.time()*1000))/ 1000)                 
                         continue
                         # ////////////////////////////////////////////////////////////////////////////  
                 else:
@@ -294,8 +294,8 @@ class MAIN_CONTROLLER(MANAGER):
 
                 self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause...")
                 # print("pause...")
-                # time.sleep(random.randrange(239, 299))
-                time.sleep(random.randrange(51, 61)) 
+                time.sleep(random.randrange(239, 299))
+                # time.sleep(random.randrange(51, 61)) 
         # ///////////////////////////////////////////////////////////////////////////////////
         self.last_message.text = self.connector_func(self.last_message, self.SOLI_DEO_GLORIA)
 

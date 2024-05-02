@@ -61,27 +61,6 @@ class DB_COOORDINATOR():
         finally:    
             self.connection.close()
             return True
-        
-    def read_db_data(self):
-        try:
-            self.cursor.execute("SELECT * FROM DB_BITGET_COORDINSTOR_LISTING_DATA")
-            records = self.cursor.fetchall()
-        except Exception as ex:
-            print(ex)
-            return
-        finally:
-            self.connection.close()
-            return records
-     
-    @log_exceptions_decorator
-    def formate_db_data(self):
-        set_item_dict, fetching_list_time_ms = None, None
-        try:
-            db_reading_data = self.read_db_data()
-            return db_reading_data[0][1], ast.literal_eval(db_reading_data[0][2])
-        except Exception as ex:
-            print(ex)
-        return set_item_dict, fetching_list_time_ms
 
             
 
