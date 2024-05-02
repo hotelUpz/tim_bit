@@ -32,6 +32,7 @@ class DB_COOORDINATOR():
         return False
         
     def read_db_data(self):
+        records = []
         try:
             self.cursor.execute("SELECT * FROM DB_BITGET_COORDINSTOR_LISTING_DATA")
             records = self.cursor.fetchall()
@@ -43,12 +44,11 @@ class DB_COOORDINATOR():
             return records
 
     def formate_db_data(self, db_reading_data):
-        set_item_dict, fetching_list_time_ms = None, None
         try:            
             return db_reading_data[0][1], ast.literal_eval(db_reading_data[0][2])
         except Exception as ex:
             print(ex)
-        return set_item_dict, fetching_list_time_ms
+        return {}, None
 
             
 
