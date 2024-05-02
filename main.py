@@ -111,12 +111,10 @@ class MANAGER(TEMPLATES):
 
     @log_exceptions_decorator
     def buy_manager(self, set_item):
-        print("It is waiting time for buy!..")        
-        self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
-        self.response_data_list, self.response_success_list = [], [] 
-        schedule_time_ms = self.listing_time_ms - 4000
-        time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)  
-        buy_time_ms = self.listing_time_ms - set_item.get(f"delay_time_ms_server{self.railway_server_number}")        
+        # print("It is waiting time for buy!..")  
+        symbol = None
+        self.response_data_list, self.response_success_list = [], []
+        buy_time_ms = self.listing_time_ms - set_item.get(f"delay_time_ms_server{self.railway_server_number}", None)        
         try:              
             symbol = set_item["symbol_list"][self.symbol_list_el_position]  
         except Exception as ex:
@@ -125,10 +123,18 @@ class MANAGER(TEMPLATES):
                 buy_time_ms -= self.incriment_time_ms*2
                 symbol = set_item["symbol_list"][0]  
             else:
-                return             
+                return  
+        # ///////////////////////////////////////////////////////////////////////////////// 
+        tg_mess = ''
+        tg_mess = f'symbol: {symbol}\ndepo: {set_item.get(f"depo_server{self.railway_server_number}", None)}\ndelay: {set_item.get(f"delay_time_ms_server{self.railway_server_number}", None)}'
+        self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{tg_mess}")  
+        self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
+        # /////////////////////////////////////////////////////////////////////////////////  
+        schedule_time_ms = self.listing_time_ms - 4000
+        time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)  
         self.send_fake_request(self.symbol_fake) 
         time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)             
-        self.buy_market_temp(symbol, set_item[f"depo_server{self.railway_server_number}"])            
+        self.buy_market_temp(symbol, set_item.get(f"depo_server{self.railway_server_number}", None))            
 
     @log_exceptions_decorator   
     def sell_manager(self, set_item):
@@ -203,8 +209,6 @@ class MAIN_CONTROLLER(MANAGER):
 
             if self.left_time_in_minutes_func(self.listing_time_ms) <= 1000000:
                 try:
-                    # //////////////////////////////////////////////////////////////////////
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{str(set_item)}") 
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
                     # //////////////////////////////////////////////////////////////////////          
