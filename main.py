@@ -44,16 +44,14 @@ class TEMPLATES(TG_ASSISTENT):
         super().__init__()
     
     @log_exceptions_decorator
-    def buy_market_temp(self, symbol):  
-        # int('dfjgfj,')   
-        response = self.place_market_order(symbol, 'BUY', self.depo)                
+    def buy_market_temp(self, symbol, depo):  
+        response = self.place_market_order(symbol, 'BUY', depo)                
         response = response.json() 
         response['symbol'] = symbol
         response['side'] = 'BUY'
         response['status'] = 'filled'                           
         self.response_data_list.append(response)                   
         if response['msg'] == 'success': 
-            # print('buy success!')
             self.last_message.text = self.connector_func(self.last_message, 'buy success!')
             self.response_success_list.append(response)
 
@@ -130,7 +128,7 @@ class MANAGER(TEMPLATES):
                 return             
         self.send_fake_request(self.symbol_fake) 
         time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)             
-        self.buy_market_temp(symbol)            
+        self.buy_market_temp(symbol, set_item[f"depo_server{self.railway_server_number}"])            
 
     @log_exceptions_decorator   
     def sell_manager(self, set_item):
@@ -188,8 +186,7 @@ class MAIN_CONTROLLER(MANAGER):
                     db_reading_data = None
                     db_reading_data = dbb.read_db_data()
                     if db_reading_data:
-                        set_item, self.listing_time_ms = dbb.formate_db_data(db_reading_data)
-                        print(set_item, self.listing_time_ms)
+                        self.listing_time_ms, set_item = dbb.formate_db_data(db_reading_data)
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} some problems with db connecting...")   
 
@@ -204,29 +201,29 @@ class MAIN_CONTROLLER(MANAGER):
             except Exception as ex:
                 print(ex)
 
-            # if self.left_time_in_minutes_func(self.listing_time_ms) <= 1000000:
-            #     try:
-            #         # //////////////////////////////////////////////////////////////////////
-            #         self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{str(set_item)}") 
-            #         # //////////////////////////////////////////////////////////////////////
-            #         self.trading_little_temp(set_item) # main func
-            #         # //////////////////////////////////////////////////////////////////////          
-            #         cur_time = int(time.time()* 1000)
-            #         result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
-            #         self.last_message.text = self.connector_func(self.last_message, result_time)
-            #         cur_time = int(time.time()* 1000)
-            #         total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)   
-            #         json_file = total_log_instance.get_json_data()                
-            #         self.bot.send_document(self.last_message.chat.id, json_file)   
-            #         log_file = total_log_instance.get_logs()
-            #         self.bot.send_document(self.last_message.chat.id, log_file)       
-            #     except Exception as ex:
-            #         # message.text = self.connector_func(message, ex)
-            #         print(ex)
+            if self.left_time_in_minutes_func(self.listing_time_ms) <= 1000000:
+                try:
+                    # //////////////////////////////////////////////////////////////////////
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{str(set_item)}") 
+                    # //////////////////////////////////////////////////////////////////////
+                    self.trading_little_temp(set_item) # main func
+                    # //////////////////////////////////////////////////////////////////////          
+                    cur_time = int(time.time()* 1000)
+                    result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
+                    self.last_message.text = self.connector_func(self.last_message, result_time)
+                    cur_time = int(time.time()* 1000)
+                    total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)   
+                    json_file = total_log_instance.get_json_data()                
+                    self.bot.send_document(self.last_message.chat.id, json_file)   
+                    log_file = total_log_instance.get_logs()
+                    self.bot.send_document(self.last_message.chat.id, log_file)       
+                except Exception as ex:
+                    # message.text = self.connector_func(message, ex)
+                    print(ex)
 
-                # print("pause 30 sec...")   
-                # time.sleep(30)
-                # continue
+                print("pause 30 sec...")   
+                time.sleep(30)
+                continue
                 # ////////////////////////////////////////////////////////////////////////////
 
             # print("pause...")
