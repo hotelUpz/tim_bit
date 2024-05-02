@@ -15,7 +15,9 @@ class DB_COOORDINATOR():
         config = {
             'user': self.user,
             'password': self.password,            
-            'host': 'localhost',
+            # 'host': 'localhost',
+            'host': 'roundhouse.proxy.rlwy.net',
+            'port': '15775',
             # 'host': self.host,
             # 'port': self.port,
             'database': self.database,
