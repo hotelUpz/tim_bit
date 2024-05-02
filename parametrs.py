@@ -19,7 +19,19 @@ class PARAMS():
         self.sleep_to = 5 # hoor in UTC 
         self.timedelta_stamps = 'hours'
         self.timedelta_stamps_value = 1
+        self.default_tg_vars()
         self.init_keys()
+
+    def default_tg_vars(self):    
+        self.block_acess_flag = False
+        self.start_flag = False
+        self.start_day_date = None
+        self.block_acess_counter = 0
+        self.seq_control_flag = False
+        self.seq_control_token = False
+        self.dont_seq_control = False
+        self.stop_redirect_flag = False  
+        self.settings_redirect_flag = False 
 
     def init_keys(self):  
         self.api_key  = os.getenv(f"{self.market_place.upper()}_API_PUBLIC_KEY", "")
