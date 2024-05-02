@@ -193,8 +193,10 @@ class MAIN_CONTROLLER(MANAGER):
                 if dbb.db_connector():
                     db_reading_data = None
                     db_reading_data = dbb.read_db_data()
+                    print(db_reading_data)
                     if db_reading_data:
                         self.listing_time_ms, set_item = dbb.formate_db_data(db_reading_data)
+                        print(self.listing_time_ms, set_item)
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} some problems with db connecting...")   
 
@@ -209,7 +211,7 @@ class MAIN_CONTROLLER(MANAGER):
             except Exception as ex:
                 print(ex)
 
-            if self.left_time_in_minutes_func(self.listing_time_ms) <= 1000000:
+            if self.left_time_in_minutes_func(self.listing_time_ms) <= 100000000:
                 # dfkjh
                 try:
                     # //////////////////////////////////////////////////////////////////////
