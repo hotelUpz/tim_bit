@@ -15,9 +15,9 @@ class DB_COOORDINATOR():
         config = {
             'user': self.user,
             'password': self.password,            
-            'host': 'localhost',
-            # 'host': self.host,
-            # 'port': self.port,
+            # 'host': 'localhost',
+            'host': self.host,
+            'port': self.port,
             'database': self.database,
         }
         for _ in range(2):
