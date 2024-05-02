@@ -231,7 +231,7 @@ class MAIN_CONTROLLER(MANAGER):
                 start_data = bg_parser.bitget_parser()
                 # start_data = True
                 if start_data:            
-                    # # set_item = self.start_data_to_item(start_data) 
+                    set_item = self.start_data_to_item(start_data) 
                     # set_item = {
                     #     'symbol_list': ['STYLEUSDT'],
                     #     't100_mode_pause_server1': 1.6,
@@ -417,11 +417,11 @@ class TG_MANAGER(MAIN_CONTROLLER):
             print(ex)
 
 if __name__=="__main__": 
-    pass #2  
+    # pass #2  
     # MAIN_CONTROLLER().main_func() 
-    # print('Please go to the Telegram bot interface!')     
-    # bot = TG_MANAGER()   
-    # bot.run()
+    print('Please go to the Telegram bot interface!')     
+    bot = TG_MANAGER()   
+    bot.run()
 
 # git add . 
 # git commit -m "betta15"
