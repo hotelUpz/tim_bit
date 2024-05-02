@@ -16,10 +16,10 @@ class DB_COOORDINATOR():
             'user': self.user,
             'password': self.password,            
             # 'host': 'localhost',
-            'host': 'roundhouse.proxy.rlwy.net',
-            'port': '15775',
-            # 'host': self.host,
-            # 'port': self.port,
+            # 'host': 'roundhouse.proxy.rlwy.net',
+            # 'port': '15775',
+            'host': self.host,
+            'port': self.port,
             'database': self.database,
         }
         for _ in range(2):
@@ -33,20 +33,20 @@ class DB_COOORDINATOR():
                 time.sleep(random.randrange(1,4))                
         return False
 
-    # @log_exceptions_decorator
-    # def create_table(self):
-    #     self.cursor.execute("""
-    #         CREATE TABLE IF NOT EXISTS DB_BITGET_COORDINSTOR_LISTING_DATA (
-    #             id INT AUTO_INCREMENT PRIMARY KEY,
-    #             listing_time_ms INT,
-    #             set_item TEXT
-    #         )
-    #     """)
-    #     self.connection.commit()
-    #     print(f"table DB_BITGET_COORDINSTOR_LISTING_DATA was created")
+    @log_exceptions_decorator
+    def create_table(self):
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS DB_BITGET_COORDINSTOR_LISTING_DATA (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                listing_time_ms INT,
+                set_item TEXT
+            )
+        """)
+        self.connection.commit()
+        print(f"table DB_BITGET_COORDINSTOR_LISTING_DATA was created")
 
     def db_writer(self, set_item):  
-        try:    
+        try:           
             listing_time_ms = set_item.get('listing_time_ms')
             set_item = str(set_item)
             self.cursor.execute("SELECT * FROM DB_BITGET_COORDINSTOR_LISTING_DATA")
