@@ -33,6 +33,12 @@ class UTILS():
         time = datetime.datetime.utcfromtimestamp(seconds)
         milliseconds_str = str(milliseconds).zfill(3)
         return time.strftime('%Y-%m-%d %H:%M:%S') + '.' + milliseconds_str
+    
+    def date_of_the_month(self):        
+        current_time = time.time()        
+        datetime_object = dttm.fromtimestamp(current_time)       
+        formatted_time = datetime_object.strftime('%d')
+        return int(formatted_time) 
 
     def left_time_in_minutes_func(self, set_time):
         current_time_ms = int(time.time() * 1000)
