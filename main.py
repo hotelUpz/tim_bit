@@ -210,6 +210,7 @@ class MAIN_CONTROLLER(MANAGER):
                 print(ex)
 
             if self.left_time_in_minutes_func(self.listing_time_ms) <= 1000000:
+                # dfkjh
                 try:
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
