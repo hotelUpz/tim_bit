@@ -18,9 +18,8 @@ class CONNECTOR_TG(BITGET_API, UTILS):
     def create_menu(self):
         menu_markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True, one_time_keyboard=True)
         button1 = types.KeyboardButton("START")
-        button2 = types.KeyboardButton("STOP")
-        button3 = types.KeyboardButton("SETTINGS")       
-        menu_markup.add(button1, button2, button3)        
+        button2 = types.KeyboardButton("STOP")    
+        menu_markup.add(button1, button2)        
         return menu_markup
 
 class TG_ASSISTENT(CONNECTOR_TG):
@@ -119,12 +118,13 @@ class MANAGER(TEMPLATES):
         self.response_data_list, self.response_success_list = [], [] 
         schedule_time_ms = self.listing_time_ms - 4000
         time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)  
-        buy_time_ms = self.listing_time_ms - self.delay_time_ms
+        buy_time_ms = self.listing_time_ms - set_item.get(f"delay_time_ms_server{self.railway_server_number}")        
         try:              
             symbol = set_item["symbol_list"][self.symbol_list_el_position]  
         except Exception as ex:
             # print(ex)
             if self.trade_duble_flag:
+                buy_time_ms -= self.incriment_time_ms*2
                 symbol = set_item["symbol_list"][0]  
             else:
                 return             
@@ -169,7 +169,8 @@ class MAIN_CONTROLLER(MANAGER):
         first_req_flag = True
         # ////////////////////////////////////////////////////////////////////////
         while True:
-            set_item = {}                
+            set_item = {} 
+            self.listing_time_ms = None               
             if self.stop_flag:
                 self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} was stoped!")
                 return
@@ -183,10 +184,13 @@ class MAIN_CONTROLLER(MANAGER):
                     first_req_flag = False
                     self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
             try:
+                true_conn = None
                 true_conn = dbb.db_connector()
                 if true_conn:
+                    db_reading_data = None
                     db_reading_data = dbb.read_db_data()
-                    set_item, self.listing_time_ms = dbb.formate_db_data(db_reading_data)
+                    if db_reading_data:
+                        set_item, self.listing_time_ms = dbb.formate_db_data(db_reading_data)
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} some problems with db connecting...")   
 
@@ -199,16 +203,15 @@ class MAIN_CONTROLLER(MANAGER):
                     time.sleep(random.randrange(59, 69))
                     continue
             except Exception as ex:
-                print(ex) 
-            if self.left_time_in_minutes_func(self.listing_time_ms) <= 10:
-                # //////////////////////////////////////////////////////////////////////
-                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{str(set_item)}") 
-                # //////////////////////////////////////////////////////////////////////
-                set_item['delay_time_ms'] = set_item.get('delay_time_ms') + (self.incriment_time_ms*2)
-                # //////////////////////////////////////////////////////////////////////
-                self.trading_little_temp(set_item) # main func
-                # //////////////////////////////////////////////////////////////////////                            
+                print(ex)
+
+            if self.left_time_in_minutes_func(self.listing_time_ms) <= 1000000:
                 try:
+                    # //////////////////////////////////////////////////////////////////////
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{str(set_item)}") 
+                    # //////////////////////////////////////////////////////////////////////
+                    self.trading_little_temp(set_item) # main func
+                    # //////////////////////////////////////////////////////////////////////          
                     cur_time = int(time.time()* 1000)
                     result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')                        
                     self.last_message.text = self.connector_func(self.last_message, result_time)
@@ -226,6 +229,7 @@ class MAIN_CONTROLLER(MANAGER):
                 time.sleep(30)
                 continue
                 # ////////////////////////////////////////////////////////////////////////////
+
             # print("pause...")
             time.sleep(random.randrange(59, 69)) 
             # time.sleep(random.randrange(9, 14)) 
@@ -264,28 +268,6 @@ class TG_MANAGER(MAIN_CONTROLLER):
                     self.bot.send_message(message.chat.id, "Please waiting...")                   
                 else:
                     self.bot.send_message(message.chat.id, "Program was not stopped.")  
-
-            @self.bot.message_handler(func=lambda message: message.text == 'SETTINGS')             
-            def handle_settings(message):
-                try:
-                    message.text = self.connector_func(message, "Please enter a delay_ms and depo size using shift (e.g: 111 21)")
-                    self.settings_redirect_flag = True
-                except Exception as ex:
-                    print(ex)
-
-            @self.bot.message_handler(func=lambda message: self.settings_redirect_flag)             
-            def handle_settings_redirect(message):
-                try:
-                    self.settings_redirect_flag = False
-                    dataa = [x for x in message.text.strip().split(' ') if x.strip()]  
-                    self.delay_time_ms = int(float(dataa[0]))   
-                    self.depo = int(float(dataa[1]))
-                    if len(dataa) == 2:     
-                        message.text = self.connector_func(message, f"delay_time_ms: {self.delay_time_ms}\ndepo: {self.depo}")
-                    else:
-                        message.text = self.connector_func(message, f"Please enter a valid options...")
-                except Exception as ex:
-                    print(ex)
 
             # self.bot.polling()
             self.bot.infinity_polling()
