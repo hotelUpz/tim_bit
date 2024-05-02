@@ -15,7 +15,7 @@ class PARAMS():
         self.run_flag = False
         self.calibrator_flag = True
         self.stop_flag = False        
-        self.work_to = 23 # hoor in UTC
+        self.work_to = 17 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
         self.default_test_symbol = 'ARBUSDT'
         self.response_data_list, self.response_success_list = [], []
