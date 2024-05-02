@@ -21,7 +21,7 @@ class PARAMS():
         self.symbol_fake = 'T'
         self.sell_mode = 't100' # t100 -- sell for all qty by time       
         self.sell_attempts_number = 2
-        self.work_to = 17 # hoor in UTC
+        self.work_to = 23 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC 
         self.timedelta_stamps = 'hours'
         self.timedelta_stamps_value = 1
