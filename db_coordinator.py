@@ -44,8 +44,10 @@ class DB_COOORDINATOR():
             return records
 
     def formate_db_data(self, db_reading_data):
-        try:            
-            return db_reading_data[0][1], ast.literal_eval(db_reading_data[0][2])
+        try: 
+            set_item = {}  
+            set_item = ast.literal_eval(db_reading_data[0][1])        
+            return set_item.get("listing_time_ms", None), set_item
         except Exception as ex:
             print(ex)
         return {}, None
