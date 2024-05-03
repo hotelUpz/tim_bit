@@ -13,7 +13,7 @@ class PARAMS():
         self.railway_server_number = 'base'   
         self.controls_mode = 'a'
         self.run_flag = False
-        self.calibrator_flag = False
+        self.calibrator_flag = True
         self.stop_flag = False        
         self.work_to = 23 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
@@ -23,7 +23,7 @@ class PARAMS():
         self.symbol_list_el_position = 0 #fj,bh
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
-        self.common_depo = 20
+        self.common_depo = 15
         self.depo_test = 10
         self.sell_mode = 't100' # t100 -- sell for all qty by time
         self.common_delay_time_ms = 95
