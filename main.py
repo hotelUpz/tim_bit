@@ -194,6 +194,7 @@ class MAIN_CONTROLLER(MANAGER):
                     db_reading_data = None
                     db_reading_data = dbb.read_db_data()
                     print(db_reading_data)
+                    # 
                     if db_reading_data:
                         self.listing_time_ms, set_item = dbb.formate_db_data(db_reading_data)
                         print(self.listing_time_ms, set_item)
