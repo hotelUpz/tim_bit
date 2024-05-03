@@ -189,7 +189,7 @@ class MAIN_CONTROLLER(MANAGER):
         print(f'<<{self.market_place}>>')
         # self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
         start_data = []
-        set_item = {}
+        set_item = {} #
         show_counter = 0
         first_req_flag = True
         previous_set_item = {}
