@@ -193,17 +193,16 @@ class MAIN_CONTROLLER(MANAGER):
                 if dbb.db_connector():
                     db_reading_data = None
                     db_reading_data = dbb.read_db_data()
-                    print(db_reading_data)
-                    # 
+                    # print(db_reading_data)
                     if db_reading_data:
                         self.listing_time_ms, set_item = dbb.formate_db_data(db_reading_data)
-                        print(self.listing_time_ms, set_item)
+                        # print(self.listing_time_ms, set_item)
                 else:
                     self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} some problems with db connecting...")   
 
                 if set_item and self.listing_time_ms:            
                     show_counter += 1
-                    if show_counter == 5:
+                    if show_counter == 15:
                         self.last_message.text = self.connector_func(self.last_message, str(set_item))
                         show_counter = 0
                 else:
@@ -212,8 +211,7 @@ class MAIN_CONTROLLER(MANAGER):
             except Exception as ex:
                 print(ex)
 
-            if self.left_time_in_minutes_func(self.listing_time_ms) <= 100000000:
-                # dfkjh
+            if self.left_time_in_minutes_func(self.listing_time_ms) <= 5:
                 try:
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
@@ -235,10 +233,8 @@ class MAIN_CONTROLLER(MANAGER):
                 time.sleep(30)
                 continue
                 # ////////////////////////////////////////////////////////////////////////////
-
             # print("pause...")
             time.sleep(random.randrange(59, 69)) 
-            # time.sleep(random.randrange(9, 14)) 
 
 class TG_MANAGER(MAIN_CONTROLLER):
     def __init__(self):
