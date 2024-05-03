@@ -37,32 +37,31 @@ class DB_COOORDINATOR():
     def create_table(self):
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS DB_BITGET_COORDINSTOR_LISTING_DATA (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                listing_time_ms INT,
+                id INT AUTO_INCREMENT PRIMARY KEY,                
                 set_item TEXT
             )
         """)
         self.connection.commit()
         print(f"table DB_BITGET_COORDINSTOR_LISTING_DATA was created")
 
+    @log_exceptions_decorator
     def db_writer(self, set_item):  
         try:           
-            listing_time_ms = set_item.get('listing_time_ms')
             set_item = str(set_item)
             self.cursor.execute("SELECT * FROM DB_BITGET_COORDINSTOR_LISTING_DATA")
             records = self.cursor.fetchall()
 
             if not records:
-                self.cursor.execute("INSERT INTO DB_BITGET_COORDINSTOR_LISTING_DATA (listing_time_ms, set_item) VALUES (%s, %s)", (listing_time_ms, set_item))
+                self.cursor.execute("INSERT INTO DB_BITGET_COORDINSTOR_LISTING_DATA (set_item) VALUES (%s)", (set_item,))
             else:
-                self.cursor.execute("UPDATE DB_BITGET_COORDINSTOR_LISTING_DATA SET listing_time_ms = %s, set_item = %s WHERE id = 1", (listing_time_ms, set_item))
+                self.cursor.execute("UPDATE DB_BITGET_COORDINSTOR_LISTING_DATA SET set_item = %s WHERE id = 1", (set_item,))
             self.connection.commit()
+            return True
         except Exception as ex:
             print(ex)
             return False
         finally:    
             self.connection.close()
-            return True
 
             
 
