@@ -197,14 +197,13 @@ class MAIN_CONTROLLER(MANAGER):
             from info_pars import ANNONCEMENT 
             from db_coordinator import DB_COOORDINATOR
             bg_parser = ANNONCEMENT()
-            # print(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
             dbb_coordinator = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name) 
 
-            data = {'symbol_list': ['STYLEUSDT'], 't100_mode_pause_server1': 1.6, 't100_mode_pause_server2': 1.2, 't100_mode_pause_server3': 2.1, 't100_mode_pause_server4': 1.6, 'listing_time_ms': 1714561200000, 'listing_time': '2024-05-01 14:00:00', 'depo_server1': 400, 'delay_time_ms_server1': 400, 'depo_server2': 300, 'delay_time_ms_server2': 300, 'depo_server3': 20, 'delay_time_ms_server3': 95, 'depo_server4': 100, 'delay_time_ms_server4': 100, 'market_place': 'bitget', 'calibrator_flag': False, 'sell_mode': 't100', 'incriment_time_ms': 0}
-            dbb_coordinator.db_connector()
-            dbb_coordinator.create_table()
-            dbb_coordinator.db_writer(data)
-            return
+            # data = {'symbol_list': ['STYLEUSDT'], 't100_mode_pause_server1': 1.6, 't100_mode_pause_server2': 1.2, 't100_mode_pause_server3': 2.1, 't100_mode_pause_server4': 1.6, 'listing_time_ms': 1714561200000, 'listing_time': '2024-05-01 14:00:00', 'depo_server1': 400, 'delay_time_ms_server1': 400, 'depo_server2': 300, 'delay_time_ms_server2': 300, 'depo_server3': 20, 'delay_time_ms_server3': 95, 'depo_server4': 100, 'delay_time_ms_server4': 100, 'market_place': 'bitget', 'calibrator_flag': False, 'sell_mode': 't100', 'incriment_time_ms': 0}
+            # dbb_coordinator.db_connector()
+            # dbb_coordinator.create_table()
+            # dbb_coordinator.db_writer(data)
+            # return
             while True:
                 previous_set_item = set_item
                 start_data = []
@@ -409,10 +408,10 @@ class TG_MANAGER(MAIN_CONTROLLER):
 
 if __name__=="__main__": 
     # pass #2  
-    MAIN_CONTROLLER().main_func() 
-    # print('Please go to the Telegram bot interface!')     
-    # bot = TG_MANAGER()   
-    # bot.run()
+    # MAIN_CONTROLLER().main_func() 
+    print('Please go to the Telegram bot interface!')     
+    bot = TG_MANAGER()   
+    bot.run()
 
 # git add . 
 # git commit -m "betta15"
