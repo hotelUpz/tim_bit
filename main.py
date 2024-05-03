@@ -307,6 +307,15 @@ class TG_MANAGER(MAIN_CONTROLLER):
                     self.stop_redirect_flag = True
                 else:
                     self.bot.send_message(message.chat.id, "Please enter START for verification")
+
+            @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
+            def handle_stop_redirect(message):
+                self.stop_redirect_flag = False
+                if message.text.strip().upper() == 'Y':                    
+                    self.stop_flag = True 
+                    self.bot.send_message(message.chat.id, "Please waiting...")                   
+                else:
+                    self.bot.send_message(message.chat.id, "Program was not stopped.") 
             # self.bot.polling()
             self.bot.infinity_polling()
         except Exception as ex: 
