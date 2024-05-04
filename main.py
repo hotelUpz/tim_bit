@@ -123,6 +123,7 @@ class MANAGER(TEMPLATES):
                 buy_time_ms -= self.incriment_time_ms*2
                 symbol = set_item["symbol_list"][0]  
             else:
+                self.last_message.text = self.connector_func(self.last_message, "List index out of range. There is nothing to trade")
                 return  
         # ///////////////////////////////////////////////////////////////////////////////// 
         tg_mess = ''
@@ -204,7 +205,8 @@ class MAIN_CONTROLLER(MANAGER):
                 if set_item and self.listing_time_ms:            
                     show_counter += 1
                     if show_counter == 15:
-                        self.last_message.text = self.connector_func(self.last_message, str(set_item))
+                        self.last_message.text = self.connector_func(self.last_message, f"symbol_list: {set_item.get('symbol_list', 'Empty list')}\nlisting_time: {set_item.get('listing_time', 'Empty listing time data')}")
+
                         show_counter = 0
                 else:
                     time.sleep(random.randrange(59, 69))
