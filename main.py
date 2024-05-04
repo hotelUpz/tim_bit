@@ -114,13 +114,12 @@ class MANAGER(TEMPLATES):
         # print("It is waiting time for buy!..")  
         symbol = None
         self.response_data_list, self.response_success_list = [], []
-        buy_time_ms = self.listing_time_ms - set_item.get(f"delay_time_ms_server{self.railway_server_number}", None)        
+        buy_time_ms = self.listing_time_ms - (set_item.get(f"delay_time_ms_server{self.railway_server_number}", None) + int(self.incriment_time_ms*1.5))    
         try:              
             symbol = set_item["symbol_list"][self.symbol_list_el_position]  
         except Exception as ex:
             # print(ex)
             if self.trade_duble_flag:
-                buy_time_ms -= self.incriment_time_ms*2
                 symbol = set_item["symbol_list"][0]  
             else:
                 self.last_message.text = self.connector_func(self.last_message, "List index out of range. There is nothing to trade")
