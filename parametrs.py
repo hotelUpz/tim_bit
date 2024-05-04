@@ -14,7 +14,7 @@ class PARAMS():
         self.market_place = 'bitget'  
         self.response_data_list, self.response_success_list = [], []  
         self.incriment_time_ms = 0
-        self.railway_server_number = 1  
+        self.railway_server_number = 2  
         self.symbol_list_el_position = 0
         self.listing_time_ms = None        
         self.stop_flag = False
