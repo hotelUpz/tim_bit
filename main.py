@@ -75,6 +75,18 @@ class TEMPLATES(TG_ASSISTENT):
             # print(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order") 
             self.last_message.text = self.connector_func(self.last_message, f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
 
+    @log_exceptions_decorator
+    def db_fetch_template(self, dbb_coordinator_instasnce, set_item):
+        db_connect_true = dbb_coordinator_instasnce.db_connector()
+        if db_connect_true:
+            dbb_coordinator_repl = dbb_coordinator_instasnce.db_writer(set_item) 
+            if dbb_coordinator_repl:
+                self.last_message.text = self.connector_func(self.last_message, 'Writing set_item data was making successfully!')
+            else:
+                self.last_message.text = self.connector_func(self.last_message, 'Some problems with writing set_item data...')
+        else:
+            self.last_message.text = self.connector_func(self.last_message, 'Some problem with db connecting...')                               
+
 class MANAGER(TEMPLATES):
     def __init__(self) -> None:
         super().__init__()
@@ -197,7 +209,7 @@ class MAIN_CONTROLLER(MANAGER):
             from info_pars import ANNONCEMENT 
             from db_coordinator import DB_COOORDINATOR
             bg_parser = ANNONCEMENT()
-            dbb_coordinator = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
+            dbb_coordinator_instasnce = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
             while True:
                 previous_set_item = set_item
                 start_data = []
@@ -233,7 +245,9 @@ class MAIN_CONTROLLER(MANAGER):
                     self.listing_time_ms = set_item.get('listing_time_ms', None)  
                     # ///////////////// show set info logic /////////////////// 
                     show_counter += 1
-                    if show_counter == 5:
+                    if show_counter == 3:
+                        set_item.update(self.set_item)
+                        self.db_fetch_template(dbb_coordinator_instasnce, set_item)
                         self.last_message.text = self.connector_func(self.last_message, str(set_item))
                         show_counter = 0
                 else:
@@ -243,22 +257,15 @@ class MAIN_CONTROLLER(MANAGER):
                     # time.sleep(random.randrange(51, 61))
                     continue
                 if self.listing_time_ms:
-                    if self.left_time_in_minutes_func(self.listing_time_ms) <= 12:
+                    if self.left_time_in_minutes_func(self.listing_time_ms) <= 15:
                         if self.calibrator_flag:
                             self.delay_manager()
                         # ////////////////////////////////////////////////////////////////////// 
                         set_item.update(self.set_item)                   
                         self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                         # //////////////////////////////////////////////////////////////////////
-                        db_connect_true = dbb_coordinator.db_connector()
-                        if db_connect_true:
-                            dbb_coordinator_repl = dbb_coordinator.db_writer(set_item) 
-                            if dbb_coordinator_repl:
-                                self.last_message.text = self.connector_func(self.last_message, 'Writing set_item data was making successfully!')
-                            else:
-                                self.last_message.text = self.connector_func(self.last_message, 'Some problems with writing set_item data...')
-                        else:
-                            self.last_message.text = self.connector_func(self.last_message, 'Some problem with db connecting...')
+                        self.db_fetch_template(dbb_coordinator_instasnce, set_item)
+                        # //////////////////////////////////////////////////////////////////////
                         cur_time = int(time.time()* 1000)
                         total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
                         cur_time = int(time.time()* 1000)
