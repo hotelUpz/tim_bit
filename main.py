@@ -205,8 +205,10 @@ class MAIN_CONTROLLER(MANAGER):
                 if set_item and self.listing_time_ms:            
                     show_counter += 1
                     if show_counter == 15:
-                        self.last_message.text = self.connector_func(self.last_message, f"symbol_list: {set_item.get('symbol_list', 'Empty list')}\nlisting_time: {set_item.get('listing_time', 'Empty listing time data')}")
-
+                        self.last_message.text = self.connector_func(
+                            self.last_message, 
+                            f"symbol_list: {set_item.get('symbol_list', 'No symbol list available')}\nlisting_time: {set_item.get('listing_time', 'No listing time available')}\ndelay_time_ms_server{self.railway_server_number}: {set_item.get(f'delay_time_ms_server{self.railway_server_number}', 'No delay data available')}\ndepo_server{self.railway_server_number}: {set_item.get(f'depo_server{self.railway_server_number}', 'No depo data available')}"
+                        )
                         show_counter = 0
                 else:
                     time.sleep(random.randrange(59, 69))
