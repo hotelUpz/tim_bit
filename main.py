@@ -198,11 +198,6 @@ class MAIN_CONTROLLER(MANAGER):
             from db_coordinator import DB_COOORDINATOR
             bg_parser = ANNONCEMENT()
             dbb_coordinator = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
-            # data = {'symbol_list': ['STYLEUSDT'], 't100_mode_pause_server1': 1.6, 't100_mode_pause_server2': 1.2, 't100_mode_pause_server3': 2.1, 't100_mode_pause_server4': 1.6, 'listing_time_ms': 1714561200000, 'listing_time': '2024-05-01 14:00:00', 'depo_server1': 400, 'delay_time_ms_server1': 400, 'depo_server2': 300, 'delay_time_ms_server2': 300, 'depo_server3': 20, 'delay_time_ms_server3': 95, 'depo_server4': 100, 'delay_time_ms_server4': 100, 'market_place': 'bitget', 'calibrator_flag': False, 'sell_mode': 't100', 'incriment_time_ms': 0}
-            # dbb_coordinator.db_connector()
-            # # dbb_coordinator.create_table()
-            # dbb_coordinator.db_writer(data)
-            # return
             while True:
                 previous_set_item = set_item
                 start_data = []
@@ -229,8 +224,7 @@ class MAIN_CONTROLLER(MANAGER):
                 # ///////////////// pars logic //////////////////////////////////
                 start_data = bg_parser.bitget_parser()
                 if start_data:            
-                    set_item = self.start_data_to_item(start_data) 
-                    
+                    set_item = self.start_data_to_item(start_data)                    
                     try:
                         if set_item.get('listing_time_ms', None) > previous_set_item.get('listing_time_ms', None):
                             set_item = previous_set_item
@@ -239,11 +233,11 @@ class MAIN_CONTROLLER(MANAGER):
                     self.listing_time_ms = set_item.get('listing_time_ms', None)  
                     # ///////////////// show set info logic /////////////////// 
                     show_counter += 1
-                    if show_counter == 3:
+                    if show_counter == 5:
                         self.last_message.text = self.connector_func(self.last_message, str(set_item))
                         show_counter = 0
                 else:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause2...")
+                    # self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause2...")
                     # ///////////////// show set info logic end ///////////////////
                     time.sleep(random.randrange(239, 299)) 
                     # time.sleep(random.randrange(51, 61))
@@ -265,8 +259,8 @@ class MAIN_CONTROLLER(MANAGER):
                                 self.last_message.text = self.connector_func(self.last_message, 'Some problems with writing set_item data...')
                         else:
                             self.last_message.text = self.connector_func(self.last_message, 'Some problem with db connecting...')
-                        # cur_time = int(time.time()* 1000)
-                        # total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
+                        cur_time = int(time.time()* 1000)
+                        total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
                         cur_time = int(time.time()* 1000)
                         total_log_instance.json_to_buffer('START', cur_time, [set_item]) 
                         json_file = total_log_instance.get_json_data()                
@@ -281,7 +275,7 @@ class MAIN_CONTROLLER(MANAGER):
                 else:
                     self.last_message.text = self.connector_func(self.last_message, "oops,... self.listing_time_ms == None")
 
-                self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause...")
+                # self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause...")
                 # print("pause...")
                 time.sleep(random.randrange(239, 299))
                 # time.sleep(random.randrange(51, 61)) 
