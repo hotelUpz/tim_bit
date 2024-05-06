@@ -25,7 +25,7 @@ class DB_COOORDINATOR():
         for _ in range(2):
             try:
                 self.connection = mysql.connector.connect(**config)      
-                print("Writerr connection established")
+                # print("Writerr connection established")
                 self.cursor = self.connection.cursor()
                 return True
             except Exception as e:
