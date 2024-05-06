@@ -214,8 +214,8 @@ class MAIN_CONTROLLER(MANAGER):
                     continue
             except Exception as ex:
                 print(ex)
-
-            if self.left_time_in_minutes_func(self.listing_time_ms) <= 3:
+            left_time_in_minutes_var = self.left_time_in_minutes_func(self.listing_time_ms)
+            if 0 < left_time_in_minutes_var <= 3:
                 try:
                     # //////////////////////////////////////////////////////////////////////
                     self.trading_little_temp(set_item) # main func
