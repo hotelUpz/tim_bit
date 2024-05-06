@@ -204,10 +204,14 @@ class MAIN_CONTROLLER(MANAGER):
                 if set_item and self.listing_time_ms:            
                     show_counter += 1
                     if show_counter == 15:
-                        self.last_message.text = self.connector_func(
-                            self.last_message, 
-                            f"symbol_list: {set_item.get('symbol_list', 'No symbol list available')}\nlisting_time: {set_item.get('listing_time', 'No listing time available')}\ndelay_time_ms_server{self.railway_server_number}: {set_item.get(f'delay_time_ms_server{self.railway_server_number}', 'No delay data available')}\ndepo_server{self.railway_server_number}: {set_item.get(f'depo_server{self.railway_server_number}', 'No depo data available')}"
-                        )
+                        if 0 < self.left_time_in_minutes_func(self.listing_time_ms):
+                            self.last_message.text = self.connector_func(
+                                self.last_message, 
+                                f"symbol_list: {set_item.get('symbol_list', 'No symbol list available')}\nlisting_time: {set_item.get('listing_time', 'No listing time available')}\ndelay_time_ms_server{self.railway_server_number}: {set_item.get(f'delay_time_ms_server{self.railway_server_number}', 'No delay data available')}\ndepo_server{self.railway_server_number}: {set_item.get(f'depo_server{self.railway_server_number}', 'No depo data available')}"
+                            )
+                        else:
+                            self.last_message.text = self.connector_func(self.last_message, "There is no trading data at the current moment!..")
+
                         show_counter = 0
                 else:
                     time.sleep(random.randrange(59, 69))
