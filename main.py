@@ -126,7 +126,7 @@ class MANAGER(TEMPLATES):
                 return  
         # ///////////////////////////////////////////////////////////////////////////////// 
         tg_mess = ''
-        tg_mess = f'symbol: {symbol}\ndepo: {set_item.get(f"depo_server{self.railway_server_number}", None)}\ndelay: {set_item.get(f"delay_time_ms_server{self.railway_server_number}", None)}\nlisting time: {set_item.get(f"listing_time_ms", None)}'
+        tg_mess = f'symbol: {symbol}\ndepo: {set_item.get(f"depo_server{self.railway_server_number}", None)}\ndelay: {set_item.get(f"delay_time_ms_server{self.railway_server_number}", None)+ int(self.incriment_time_ms*1.5)}\nlisting time: {set_item.get(f"listing_time_ms", None)}'
         self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} __(preTradingMessage)__ \n{tg_mess}")  
         self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
         # /////////////////////////////////////////////////////////////////////////////////  
