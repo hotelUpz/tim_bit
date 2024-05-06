@@ -275,8 +275,8 @@ class MAIN_CONTROLLER(MANAGER):
                         log_file = total_log_instance.get_logs()
                         self.bot.send_document(self.last_message.chat.id, log_file) 
 
-                        set_item = {}  
-                        time.sleep((self.listing_time_ms-int(time.time()*1000))/ 1000)                 
+                        set_item = {} 
+                        time.sleep((self.listing_time_ms - int(time.time()*1000))/ 1000)                                      
                         continue
                         # ////////////////////////////////////////////////////////////////////////////  
                 else:
