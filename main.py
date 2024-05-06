@@ -251,7 +251,7 @@ class MAIN_CONTROLLER(MANAGER):
                         self.last_message.text = self.connector_func(self.last_message, str(set_item))
                         show_counter = 0
                 else:
-                    # self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause2...")
+                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} There is no trading data now. pause2...")
                     # ///////////////// show set info logic end ///////////////////
                     time.sleep(random.randrange(239, 299)) 
                     # time.sleep(random.randrange(51, 61))
