@@ -257,7 +257,7 @@ class MAIN_CONTROLLER(MANAGER):
                     # time.sleep(random.randrange(51, 61))
                     continue
                 if self.listing_time_ms:
-                    if self.left_time_in_minutes_func(self.listing_time_ms) <= 15:
+                    if 0 < self.left_time_in_minutes_func(self.listing_time_ms) <= 15:
                         if self.calibrator_flag:
                             self.delay_manager()
                         # ////////////////////////////////////////////////////////////////////// 
