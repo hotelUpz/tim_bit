@@ -141,7 +141,7 @@ class MANAGER(TEMPLATES):
         self.extract_data_temp(self.response_success_list[0])        
         # ///////////////////////////////////////////////////////
         if self.sell_mode == 't100':
-            time.sleep(set_item["t100_mode_pause"])                    
+            time.sleep(set_item[f"t100_mode_pause_server{self.railway_server_number}"])                    
             if all(not item.get('done', False) for item in self.response_data_list):
                 self.last_message.text = self.connector_func(self.last_message, "Some problems with fetching trades data...")
                 print("Some problems with fetching trades data...")
