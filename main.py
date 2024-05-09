@@ -273,6 +273,7 @@ class MAIN_CONTROLLER(MANAGER):
                 start_data = ANNONCEMENT().bitget_parser()
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
+                    print(set_item)
                     show_counter += 1
                     if show_counter == 5:
                         self.last_message.text = self.connector_func(self.last_message, str(set_item))
@@ -430,10 +431,10 @@ class TG_MANAGER(MAIN_CONTROLLER):
             print(ex)
 
 if __name__=="__main__":  
-    print("pass")  
-    # print('Please go to the Telegram bot interface!')     
-    # bot = TG_MANAGER()   
-    # bot.run()
+    # print("pass")  
+    print('Please go to the Telegram bot interface!')     
+    bot = TG_MANAGER()   
+    bot.run()
 
 # git add . 
 # git commit -m "betta15"
