@@ -119,7 +119,8 @@ class MANAGER(TEMPLATES):
             good_test_flag = False     
             good_test_counter = 0
             retry_limit_counter = 6 
-            # self.delay_time_ms = self.delay_default_time_ms           
+            # self.delay_time_ms = self.delay_default_time_ms 
+                    #   
 
             for i in range(retry_limit_counter):   
                 try:         
