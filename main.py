@@ -189,6 +189,7 @@ class MANAGER(TEMPLATES):
         item = {
             'data': [{'symbol': self.default_test_symbol}],
             'qnt_to_sell_start': round(float(qty_garbare)* 0.99, 2)
+            
         }     
         self.sell_market_temp(item)   
                         
