@@ -55,11 +55,17 @@ class ANNONCEMENT(UTILS):
             data_set = []
             bitget_headers['User-Agent'] = choice(user_agents)
             r = self.session.get(url=data_item['annUrl'], headers=bitget_headers)
+            # print(r)
             soup = BeautifulSoup(r.text, 'html.parser')
-            listing_time_date_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').find_all('p')[3].get_text().strip().split(': ')[1].strip()      
-            listing_time = self.from_string_to_date_time(listing_time_date_string)  
-            if listing_time > cur_time - time_correction:     
-                symbol_data = self.symbol_extracter(data_item['annTitle'])     
+            listing_time_all_potential_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').get_text()
+            trading_time_str = [x for x in listing_time_all_potential_string.split('\n') if "Trading Available:" in x][0].replace("Trading Available:", "").strip()
+            # print(trading_time_str)
+            listing_time = self.from_string_to_date_time(trading_time_str) 
+            # print(listing_time) 
+            if listing_time > cur_time - time_correction:  
+                # print(listing_time > cur_time - time_correction)   
+                symbol_data = self.symbol_extracter(data_item['annTitle'])  
+                # print(symbol_data)   
                 if symbol_data:
                     data_set.append(
                         {                                
@@ -78,7 +84,11 @@ class ANNONCEMENT(UTILS):
         # print('Start parser')
         start_time = self.get_start_of_day()
         url = f"https://api.bitget.com/api/v2/public/annoucements?&annType=coin_listings&language=en_US"        
-        data = self.session.get(url).json()["data"]
+        r = self.session.get(url)
+        # print(r)
+        r_j = r.json()
+        data = r_j["data"]        
         data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]
+        # print(data)
         cur_time = int(time.time()* 1000)
-        return self.links_multiprocessor(data, cur_time)  
+        return self.links_multiprocessor(data, cur_time) 
