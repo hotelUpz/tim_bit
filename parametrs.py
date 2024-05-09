@@ -50,3 +50,4 @@ class PARAMS():
         self.db_name = os.getenv("DB_NAME", "")
         self.db_host = os.getenv("DB_HOST", "")
         self.db_port = os.getenv("DB_PORT", "")
+        # 
