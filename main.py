@@ -431,7 +431,8 @@ class TG_MANAGER(MAIN_CONTROLLER):
             print(ex)
 
 if __name__=="__main__":  
-    print("pass")  
+    print("pass") 
+    #  
     # print('Please go to the Telegram bot interface!')     
     # bot = TG_MANAGER()   
     # bot.run()
