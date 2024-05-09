@@ -93,7 +93,7 @@ class UTILS():
 
     def get_start_of_day(self):
         now = datetime.datetime.now()
-        start_of_day = datetime.datetime(now.year, now.month, now.day) - datetime.timedelta(days=4)
+        start_of_day = datetime.datetime(now.year, now.month, now.day) - datetime.timedelta(days=7)
         return int(start_of_day.timestamp() * 1000)
         # ////////////////////////////////////////////////////////////////////////////////
     def date_of_the_month(self):        
