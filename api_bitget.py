@@ -31,7 +31,7 @@ class BITGET_API(PARAMS):
             "symbol": symbol,
             "side": side,
             "orderType": market_type,
-            "size": str(size)
+            "size": str(size),
         }
         if market_type == 'limit':
             payload['price'] = str(target_price)
@@ -52,8 +52,7 @@ class BITGET_API(PARAMS):
         market_type = 'market'
         targetprice = None
         payload, headers = self.get_post_params(symbol, side, size, targetprice, market_type)
-        resp = self.session.post(self.orders_url, headers=headers, json=payload) 
-        return resp
+        return self.session.post(self.orders_url, headers=headers, json=payload)
 
      # /////////////////////////////////////////////////////////////////////////
     def send_fake_request(self, fake_sumbol):
@@ -86,5 +85,7 @@ class BITGET_API(PARAMS):
             "Content-Type": "application/json",
             "locale": "en-US"
         }
-        return self.session.get(self.base_url + request_path, headers=headers)      
+        return self.session.get(self.base_url + request_path, headers=headers)  
+
+# {'code': '00000', 'msg': 'success', 'requestTime': 1715598961792, 'data': [{'userId': '5604086735', 'symbol': 'ARBUSDT', 'orderId': '1173872613484412935', 'clientOid': '75eac07f-7d86-4209-bda6-d4c364cefd97', 'price': '0', 'size': '10', 'orderType': 'market', 'side': 'buy', 'status': 'filled', 'priceAvg': '0.9911100000000000', 'baseVolume': '10.08', 'quoteVolume': '9.9903888000000000', 'enterPointSource': 'API', 'feeDetail': '{"newFees":{"c":0,"d":0,"deduction":false,"r":-0.01008,"t":-0.01008,"totalDeductionFee":0},"ARB":{"deduction":false,"feeCoinCode":"ARB","totalDeductionFee":0,"totalFee":-0.0100800000000000}}', 'orderSource': 'market', 'tpslType': 'normal', 'triggerPrice': None, 'quoteCoin': 'USDT', 'baseCoin': 'ARB', 'cTime': '1715598961230', 'uTime': '1715598961334'}]}
       
