@@ -70,40 +70,44 @@ class TEMPLATES(TG_ASSISTENT):
         else:                
             # print(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order") 
             self.last_message.text = self.connector_func(self.last_message, f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
-                                         
+
     @log_exceptions_decorator        
     def extract_data_temp(self, item):            
         orderId = item['data']['orderId']           
-        response_data = self.get_order_data(orderId)   
-        response_data = response_data.json()                
+        response_data = self.get_order_data(orderId).json()
+        print(response_data)
+        
         response_data['done'] = False
-        response_data['real_price'] = float(response_data['data'][0]['quoteVolume'])/float(response_data['data'][0]['baseVolume'])                              
         response_data['qnt_to_sell_start'] = 0
-        fills = response_data["data"]
-        for fill in fills:
-            try:
-                response_data['qnt_to_sell_start'] += float(fill["baseVolume"])
-            except:   
-                pass   
-        if response_data['qnt_to_sell_start'] > 10:   
-            response_data['qnt_to_sell_start'] = int(response_data['qnt_to_sell_start']* 0.98)
-        else:
-            response_data['qnt_to_sell_start'] = round(response_data['qnt_to_sell_start']* 0.98, 2)
-        if response_data['qnt_to_sell_start'] !=0:
-            response_data['done'] = True
-            item_copy = item.copy()
-            item_copy.update(response_data)        
-            self.response_data_list.append(item_copy)      
-            de_qnt_to_sell_start = decimal.Decimal(str(item_copy['qnt_to_sell_start']))
-            formatted_qnt_to_sell_start = format(de_qnt_to_sell_start, 'f')
-            real_buy_price = decimal.Decimal(str(item_copy['real_price']))
-            real_buy_price = format(real_buy_price, 'f')
-            self.last_message.text = self.connector_func(self.last_message, f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}" + '\n\n' + f"buy_price {item_copy['symbol']}: {real_buy_price}")
-            # print(f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}")
-            # print(f"buy_price {item_copy['symbol']}: {real_buy_price}")  
-        else:
-            self.last_message.text = self.connector_func(self.last_message, "response_data['qnt_to_sell_start'] == 0")
-            # print(f"response_data['qnt_to_sell_start'] == 0") 
+        response_data['real_price'] = 0
+        
+        try:
+            fills = response_data.get("data", [])
+            
+            base_volume = sum(float(fill.get("baseVolume", 0)) for fill in fills)
+            quote_volume = sum(float(fill.get("quoteVolume", 0)) for fill in fills)
+            
+            if base_volume > 2:
+                response_data['qnt_to_sell_start'] = int(base_volume * 0.98)
+            else:
+                response_data['qnt_to_sell_start'] = round(base_volume * 0.98, 4)
+            
+            if response_data['qnt_to_sell_start'] != 0:
+                response_data['done'] = True
+                item_copy = item.copy()
+                item_copy.update(response_data)
+                
+                formatted_qnt_to_sell_start = format(decimal.Decimal(response_data['qnt_to_sell_start']), '.8f')
+                real_buy_price = decimal.Decimal(quote_volume) / decimal.Decimal(base_volume) if base_volume != 0 else 0
+                real_buy_price = format(real_buy_price, '.8f')
+                
+                self.response_data_list.append(item_copy)      
+                self.last_message.text = self.connector_func(self.last_message, 
+                                                            f"qnt_to_sell_start {item_copy['symbol']}: {formatted_qnt_to_sell_start}\n\n"
+                                                            f"buy_price {item_copy['symbol']}: {real_buy_price}")
+        except Exception as ex:
+            print(ex)
+            self.last_message.text = self.connector_func(self.last_message, "Error occurred while extracting data")
 
 class MANAGER(TEMPLATES):
     def __init__(self) -> None:
