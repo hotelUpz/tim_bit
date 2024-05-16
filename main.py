@@ -200,7 +200,8 @@ class MANAGER(TEMPLATES):
         try:              
             symbol = set_item["symbol_list"][self.symbol_list_el_position]  
         except Exception as ex:
-            print(ex)             
+            symbol = set_item["symbol_list"][0] 
+            # print(ex)             
         self.send_fake_request(self.symbol_fake) 
         time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)                
         self.buy_market_temp(symbol)            
