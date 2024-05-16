@@ -274,7 +274,7 @@ class MAIN_CONTROLLER(MANAGER):
                 start_data = ANNONCEMENT().bitget_parser()
                 if start_data:            
                     set_item, self.listing_time_ms = self.params_gather(start_data, self.depo, self.delay_time_ms, self.default_params)
-                    print(set_item)
+                    # print(set_item)
                     show_counter += 1
                     if show_counter == 5:
                         self.last_message.text = self.connector_func(self.last_message, str(set_item))
