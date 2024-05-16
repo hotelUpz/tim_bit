@@ -119,7 +119,7 @@ class MANAGER(TEMPLATES):
         self.response_data_list, self.response_success_list = [], []
         buy_time_ms = self.listing_time_ms - set_item.get(f"delay_time_ms_server{self.railway_server_number}", None)      
         try:              
-            symbol = set_item["symbol_list"][self.symbol_list_el_position]  
+            symbol = set_item["symbol_list"][1]  
         except Exception as ex:
             # print(ex) #
             if self.trade_duble_flag:
