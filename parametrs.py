@@ -13,7 +13,7 @@ class PARAMS():
         self.railway_server_number = 'base' 
         self.total_server_number = 4  
         self.controls_mode = 'a'
-        self.run_flag = False
+        self.run_flag = False #
         self.calibrator_flag = True
         self.stop_flag = False        
         self.work_to = 17 # hoor in UTC
