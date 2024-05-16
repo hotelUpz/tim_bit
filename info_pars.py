@@ -89,7 +89,7 @@ class ANNONCEMENT(UTILS):
         r_j = r.json()
         data = r_j["data"]        
         data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]
-        print(data)
+        # print(data)
         cur_time = int(time.time()* 1000)
         return self.links_multiprocessor(data, cur_time) 
     
