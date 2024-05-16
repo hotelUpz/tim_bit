@@ -118,10 +118,8 @@ class MANAGER(TEMPLATES):
             self.max_symbol_list_slice = 1
             good_test_flag = False     
             good_test_counter = 0
-            retry_limit_counter = 6 
-            # self.delay_time_ms = self.delay_default_time_ms 
-                    #   
-
+            retry_limit_counter = 5
+        
             for i in range(retry_limit_counter):   
                 try:         
                     if (good_test_counter == 2):                                            
@@ -136,7 +134,7 @@ class MANAGER(TEMPLATES):
                         self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders on calibration step...' + '\n\n' + f"self.delay_time_ms: {self.delay_time_ms}")
                         # print('Some problems with placing buy market orders on calibration step...')
                         # print(f"self.delay_time_ms: {self.delay_time_ms}")
-                        self.listing_time_ms += 60000
+                        self.listing_time_ms += 30000
                         time.sleep(0.1)
                         continue
                     result_time_data_time, result_time_ms = self.show_trade_time_for_calibrator(self.response_data_list)
@@ -193,8 +191,7 @@ class MANAGER(TEMPLATES):
         self.trades_garbage()
 
     @log_exceptions_decorator
-    def buy_manager(self, set_item):
-        # print("It is waiting time for buy!..")        
+    def buy_manager(self, set_item):     
         self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
         self.response_data_list, self.response_success_list = [], [] 
         schedule_time_ms = self.listing_time_ms - 4000

@@ -29,8 +29,8 @@ class PARAMS():
         self.depo = 20
         self.sell_mode = 't100' # t100 -- sell for all qty by time
         self.delay_flag = True # True  
-        self.delay_default_time_ms = 97   
-        self.delay_time_ms = 97
+        self.delay_default_time_ms = 95   
+        self.delay_time_ms = 95
         self.listing_time_ms = None
         self.incriment_time_ms = 0
         self.pre_start_pause = 0 
