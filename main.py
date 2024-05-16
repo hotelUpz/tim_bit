@@ -121,7 +121,7 @@ class MANAGER(TEMPLATES):
         try:              
             symbol = set_item["symbol_list"][self.symbol_list_el_position]  
         except Exception as ex:
-            # print(ex)
+            # print(ex) #
             if self.trade_duble_flag:
                 symbol = set_item["symbol_list"][0]  
             else:
