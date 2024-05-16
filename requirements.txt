@@ -1,4 +1,8 @@
-pyTelegramBotAPI==4.17.0
-python-dotenv==1.0.1
-Requests==2.31.0
-mysql-connector-python==8.4.0
+pyTelegramBotAPI
+python-dotenv
+Requests
+mysql-connector-python
+# pyTelegramBotAPI==4.17.0
+# python-dotenv==1.0.1
+# Requests==2.31.0
+# mysql-connector-python==8.4.0
