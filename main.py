@@ -151,11 +151,11 @@ class MANAGER(TEMPLATES):
                     elif result_time_ms - self.listing_time_ms < -4:
                         self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms < 4")
                         # print("self.listing_time_ms - result_time_ms < 4")
-                        self.delay_time_ms -= 7
+                        self.delay_time_ms -= 5
                     elif result_time_ms - self.listing_time_ms > 20:
                         self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms > 20")
                         # print("self.listing_time_ms - result_time_ms > 20")
-                        self.delay_time_ms += 7
+                        self.delay_time_ms += 5
                     
                     self.last_message.text = self.connector_func(self.last_message, f"self.delay_time_ms: {self.delay_time_ms}")
                     # print(f"self.delay_time_ms: {self.delay_time_ms}")
