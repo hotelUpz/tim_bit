@@ -262,6 +262,8 @@ class MAIN_CONTROLLER(MANAGER):
                         if self.calibrator_flag:
                             self.delay_manager()
                         # ////////////////////////////////////////////////////////////////////// 
+                        for i in range(1, self.total_server_number+1, 1):
+                            self.set_item[f'delay_time_ms_server{i}'] = self.common_delay_time_ms
                         set_item.update(self.set_item)                   
                         self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
                         # //////////////////////////////////////////////////////////////////////
@@ -274,8 +276,7 @@ class MAIN_CONTROLLER(MANAGER):
                         json_file = total_log_instance.get_json_data()                
                         self.bot.send_document(self.last_message.chat.id, json_file)   
                         log_file = total_log_instance.get_logs()
-                        self.bot.send_document(self.last_message.chat.id, log_file) 
-
+                        self.bot.send_document(self.last_message.chat.id, log_file)
                         set_item = {} 
                         time.sleep((self.listing_time_ms - int(time.time()*1000))/ 1000)                                      
                         continue

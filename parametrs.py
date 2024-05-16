@@ -10,7 +10,8 @@ class PARAMS():
 
     def default_trade_vars(self):
         self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!'   
-        self.railway_server_number = 'base'   
+        self.railway_server_number = 'base' 
+        self.total_server_number = 4  
         self.controls_mode = 'a'
         self.run_flag = False
         self.calibrator_flag = True
