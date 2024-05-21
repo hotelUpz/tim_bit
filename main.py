@@ -203,7 +203,7 @@ class MAIN_CONTROLLER(MANAGER):
                         pass_set_to_previous_flag = False
 
                     try:
-                        int('sdkjhvhkj')
+                        # int('sdkjhvhkj')
                         if temporary_set_item.get('listing_time_ms', None) > previous_set_item.get('listing_time_ms', None):
                             temporary_set_item = previous_set_item
                     except Exception as ex:

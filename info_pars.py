@@ -20,28 +20,22 @@ user_agents = [
 ]
 
 bitget_headers = {
-    'authority': 'www.bitget.com',    
+    'authority': 'www.bitget.com',
     'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    'origin': 'https://www.bitget.com/',
-    'referer': 'https://www.bitget.com/',
-    'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-    'sec-ch-ua-mobile': '?0',    
-    'sec-fetch-dest': 'script',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'cross-site',
-    'User-Agent': ""
+    'User-Agent': choice(user_agents)
 }
 
 class ANNONCEMENT(UTILS):
     def __init__(self, proxy_host, proxy_port, proxy_username, proxy_password) -> None:
-        super().__init__() 
-        self.session = requests.Session() 
+        super().__init__()
+        self.session = requests.Session()
         self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=12, pool_maxsize=12))
         proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
-        self.proxiess = {
+        self.proxiess = {         
             'http': proxy_url,
-            'https': proxy_url
+            # 'https': proxy_url
         }
+        self.is_proxies_true = 1
     
     @log_exceptions_decorator
     def links_multiprocessor(self, data, cur_time, cpu_count=10): 
@@ -54,12 +48,12 @@ class ANNONCEMENT(UTILS):
                 except:
                     pass 
         return total_list
-
+    # @log_exceptions_decorator
     def bitget_links_handler(self, data_item, cur_time):
         try:
             data_set = []
             bitget_headers['User-Agent'] = choice(user_agents)
-            r = self.session.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess)
+            r = self.session.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess if self.is_proxies_true else None)
             print(r)
             soup = BeautifulSoup(r.text, 'html.parser')
             listing_time_all_potential_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').get_text()
@@ -92,7 +86,7 @@ class ANNONCEMENT(UTILS):
         start_time = self.get_start_of_day()
         url = f"https://api.bitget.com/api/v2/public/annoucements?&annType=coin_listings&language=en_US"        
         r = self.session.get(url)
-        # print(r)
+        print(r)
         r_j = r.json()
         data = r_j["data"]        
         data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]
@@ -100,5 +94,5 @@ class ANNONCEMENT(UTILS):
         cur_time = int(time.time()* 1000)
         return self.links_multiprocessor(data, cur_time) 
     
-# print(ANNONCEMENT().bitget_parser())
+# print(ANNONCEMENT(1,1,1,1).bitget_parser())
 
