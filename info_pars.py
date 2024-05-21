@@ -30,7 +30,7 @@ bitget_headers = {
     'referer': 'https://www.bitget.com/support/articles/12560603809959',
     'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
     'sec-ch-ua-mobile': '?0',
-    # 'sec-ch-ua-platform': '"Linux"',
+    'sec-ch-ua-platform': '"Linux"',
     'sec-fetch-dest': 'empty',
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-origin',
@@ -43,11 +43,9 @@ bitget_headers = {
 class ANNONCEMENT(UTILS):
     def __init__(self, proxy_host, proxy_port, proxy_username, proxy_password) -> None:
         super().__init__()
-        # print(proxy_host, proxy_port, proxy_username, proxy_password)
+        print(proxy_host, proxy_port, proxy_username, proxy_password)
         self.session = requests.Session()
         self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=12, pool_maxsize=12))
-        # proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
-        # proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100'   
         proxy_arg = f'{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'    
         self.proxiess = {
             "https": f"http://{proxy_arg}"
@@ -72,7 +70,7 @@ class ANNONCEMENT(UTILS):
         try:
             # print('sdjkbv')
             data_set = []
-            bitget_headers['User-Agent'] = choice(user_agents)
+            # bitget_headers['User-Agent'] = choice(user_agents)
             r = requests.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess if self.is_proxies_true else None)
             print(r)
             # print(r.text)
