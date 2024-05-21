@@ -261,7 +261,7 @@ class MAIN_CONTROLLER(MANAGER):
                 # self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} pause...")
                 print('pause')
                 # time.sleep(random.uniform(239, 299))
-                time.sleep(random.uniform(5, 10))
+                time.sleep(random.uniform(20, 30))
 
         self.send_mess_to_tg(self.SOLI_DEO_GLORIA)
 

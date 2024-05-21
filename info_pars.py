@@ -20,9 +20,16 @@ user_agents = [
 ]
 
 bitget_headers = {
-    'authority': 'www.bitget.com',
-    # 'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    # 'User-Agent': choice(user_agents)
+    'authority': 'www.bitget.com',    
+    'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+    'origin': 'https://www.bitget.com/',
+    'referer': 'https://www.bitget.com/',
+    'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+    'sec-ch-ua-mobile': '?0',    
+    'sec-fetch-dest': 'script',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'cross-site',
+    'User-Agent': ""
 }
 
 class ANNONCEMENT(UTILS):
@@ -31,19 +38,12 @@ class ANNONCEMENT(UTILS):
         # print(proxy_host, proxy_port, proxy_username, proxy_password)
         self.session = requests.Session()
         self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=12, pool_maxsize=12))
-        # proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
-        # proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
-# proxy_host = '77.47.244.201'
-# proxy_port = '50100'
-# proxy_username = 'nikolassmsttt'
-# proxy_password = 'pRcwSxcJtT'
-        # proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100/50101'
-        proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100/50101'
-        # print(proxy_url)
+        proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
+        # proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100/50101'       
         self.proxiess = {
-            "https": f"http://{proxy_arg}"
-            # 'http': proxy_url,
-            # 'https': proxy_url
+            # "https": f"http://{proxy_arg}"
+            'http': proxy_url,
+            'https': proxy_url
         }
         self.is_proxies_true = 1
     
