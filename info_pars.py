@@ -64,7 +64,7 @@ class ANNONCEMENT(UTILS):
             # print(listing_time) 
             # symbol_data = self.symbol_extracter(data_item['annTitle'])  
             # print(symbol_data)  
-            if listing_time + time_correction > cur_time:
+            if listing_time + time_correction + 10800000 > cur_time:
                 # print(listing_time > cur_time - time_correction)
                 symbol_data = self.symbol_extracter(data_item['annTitle'])  
                 # print(symbol_data)   
