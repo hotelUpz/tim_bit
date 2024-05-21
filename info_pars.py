@@ -38,12 +38,12 @@ class ANNONCEMENT(UTILS):
         # print(proxy_host, proxy_port, proxy_username, proxy_password)
         self.session = requests.Session()
         self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=12, pool_maxsize=12))
-        proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
-        # proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100/50101'       
+        # proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
+        proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100/50101'       
         self.proxiess = {
-            # "https": f"http://{proxy_arg}"
-            'http': proxy_url,
-            'https': proxy_url
+            "https": f"http://{proxy_arg}"
+            # 'http': proxy_url,
+            # 'https': proxy_url
         }
         self.is_proxies_true = 1
     
