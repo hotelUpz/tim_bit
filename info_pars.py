@@ -21,18 +21,28 @@ user_agents = [
 
 bitget_headers = {
     'authority': 'www.bitget.com',
-    'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    'User-Agent': choice(user_agents)
+    # 'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+    # 'User-Agent': choice(user_agents)
 }
 
 class ANNONCEMENT(UTILS):
     def __init__(self, proxy_host, proxy_port, proxy_username, proxy_password) -> None:
         super().__init__()
+        # print(proxy_host, proxy_port, proxy_username, proxy_password)
         self.session = requests.Session()
         self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=12, pool_maxsize=12))
-        proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
-        self.proxiess = {         
-            'http': proxy_url,
+        # proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
+        # proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
+# proxy_host = '77.47.244.201'
+# proxy_port = '50100'
+# proxy_username = 'nikolassmsttt'
+# proxy_password = 'pRcwSxcJtT'
+        # proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100/50101'
+        proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100/50101'
+        # print(proxy_url)
+        self.proxiess = {
+            "https": f"http://{proxy_arg}"
+            # 'http': proxy_url,
             # 'https': proxy_url
         }
         self.is_proxies_true = 1
@@ -51,10 +61,12 @@ class ANNONCEMENT(UTILS):
     # @log_exceptions_decorator
     def bitget_links_handler(self, data_item, cur_time):
         try:
+            # print('sdjkbv')
             data_set = []
             bitget_headers['User-Agent'] = choice(user_agents)
             r = self.session.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess if self.is_proxies_true else None)
             print(r)
+            # print(r.text)
             soup = BeautifulSoup(r.text, 'html.parser')
             listing_time_all_potential_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').get_text()
             trading_time_str = [x for x in listing_time_all_potential_string.split('\n') if "Trading Available:" in x][0].replace("Trading Available:", "").strip()
