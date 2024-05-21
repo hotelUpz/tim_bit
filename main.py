@@ -1,53 +1,28 @@
-import decimal
+import os
+import inspect
 import time
 import random
-import concurrent.futures
-import telebot
-from telebot import types
-from api_bitget import BITGET_API
+from connectorss import CONNECTOR_TG
 from utils import UTILS
+from info_pars import ANNONCEMENT 
+from db_coordinator import DB_COOORDINATOR
 from log import total_log_instance, log_exceptions_decorator
+current_file = os.path.basename(__file__)
 
-class CONNECTOR_TG(BITGET_API, UTILS):
-    def __init__(self):  
-        super().__init__()  
-        # dfjvn
-        self.bot = telebot.TeleBot(self.tg_api_token)
-        self.menu_markup = self.create_menu() 
-        self.last_message = None
-
-    def create_menu(self):
-        menu_markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True, one_time_keyboard=True)
-        button1 = types.KeyboardButton("START")
-        button2 = types.KeyboardButton("STOP")
-        button3 = types.KeyboardButton("SETTINGS")       
-        menu_markup.add(button1, button2, button3)        
-        return menu_markup
-
-class TG_ASSISTENT(CONNECTOR_TG):
-    def __init__(self):
-        super().__init__()
-
-    def connector_func(self, message, response_message):
-        retry_number = 3
-        decimal = 1.1       
-        for i in range(retry_number):
-            try:
-                self.bot.send_message(message.chat.id, response_message)                
-                return message.text
-            except Exception as ex:
-                print(ex)
-
-                time.sleep(1.1 + i*decimal)                   
-        return None
-
-class TEMPLATES(TG_ASSISTENT):
+class TEMPLATES(CONNECTOR_TG, UTILS):
     def __init__(self) -> None:
         super().__init__()
+
+    def send_mess_to_tg(self, text):
+        self.last_message.text = self.connector_func(self.last_message, text)
+
+    def handle_exception(self, ex, line):
+        error_message = f"An error occurred in file '{current_file}', line {line}: {ex}"
+        print(error_message)
+        self.send_mess_to_tg(error_message)
     
     @log_exceptions_decorator
     def buy_market_temp(self, symbol):  
-        # int('dfjgfj,')   
         response = self.place_market_order(symbol, 'BUY', self.depo_test)                
         response = response.json() 
         response['symbol'] = symbol
@@ -92,84 +67,78 @@ class MANAGER(TEMPLATES):
         super().__init__()
 
     def delay_manager(self):
-        def delay_calibrator(test_set_item):            
-            good_test_flag = False     
+        def delay_calibrator(test_set_item):
+            good_test_flag = False
             good_test_counter = 0
-            retry_limit_counter = 5       
+            retry_limit_counter = 5
 
-            for i in range(retry_limit_counter):   
-                try:         
-                    if (good_test_counter == 2):                                            
+            for i in range(retry_limit_counter):
+                try:
+                    if good_test_counter == 2:
                         return True
                     elif not good_test_flag:
                         good_test_counter = 0
 
                     good_test_flag = False
-                    self.last_message.text = self.connector_func(self.last_message, f"retry_counter_: {i+1}")
-                    # print(f"retry_counter_: {i}")
-                                      
+                    self.send_mess_to_tg(f"retry_counter_: {i+1}")
+
                     if not self.trading_little_temp(test_set_item):
-                        self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders on calibration step...' + '\n\n' + f"self.common_delay_time_ms: {self.common_delay_time_ms}")
-                        # print('Some problems with placing buy market orders on calibration step...')
-                        # print(f"self.common_delay_time_ms: {self.common_delay_time_ms}")
-                        self.listing_time_ms += 30000
+                        self.send_mess_to_tg(f'Some problems with placing buy market orders on calibration step...\n\nself.common_delay_time_ms: {self.common_delay_time_ms}')
+                        self.test_listing_time_ms += 30000
                         time.sleep(0.1)
                         continue
+
                     result_time_data_time, result_time_ms = self.show_trade_time_for_calibrator(self.response_data_list)
-                    self.last_message.text = self.connector_func(self.last_message, result_time_data_time)
-                    # print(result_time_data_time)
-                    if -5 <= result_time_ms - self.listing_time_ms <= 20:
+                    self.send_mess_to_tg(result_time_data_time)
+
+                    if -5 <= result_time_ms - self.test_listing_time_ms <= 20:
                         good_test_flag = True
-                        self.last_message.text = self.connector_func(self.last_message, f"good_test_flag: {str(good_test_flag)}")
-                        # print(f"good_test_flag: {good_test_flag}")
+                        self.send_mess_to_tg(f"good_test_flag: {str(good_test_flag)}")
                         good_test_counter += 1
-                    elif result_time_ms - self.listing_time_ms < -5:
-                        self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms < 4")
-                        # print("self.listing_time_ms - result_time_ms < 4")
+                    elif result_time_ms - self.test_listing_time_ms < -5:
+                        self.send_mess_to_tg("self.test_listing_time_ms - result_time_ms < -5")
                         self.common_delay_time_ms -= 5
-                    elif result_time_ms - self.listing_time_ms > 20:
-                        self.last_message.text = self.connector_func(self.last_message, "self.listing_time_ms - result_time_ms > 20")
-                        # print("self.listing_time_ms - result_time_ms > 20")
+                    elif result_time_ms - self.test_listing_time_ms > 20:
+                        self.send_mess_to_tg("self.test_listing_time_ms - result_time_ms > 20")
                         self.common_delay_time_ms += 5
-                    
-                    self.last_message.text = self.connector_func(self.last_message, f"self.common_delay_time_ms: {self.common_delay_time_ms}")
-                    # print(f"self.common_delay_time_ms: {self.common_delay_time_ms}")
-                    self.listing_time_ms += 30000
+
+                    self.send_mess_to_tg(f"self.common_delay_time_ms: {self.common_delay_time_ms}")
+                    self.test_listing_time_ms += 30000
                     time.sleep(0.1)
                 except Exception as ex:
-                    # print(f"main 117: {ex}")
-                    self.last_message.text = self.connector_func(self.last_message, ex)
+                    self.handle_exception(ex, inspect.currentframe().f_lineno)
                     return False
             return True
-        start_listing_time_ms = self.listing_time_ms
+
         test_set_item = {
-                "symbol_list": [self.default_test_symbol],
-                "listing_time_ms": self.next_one_minutes_ms()                    
-            }
-                
+            "symbol_list": [self.default_test_symbol],
+            "listing_time_ms": self.next_one_minutes_ms()
+        }
+
         try:
-            delay_manager_return = False            
-            self.listing_time_ms = test_set_item['listing_time_ms']
+            self.test_listing_time_ms = test_set_item['listing_time_ms']
             delay_manager_return = delay_calibrator(test_set_item)
         except Exception as ex:
-            print(ex)
+            self.handle_exception(ex, inspect.currentframe().f_lineno)
+            delay_manager_return = False
+
         if not delay_manager_return:
-            self.last_message.text = self.connector_func(self.last_message, "Some problems with calibration...")
+            self.send_mess_to_tg("Some problems with calibration...")
             print("Some problems with calibration...")
-        self.listing_time_ms = start_listing_time_ms
+
         self.trades_garbage()
 
     @log_exceptions_decorator
     def buy_manager(self, set_item):      
         self.last_message.text = self.connector_func(self.last_message, "It is waiting time for buy!...")
         self.response_data_list, self.response_success_list = [], [] 
-        schedule_time_ms = self.listing_time_ms - 4000
+        schedule_time_ms = self.test_listing_time_ms - 4000
         time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)            
-        buy_time_ms = self.listing_time_ms - self.common_delay_time_ms  
+        buy_time_ms = self.test_listing_time_ms - self.common_delay_time_ms  
         try:              
             symbol = set_item["symbol_list"][0]  
         except Exception as ex:
-            print(ex)             
+            self.handle_exception(ex, inspect.currentframe().f_lineno)             
         self.send_fake_request(self.symbol_fake) 
         time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)                
         self.buy_market_temp(symbol)            
@@ -191,105 +160,107 @@ class MANAGER(TEMPLATES):
             'qnt_to_sell_start': round(float(qty_garbare)* 0.99, 2)
             
         }     
-        self.sell_market_temp(item)   
-                        
+        self.sell_market_temp(item)
+
 class MAIN_CONTROLLER(MANAGER):
     def __init__(self) -> None:
         super().__init__()
 
     def main_func(self): 
         self.run_flag = True
-        print(f'<<{self.market_place}>>')
-        # self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
-        start_data = []
-        set_item = {} #
+        self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
         show_counter = 0
-        first_req_flag = True
+        pass_set_to_previous_flag = True
+        first_iter = True
         previous_set_item = {}
+        last_listing_time_ms = None
+
         if self.controls_mode == 'a':  
-            from info_pars import ANNONCEMENT 
-            from db_coordinator import DB_COOORDINATOR
             bg_parser = ANNONCEMENT()
-            dbb_coordinator_instasnce = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
-            while True:
-                previous_set_item = set_item
+            db_coordinator = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
+            
+            while True:                
                 start_data = []
-                set_item = {} 
-                self.listing_time_ms = None
-                # ///////////////// stop logic ///////////////////////////  
+                temporary_set_item = {}                
                 if self.stop_flag:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} was stoped!")
+                    self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} was stopped!")
                     self.run_flag = False
                     return
-                # ///////////////// stop logic end /////////////////////////// 
-                # ///////////////// ************* /////////////////////////// 
-                # ///////////////// sleep logic //////////////////////////////  
+
                 time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
                 if time_diff_seconds:
-                    self.last_message.text = self.connector_func(self.last_message, "It is time to rest! Let's go to bed!")        
+                    self.send_mess_to_tg("It is time to rest! Let's go to bed!")
                     time.sleep(time_diff_seconds)
-                else:
-                    if first_req_flag:
-                        first_req_flag = False
-                        self.last_message.text = self.connector_func(self.last_message, "It is time to work!")
-                # ///////////////// sleep logic end /////////////////////////////
-                # ///////////////// ***************** ///////////////////////////
-                # ///////////////// pars logic //////////////////////////////////
+                elif first_iter:
+                    first_iter = False
+                    self.send_mess_to_tg("It is time to work now!")
+
                 start_data = bg_parser.bitget_parser()
                 if start_data:            
-                    set_item = self.start_data_to_item(start_data)                    
-                    try:
-                        if set_item.get('listing_time_ms', None) > previous_set_item.get('listing_time_ms', None):
-                            set_item = previous_set_item
-                    except:
-                        pass
-                    self.listing_time_ms = set_item.get('listing_time_ms', None)  
-                    # ///////////////// show set info logic /////////////////// 
-                    show_counter += 1
-                    if show_counter == 3:
-                        set_item.update(self.set_item)
-                        self.db_fetch_template(dbb_coordinator_instasnce, set_item)
-                        self.last_message.text = self.connector_func(self.last_message, str(set_item))
-                        show_counter = 0
-                else:
-                    self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} There is no trading data now. pause2...")
-                    # ///////////////// show set info logic end ///////////////////
-                    time.sleep(random.randrange(239, 299)) 
-                    # time.sleep(random.randrange(51, 61))
-                    continue
-                if self.listing_time_ms:
-                    if 0 < self.left_time_in_minutes_func(self.listing_time_ms) <= 15:
-                        if self.calibrator_flag:
-                            self.delay_manager()
-                        # ////////////////////////////////////////////////////////////////////// 
-                        for i in range(1, self.total_server_number+1, 1):
-                            self.set_item[f'delay_time_ms_server{i}'] = self.common_delay_time_ms
-                        set_item.update(self.set_item)                   
-                        self.last_message.text = self.connector_func(self.last_message, str(set_item)) 
-                        # //////////////////////////////////////////////////////////////////////
-                        self.db_fetch_template(dbb_coordinator_instasnce, set_item)
-                        # //////////////////////////////////////////////////////////////////////
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('PARS', cur_time, start_data)                        
-                        cur_time = int(time.time()* 1000)
-                        total_log_instance.json_to_buffer('START', cur_time, [set_item]) 
-                        json_file = total_log_instance.get_json_data()                
-                        self.bot.send_document(self.last_message.chat.id, json_file)   
-                        log_file = total_log_instance.get_logs()
-                        self.bot.send_document(self.last_message.chat.id, log_file)
-                        set_item = {} 
-                        time.sleep((self.listing_time_ms - int(time.time()*1000))/ 1000)                                      
-                        continue
-                        # ////////////////////////////////////////////////////////////////////////////  
-                else:
-                    self.last_message.text = self.connector_func(self.last_message, "oops,... self.listing_time_ms == None")
+                    temporary_set_item = self.start_data_to_item(start_data)   
+                    if pass_set_to_previous_flag:
+                        previous_set_item = temporary_set_item
+                        pass_set_to_previous_flag = False
 
-                # self.last_message.text = self.connector_func(self.last_message, f"Server #Railway#{self.railway_server_number} pause...")
-                # print("pause...")
-                time.sleep(random.randrange(239, 299))
-                # time.sleep(random.randrange(51, 61)) 
-        # ///////////////////////////////////////////////////////////////////////////////////
-        self.last_message.text = self.connector_func(self.last_message, self.SOLI_DEO_GLORIA)
+                    try:
+                        int('sdkjhvhkj')
+                        if temporary_set_item.get('listing_time_ms', None) > previous_set_item.get('listing_time_ms', None):
+                            temporary_set_item = previous_set_item
+                    except Exception as ex:
+                        self.handle_exception(ex, inspect.currentframe().f_lineno)
+
+                    last_listing_time_ms = temporary_set_item.get('listing_time_ms', None)
+                    show_counter += 1
+                    # self.send_mess_to_tg(str(temporary_set_item))
+                    if show_counter == 3:
+                        try:
+                            temporary_set_item.update(self.set_item)
+                            self.db_fetch_template(db_coordinator, temporary_set_item)
+                            self.send_mess_to_tg(str(temporary_set_item))
+                            show_counter = 0
+                        except Exception as ex:
+                            self.handle_exception(ex, inspect.currentframe().f_lineno)
+                else:
+                    self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
+
+                if last_listing_time_ms:                    
+                    if 0 < self.left_time_in_minutes_func(last_listing_time_ms) <= 15:
+                        try:
+                            if self.calibrator_flag:
+                                self.delay_manager()
+
+                            for i in range(1, self.total_server_number + 1):
+                                self.set_item[f'delay_time_ms_server{i}'] = self.common_delay_time_ms
+
+                            if not temporary_set_item:
+                                temporary_set_item = previous_set_item
+
+                            temporary_set_item.update(self.set_item)
+                            self.send_mess_to_tg(str(temporary_set_item))
+                            self.db_fetch_template(db_coordinator, temporary_set_item)
+
+                            cur_time = int(time.time() * 1000)
+                            total_log_instance.json_to_buffer('PARS', cur_time, start_data)
+                            cur_time = int(time.time() * 1000)
+                            total_log_instance.json_to_buffer('START', cur_time, [temporary_set_item])
+                            json_file = total_log_instance.get_json_data()                
+                            self.bot.send_document(self.last_message.chat.id, json_file)   
+                            log_file = total_log_instance.get_logs()
+                            self.bot.send_document(self.last_message.chat.id, log_file)                            
+                            time.sleep((last_listing_time_ms - int(time.time() * 1000)) / 1000)
+                        except Exception as ex:
+                            self.handle_exception(ex, inspect.currentframe().f_lineno)
+
+                        previous_set_item = {}
+                        last_listing_time_ms = None                        
+                        pass_set_to_previous_flag = True
+                        continue
+                    
+                self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} pause...")
+                # time.sleep(random.uniform(239, 299))
+                time.sleep(random.uniform(5, 10))
+
+        self.send_mess_to_tg(self.SOLI_DEO_GLORIA)
 
 class TG_MANAGER(MAIN_CONTROLLER):
     def __init__(self):
@@ -336,7 +307,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                                 self.default_trade_vars()                                
                                 self.main_func()  
                         except Exception as ex:
-                            print(ex) 
+                            self.handle_exception(ex, inspect.currentframe().f_lineno)
                         # ////////////////////////////////////////////////////////////////////                       
 
                     elif value_token != self.seq_control_token and not self.block_acess_flag:                               
@@ -350,7 +321,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                             response_message = "Please put a valid token!"
                             message.text = self.connector_func(message, response_message)
                 except Exception as ex:
-                    print(ex)        
+                    self.handle_exception(ex, inspect.currentframe().f_lineno)        
 
             @self.bot.message_handler(func=lambda message: message.text == 'STOP')             
             def handle_stop(message):
@@ -376,7 +347,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                         message.text = self.connector_func(message, "Please enter a delay_ms, depo size and server_number using shift (e.g: 111 21 1)")
                         self.settings_redirect_flag = True
                     except Exception as ex:
-                        print(ex)
+                        self.handle_exception(ex, inspect.currentframe().f_lineno)
                 else:
                     self.bot.send_message(message.chat.id, "Please enter START for verification")               
 
@@ -400,7 +371,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
                     else:
                         message.text = self.connector_func(message, f"Please enter a valid options...")
                 except Exception as ex:
-                    print(ex)
+                    self.handle_exception(ex, inspect.currentframe().f_lineno)
             # /////////////////////////////////////////////////////////////////////////////////////////////////////
 
             # self.bot.polling()
@@ -413,7 +384,3 @@ if __name__=="__main__":
     print('Please go to the Telegram bot interface!')     
     bot = TG_MANAGER()   
     bot.run()
-
-# git add . 
-# git commit -m "betta15"
-# git push -u origin master

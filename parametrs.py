@@ -28,7 +28,7 @@ class PARAMS():
         self.depo_test = 10
         self.sell_mode = 't100' # t100 -- sell for all qty by time
         self.common_delay_time_ms = 95
-        self.listing_time_ms = None
+        self.test_listing_time_ms = None
         self.incriment_time_ms = 0
         self.sell_attempts_number = 2
         self.timedelta_stamps = 'hours'

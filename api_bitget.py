@@ -28,7 +28,7 @@ class BITGET_API(PARAMS):
         
     def get_post_params(self, symbol, side, size, target_price, market_type):
         # print(symbol, side, size, target_price, market_type)
-        timestamp = str(self.listing_time_ms + self.incriment_time_ms) if side == 'BUY' else str(int(time.time() * 1000))
+        timestamp = str(self.test_listing_time_ms + self.incriment_time_ms) if side == 'BUY' else str(int(time.time() * 1000))
         # timestamp = str(int(time.time() * 1000))
         payload = {
             "symbol": symbol,

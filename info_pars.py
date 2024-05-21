@@ -62,8 +62,10 @@ class ANNONCEMENT(UTILS):
             # print(trading_time_str)
             listing_time = self.from_string_to_date_time(trading_time_str) 
             # print(listing_time) 
-            if listing_time > cur_time - time_correction:  
-                # print(listing_time > cur_time - time_correction)   
+            # symbol_data = self.symbol_extracter(data_item['annTitle'])  
+            # print(symbol_data)  
+            if listing_time + time_correction > cur_time:
+                # print(listing_time > cur_time - time_correction)
                 symbol_data = self.symbol_extracter(data_item['annTitle'])  
                 # print(symbol_data)   
                 if symbol_data:
