@@ -20,17 +20,25 @@ user_agents = [
 ]
 
 bitget_headers = {
-    'authority': 'www.bitget.com',    
+    # 'accept': 'application/json, text/plain, */*',
     'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    'origin': 'https://www.bitget.com/',
-    # 'referer': 'https://www.bitget.com/',
-    # 'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-    'sec-ch-ua-mobile': '?0',    
-    'sec-fetch-dest': 'script',
+    'content-type': 'application/json;charset=UTF-8',
+    'language': 'en_US',
+    'locale': 'en_US',
+    'origin': 'https://www.bitget.com',
+    'priority': 'u=1, i',
+    'referer': 'https://www.bitget.com/support/articles/12560603809959',
+    'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+    'sec-ch-ua-mobile': '?0',
+    # 'sec-ch-ua-platform': '"Linux"',
+    'sec-fetch-dest': 'empty',
     'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'cross-site',
-    'User-Agent': ""
+    'sec-fetch-site': 'same-origin',
+    'terminaltype': '1',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    
 }
+
 
 class ANNONCEMENT(UTILS):
     def __init__(self, proxy_host, proxy_port, proxy_username, proxy_password) -> None:
@@ -39,7 +47,8 @@ class ANNONCEMENT(UTILS):
         self.session = requests.Session()
         self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=12, pool_maxsize=12))
         # proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
-        proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100'       
+        # proxy_arg = f'nikolassmsttt:pRcwSxcJtT@77.47.244.201:50100'   
+        proxy_arg = f'{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'    
         self.proxiess = {
             "https": f"http://{proxy_arg}"
             # 'http': proxy_url,
@@ -97,7 +106,7 @@ class ANNONCEMENT(UTILS):
         # print('Start parser')
         start_time = self.get_start_of_day()
         url = f"https://api.bitget.com/api/v2/public/annoucements?&annType=coin_listings&language=en_US"        
-        r = self.session.get(url)
+        r = requests.get(url)
         print(r)
         r_j = r.json()
         data = r_j["data"]        
