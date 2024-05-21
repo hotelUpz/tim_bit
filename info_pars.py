@@ -33,13 +33,18 @@ bitget_headers = {
 }
 
 class ANNONCEMENT(UTILS):
-    def __init__(self) -> None:
+    def __init__(self, proxy_host, proxy_port, proxy_username, proxy_password) -> None:
         super().__init__() 
         self.session = requests.Session() 
-        self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=20, pool_maxsize=20))
+        self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=12, pool_maxsize=12))
+        proxy_url = f'http://{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'
+        self.proxiess = {
+            'http': proxy_url,
+            'https': proxy_url
+        }
     
     @log_exceptions_decorator
-    def links_multiprocessor(self, data, cur_time, cpu_count=18): 
+    def links_multiprocessor(self, data, cur_time, cpu_count=10): 
         total_list = []
         res = Parallel(n_jobs=cpu_count, prefer="threads")(delayed(lambda item: self.bitget_links_handler(item, cur_time))(item) for item in data)
         for x in res: 
@@ -54,7 +59,7 @@ class ANNONCEMENT(UTILS):
         try:
             data_set = []
             bitget_headers['User-Agent'] = choice(user_agents)
-            r = self.session.get(url=data_item['annUrl'], headers=bitget_headers)
+            r = self.session.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess)
             print(r)
             soup = BeautifulSoup(r.text, 'html.parser')
             listing_time_all_potential_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').get_text()
@@ -63,8 +68,8 @@ class ANNONCEMENT(UTILS):
             listing_time = self.from_string_to_date_time(trading_time_str) 
             # print(listing_time) 
             symbol_data = self.symbol_extracter(data_item['annTitle'])  
-            print(symbol_data)  
-            if listing_time + time_correction + 21600000 > cur_time:
+            # print(symbol_data)  
+            if listing_time > cur_time - time_correction:
                 # print(listing_time > cur_time - time_correction)
                 symbol_data = self.symbol_extracter(data_item['annTitle'])  
                 # print(symbol_data)   

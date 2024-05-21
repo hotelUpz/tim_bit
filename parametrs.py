@@ -73,6 +73,10 @@ class PARAMS():
         self.db_name = os.getenv("DB_NAME", "")
         self.db_host = os.getenv("DB_HOST", "")
         self.db_port = os.getenv("DB_PORT", "")
+        self.proxy_host = os.getenv("proxy_host", "")
+        self.proxy_port = os.getenv("proxy_port", "")
+        self.proxy_username = os.getenv("proxy_username", "")
+        self.proxy_password = os.getenv("proxy_password", "")
 
 
 # p = PARAMS()

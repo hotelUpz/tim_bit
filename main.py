@@ -176,7 +176,7 @@ class MAIN_CONTROLLER(MANAGER):
         last_listing_time_ms = None
 
         if self.controls_mode == 'a':  
-            bg_parser = ANNONCEMENT()
+            bg_parser = ANNONCEMENT(self.proxy_host, self.proxy_port, self.proxy_username, self.proxy_password)
             db_coordinator = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
             
             while True:                
