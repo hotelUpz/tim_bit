@@ -55,16 +55,16 @@ class ANNONCEMENT(UTILS):
             data_set = []
             bitget_headers['User-Agent'] = choice(user_agents)
             r = self.session.get(url=data_item['annUrl'], headers=bitget_headers)
-            # print(r)
+            print(r)
             soup = BeautifulSoup(r.text, 'html.parser')
             listing_time_all_potential_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').get_text()
             trading_time_str = [x for x in listing_time_all_potential_string.split('\n') if "Trading Available:" in x][0].replace("Trading Available:", "").strip()
             # print(trading_time_str)
             listing_time = self.from_string_to_date_time(trading_time_str) 
             # print(listing_time) 
-            # symbol_data = self.symbol_extracter(data_item['annTitle'])  
-            # print(symbol_data)  
-            if listing_time + time_correction + 10800000 > cur_time:
+            symbol_data = self.symbol_extracter(data_item['annTitle'])  
+            print(symbol_data)  
+            if listing_time + time_correction + 21600000 > cur_time:
                 # print(listing_time > cur_time - time_correction)
                 symbol_data = self.symbol_extracter(data_item['annTitle'])  
                 # print(symbol_data)   
