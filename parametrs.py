@@ -14,7 +14,7 @@ class PARAMS():
         self.total_server_number = 4  
         self.controls_mode = 'a'
         self.run_flag = False #
-        self.calibrator_flag = True
+        self.calibrator_flag = False
         self.stop_flag = False        
         self.work_to = 21 # hoor in UTC
         self.sleep_to = 5 # hoor in UTC
@@ -27,7 +27,7 @@ class PARAMS():
         self.common_depo = 40
         self.depo_test = 10
         self.sell_mode = 't100' # t100 -- sell for all qty by time
-        self.common_delay_time_ms = 95
+        self.common_delay_time_ms = 93
         self.test_listing_time_ms = None
         self.incriment_time_ms = 0
         self.sell_attempts_number = 2
