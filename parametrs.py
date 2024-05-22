@@ -20,7 +20,6 @@ class PARAMS():
         self.sleep_to = 5 # hoor in UTC
         self.default_test_symbol = 'ARBUSDT'
         self.response_data_list, self.response_success_list = [], []
-        self.threads_flag = False    
         self.symbol_list_el_position = 0 #fj,bh
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
