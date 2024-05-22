@@ -57,6 +57,7 @@ class ANNONCEMENT(UTILS):
         try:
             data_set = []
             # bitget_headers['User-Agent'] = choice(user_agents)
+            print(bitget_headers)
             r = self.session.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess if self.is_proxies_true else None)
             print(r)
             # print(r.text)
