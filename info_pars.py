@@ -5,33 +5,26 @@ import time
 from random import choice
 from utils import UTILS, log_exceptions_decorator, time_correction
 
-# user_agents = [
-#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
-#     "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
-#     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
-#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
-#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36",
-#     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
-#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
-#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
-#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
-#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
-#     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
-# ]
-
 user_agents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36",
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36',
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    # Добавьте больше User-Agent для рандомизации
 ]
 
 bitget_headers = {
-    # 'accept': 'application/json, text/plain, */*', # -- it is need to comment or delete
+    'authority': 'www.bitget.com',    
     'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    # 'content-type': 'application/json;charset=UTF-8',
-    'origin': 'https://www.bitget.com',
+    'origin': 'https://www.bitget.com/',
     'referer': 'https://www.bitget.com/',
-    'User-Agent': ""
+    'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+    'sec-ch-ua-mobile': '?0',   
+    'sec-fetch-dest': 'script',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'cross-site',
+    'User-Agent': choice(user_agents)
 }
 
 class ANNONCEMENT(UTILS):
@@ -39,7 +32,7 @@ class ANNONCEMENT(UTILS):
         super().__init__()
         # print(proxy_host, proxy_port, proxy_username, proxy_password)
         self.session = requests.Session()
-        self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=8))
+        self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=3, pool_maxsize=3))
         proxy_arg = f'{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'    
         self.proxiess = {
             "https": f"http://{proxy_arg}"
@@ -49,7 +42,7 @@ class ANNONCEMENT(UTILS):
         self.is_proxies_true = 1
     
     @log_exceptions_decorator
-    def links_multiprocessor(self, data, cur_time, cpu_count=4): 
+    def links_multiprocessor(self, data, cur_time, cpu_count=1): 
         total_list = []
         res = Parallel(n_jobs=cpu_count, prefer="threads")(delayed(lambda item: self.bitget_links_handler(item, cur_time))(item) for item in data)
         for x in res: 
@@ -63,7 +56,7 @@ class ANNONCEMENT(UTILS):
     def bitget_links_handler(self, data_item, cur_time):
         try:
             data_set = []
-            bitget_headers['User-Agent'] = choice(user_agents)
+            # bitget_headers['User-Agent'] = choice(user_agents)
             r = self.session.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess if self.is_proxies_true else None)
             print(r)
             # print(r.text)
@@ -104,7 +97,13 @@ class ANNONCEMENT(UTILS):
         data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]
         # print(data)
         cur_time = int(time.time()* 1000)
+        bitget_headers['User-Agent'] = choice(user_agents)
         return self.links_multiprocessor(data, cur_time) 
+
+proxy_host = '77.47.245.134'
+proxy_port = '59100'
+proxy_username = 'nikolassmsttt0Icgm'
+proxy_password = 'agrYpvDz7D'
     
-# print(ANNONCEMENT(1,1,1,1).bitget_parser())
+print(ANNONCEMENT(proxy_host, proxy_port, proxy_username, proxy_password).bitget_parser())
 
