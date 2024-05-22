@@ -39,7 +39,7 @@ class ANNONCEMENT(UTILS):
             # 'http': proxy_url,
             # 'https': proxy_url
         }
-        self.is_proxies_true = 1
+        self.is_proxies_true = 0
     
     @log_exceptions_decorator
     def links_multiprocessor(self, data, cur_time, cpu_count=1): 
