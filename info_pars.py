@@ -5,57 +5,41 @@ import time
 from random import choice
 from utils import UTILS, log_exceptions_decorator, time_correction
 
+# user_agents = [
+#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+#     "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+#     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36",
+#     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
+#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
+#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
+#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
+#     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
+# ]
+
 user_agents = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    # Добавьте больше User-Agent для рандомизации
 ]
 
-# bitget_headers = {
-#     # 'accept': 'application/json, text/plain, */*',
-#     'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-#     'content-type': 'application/json;charset=UTF-8',
-#     'language': 'en_US',
-#     # 'locale': 'uk',
-#     'origin': 'https://www.bitget.com',
-#     # 'priority': 'u=1, i',
-#     'referer': 'https://www.bitget.com/support/',
-#     'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
-#     # 'sec-ch-ua-mobile': '?0',
-#     # 'sec-ch-ua-platform': '"Linux"',
-#     'sec-fetch-dest': 'empty',
-#     'sec-fetch-mode': 'cors',
-#     'sec-fetch-site': 'same-origin',
-#     # 'terminaltype': '1',
-#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
-#     # 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    
-# }
-
 bitget_headers = {
-    'accept': 'application/json, text/plain, */*',
+    # 'accept': 'application/json, text/plain, */*', # -- it is need to comment or delete
     'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    'content-type': 'application/json;charset=UTF-8',
+    # 'content-type': 'application/json;charset=UTF-8',
     'origin': 'https://www.bitget.com',
-    'referer': 'https://www.bitget.com/support/',
-    'User-Agent': choice(user_agents)
+    'referer': 'https://www.bitget.com/',
+    'User-Agent': ""
 }
-
 
 class ANNONCEMENT(UTILS):
     def __init__(self, proxy_host, proxy_port, proxy_username, proxy_password) -> None:
         super().__init__()
-        print(proxy_host, proxy_port, proxy_username, proxy_password)
+        # print(proxy_host, proxy_port, proxy_username, proxy_password)
         self.session = requests.Session()
-        self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=12, pool_maxsize=12))
+        self.session.mount('https://www.bitget.com', requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=8))
         proxy_arg = f'{proxy_username}:{proxy_password}@{proxy_host}:{proxy_port}'    
         self.proxiess = {
             "https": f"http://{proxy_arg}"
@@ -65,7 +49,7 @@ class ANNONCEMENT(UTILS):
         self.is_proxies_true = 1
     
     @log_exceptions_decorator
-    def links_multiprocessor(self, data, cur_time, cpu_count=10): 
+    def links_multiprocessor(self, data, cur_time, cpu_count=4): 
         total_list = []
         res = Parallel(n_jobs=cpu_count, prefer="threads")(delayed(lambda item: self.bitget_links_handler(item, cur_time))(item) for item in data)
         for x in res: 
@@ -78,10 +62,9 @@ class ANNONCEMENT(UTILS):
     # @log_exceptions_decorator
     def bitget_links_handler(self, data_item, cur_time):
         try:
-            # print('sdjkbv')
             data_set = []
             bitget_headers['User-Agent'] = choice(user_agents)
-            r = requests.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess if self.is_proxies_true else None)
+            r = self.session.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess if self.is_proxies_true else None)
             print(r)
             # print(r.text)
             soup = BeautifulSoup(r.text, 'html.parser')
@@ -90,7 +73,7 @@ class ANNONCEMENT(UTILS):
             # print(trading_time_str)
             listing_time = self.from_string_to_date_time(trading_time_str) 
             # print(listing_time) 
-            symbol_data = self.symbol_extracter(data_item['annTitle'])  
+            # symbol_data = self.symbol_extracter(data_item['annTitle'])  
             # print(symbol_data)  
             if listing_time > cur_time - time_correction:
                 # print(listing_time > cur_time - time_correction)
@@ -114,8 +97,8 @@ class ANNONCEMENT(UTILS):
         # print('Start parser')
         start_time = self.get_start_of_day()
         url = f"https://api.bitget.com/api/v2/public/annoucements?&annType=coin_listings&language=en_US"        
-        r = requests.get(url)
-        print(r)
+        r = self.session.get(url)
+        # print(r)
         r_j = r.json()
         data = r_j["data"]        
         data = [{**x, "cTime": int(float(x["cTime"]))} for x in data if int(float(x["cTime"])) > start_time]

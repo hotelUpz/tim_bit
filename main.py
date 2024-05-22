@@ -168,7 +168,7 @@ class MAIN_CONTROLLER(MANAGER):
 
     def main_func(self): 
         self.run_flag = True
-        # self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
+        self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
         show_counter = 0
         pass_set_to_previous_flag = True
         first_iter = True
@@ -183,17 +183,17 @@ class MAIN_CONTROLLER(MANAGER):
                 start_data = []
                 temporary_set_item = {}                
                 if self.stop_flag:
-                    # self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} was stopped!")
+                    self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} was stopped!")
                     self.run_flag = False
                     return
 
                 time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
                 if time_diff_seconds:
-                    # self.send_mess_to_tg("It is time to rest! Let's go to bed!")
+                    self.send_mess_to_tg("It is time to rest! Let's go to bed!")
                     time.sleep(time_diff_seconds)
                 elif first_iter:
                     first_iter = False
-                    # self.send_mess_to_tg("It is time to work now!")
+                    self.send_mess_to_tg("It is time to work now!")
 
                 start_data = bg_parser.bitget_parser()
                 if start_data:            
@@ -202,8 +202,7 @@ class MAIN_CONTROLLER(MANAGER):
                         previous_set_item = temporary_set_item
                         pass_set_to_previous_flag = False
 
-                    try:
-                        # int('sdkjhvhkj')
+                    try:                       
                         if temporary_set_item.get('listing_time_ms', None) > previous_set_item.get('listing_time_ms', None):
                             temporary_set_item = previous_set_item
                     except Exception as ex:
@@ -212,18 +211,18 @@ class MAIN_CONTROLLER(MANAGER):
                     last_listing_time_ms = temporary_set_item.get('listing_time_ms', None)
                     show_counter += 1
                     # self.send_mess_to_tg(str(temporary_set_item))
-                    print(temporary_set_item)
+                    # print(temporary_set_item)
                     if show_counter == 3:
                         try:
                             temporary_set_item.update(self.set_item)
                             self.db_fetch_template(db_coordinator, temporary_set_item)
-                            # self.send_mess_to_tg(str(temporary_set_item))
+                            self.send_mess_to_tg(str(temporary_set_item))
                             show_counter = 0
                         except Exception as ex:
                             self.handle_exception(ex, inspect.currentframe().f_lineno)
                 else:
                     print(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
-                    # self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
+                    self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
 
                 if last_listing_time_ms:                    
                     if 0 < self.left_time_in_minutes_func(last_listing_time_ms) <= 15:
@@ -258,10 +257,10 @@ class MAIN_CONTROLLER(MANAGER):
                         pass_set_to_previous_flag = True
                         continue
                     
-                # self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} pause...")
+                self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} pause...")
                 print('pause')
-                # time.sleep(random.uniform(239, 299))
-                time.sleep(random.uniform(20, 30))
+                time.sleep(random.uniform(239, 299))
+                # time.sleep(random.uniform(20, 30))
 
         self.send_mess_to_tg(self.SOLI_DEO_GLORIA)
 
@@ -383,7 +382,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
             print(ex)
 
 if __name__=="__main__": 
-    MAIN_CONTROLLER().main_func() 
-    # print('Please go to the Telegram bot interface!')     
-    # bot = TG_MANAGER()   
-    # bot.run()
+    # MAIN_CONTROLLER().main_func() 
+    print('Please go to the Telegram bot interface!')     
+    bot = TG_MANAGER()   
+    bot.run()
