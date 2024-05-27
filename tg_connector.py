@@ -6,7 +6,7 @@ from api_bitget import BITGET_API
 class TG_CONNECTOR(BITGET_API):
     def __init__(self) -> None:
         super().__init__()
-        print(self.tg_api_token)
+        # print(self.tg_api_token)
         self.bot = telebot.TeleBot(self.tg_api_token)
         # print(self.bot)
         self.menu_markup = self.create_menu()
