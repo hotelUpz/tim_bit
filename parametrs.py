@@ -43,7 +43,7 @@ class PARAMS():
         self.api_key  = os.getenv(f"{self.market_place.upper()}_API_PUBLIC_KEY", "")
         self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "")        
         self.api_passphrase = os.getenv("API_PASSPHRASE", "")
-        # self.tg_api_token = os.getenv("TG_TOKEN", "")
+        self.tg_api_token = os.getenv("TG_TOKEN", "")
         self.seq_control_token = os.getenv("ACESS_TOKEN", "")
         # ////////////////for db//////////////////////////////:
         self.db_user = os.getenv("DB_USER", "")
@@ -51,4 +51,3 @@ class PARAMS():
         self.db_name = os.getenv("DB_NAME", "")
         self.db_host = os.getenv("DB_HOST", "")
         self.db_port = os.getenv("DB_PORT", "")
-        # 

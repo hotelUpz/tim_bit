@@ -1,13 +1,14 @@
 import telebot
 from telebot import types 
 import time
-import os
-from dotenv import load_dotenv
-load_dotenv()
+from api_bitget import BITGET_API 
 
-class TG_CONNECTOR():
+class TG_CONNECTOR(BITGET_API):
     def __init__(self) -> None:
-        self.bot = telebot.TeleBot(os.getenv("TG_TOKEN", ""))
+        super().__init__()
+        print(self.tg_api_token)
+        self.bot = telebot.TeleBot(self.tg_api_token)
+        # print(self.bot)
         self.menu_markup = self.create_menu()
         self.last_message = None
   

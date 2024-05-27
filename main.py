@@ -1,12 +1,12 @@
 # import decimal
 import time
 import random
-from api_bitget import BITGET_API
 from utils import UTILS
-from tg_connector import TG_CONNECTOR
+from tg_connector import TG_CONNECTOR 
+from db_coordinator import DB_COOORDINATOR  
 from log import total_log_instance, log_exceptions_decorator
 
-class TEMPLATES(TG_CONNECTOR, BITGET_API, UTILS):
+class TEMPLATES(TG_CONNECTOR, UTILS):
     def __init__(self) -> None:
         super().__init__()
         self.symbol = None
@@ -156,8 +156,7 @@ class MAIN_CONTROLLER(MANAGER):
         super().__init__()
 
     def main_func(self): 
-        self.run_flag = True
-        from db_coordinator import DB_COOORDINATOR   
+        self.run_flag = True 
         dbb = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
         self.message_template(f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>") 
         show_counter = 0
