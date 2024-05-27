@@ -18,11 +18,13 @@ class BITGET_API(PARAMS):
         self.session = requests.Session()
                 
     # POST ////////////////////////////////////////////////////////////////////
+    @log_exceptions_decorator
     def generate_post_signature_bitget(self, timestamp, endpoint, payload):
         message = timestamp + 'POST' + endpoint + json.dumps(payload)
         signature = base64.b64encode(hmac.new(self.api_secret.encode('utf-8'), message.encode('utf-8'), sha256).digest())
         return signature
-        
+
+    @log_exceptions_decorator    
     def get_post_params(self, symbol, side, size, target_price, market_type):
         # print(symbol, side, size, target_price, market_type)
         timestamp = str(self.listing_time_ms + self.incriment_time_ms) if side == 'BUY' else str(int(time.time() * 1000))

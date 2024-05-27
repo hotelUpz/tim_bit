@@ -4,6 +4,7 @@ import datetime
 import math
 from log import log_exceptions_decorator
 
+@log_exceptions_decorator
 def server_to_utc_difference_counter():
     server_time_naive = dttm.now()
     print(f"server_time_naive: {server_time_naive}")
@@ -17,16 +18,18 @@ def server_to_utc_difference_counter():
     return total_seconds
 
 time_correction = server_to_utc_difference_counter()
-print("ms difference:", time_correction)
+# print("ms difference:", time_correction)
 
 class UTILS():
     def __init__(self) -> None:
         pass
 
+    @log_exceptions_decorator
     def datetime_to_milliseconds(self, datetime_str):           
         dt_obj = time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
         return int(time.mktime(dt_obj) * 1000)
 
+    @log_exceptions_decorator
     def milliseconds_to_datetime(self, milliseconds):
         milliseconds = milliseconds + time_correction
         seconds, milliseconds = divmod(milliseconds, 1000)
@@ -34,17 +37,20 @@ class UTILS():
         milliseconds_str = str(milliseconds).zfill(3)
         return time.strftime('%Y-%m-%d %H:%M:%S') + '.' + milliseconds_str
     
+    @log_exceptions_decorator
     def date_of_the_month(self):        
         current_time = time.time()        
         datetime_object = dttm.fromtimestamp(current_time)       
         formatted_time = datetime_object.strftime('%d')
         return int(formatted_time) 
 
+    @log_exceptions_decorator
     def left_time_in_minutes_func(self, set_time):
         current_time_ms = int(time.time() * 1000)
         time_left_minutes = round((set_time - current_time_ms) / (1000 * 60), 2)
         return time_left_minutes
-            
+
+    @log_exceptions_decorator       
     def show_trade_time(self, response_data_list, market_place):
         result_time = ''
         dataa = None
@@ -62,7 +68,8 @@ class UTILS():
             except:
                 pass
         return result_time, response_data_list
-      
+    
+    @log_exceptions_decorator
     def work_sleep_manager(self, work_to, sleep_to):
         if not work_to or not sleep_to:
             return None
@@ -75,7 +82,3 @@ class UTILS():
             print("It is time to rest! Let's go to bed!")
             return time_diff_seconds
         return None
-
-   
-
-

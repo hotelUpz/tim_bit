@@ -26,6 +26,7 @@ class PARAMS():
         self.sleep_to = 5 # hoor in UTC 
         self.timedelta_stamps = 'hours'
         self.timedelta_stamps_value = 1
+        self.problem_with_fetching_trades_data_flag = False
 
     def default_tg_vars(self):    
         self.block_acess_flag = False
@@ -42,7 +43,7 @@ class PARAMS():
         self.api_key  = os.getenv(f"{self.market_place.upper()}_API_PUBLIC_KEY", "")
         self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "")        
         self.api_passphrase = os.getenv("API_PASSPHRASE", "")
-        self.tg_api_token = os.getenv("TG_TOKEN", "")
+        # self.tg_api_token = os.getenv("TG_TOKEN", "")
         self.seq_control_token = os.getenv("ACESS_TOKEN", "")
         # ////////////////for db//////////////////////////////:
         self.db_user = os.getenv("DB_USER", "")
