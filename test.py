@@ -158,119 +158,119 @@
 #     print(midle_ask_price)
 #     print(midle_bid_price)
 
-# /// второй код
-import requests
-# import numpy as np
-import time
+# # /// второй код
+# import requests
+# # import numpy as np
+# import time
 
-def test():
-    def get_order_book(symbol, limit=10):
-        url = f"https://api.bitget.com/api/v2/spot/market/orderbook?symbol={symbol}&type=step0&limit={limit}"
-        response = requests.get(url)
+# def test():
+#     def get_order_book(symbol, limit=10):
+#         url = f"https://api.bitget.com/api/v2/spot/market/orderbook?symbol={symbol}&type=step0&limit={limit}"
+#         response = requests.get(url)
         
-        if response.status_code == 200:
-            data = response.json()
-            asks = data['data']['asks']
-            bids = data['data']['bids']
-            return asks, bids
-        else:
-            print(f"Error: {response.status_code}, {response.text}")
-            return None
-        
-    def is_book_price_belov_price_threshold(asks, bids, price_threshold):
-        asks_and_bids = []
-
-        for ask, bid in zip(asks[:5], bids[:5]):
-            if isinstance(ask, (list, tuple)) and len(ask) > 0:
-                try:
-                    ask_price = float(ask[0])
-                    if ask_price != 0:
-                        asks_and_bids.append(ask_price)
-                        
-                except:
-                    pass
-            if isinstance(bid, (list, tuple)) and len(bid) > 0:
-                try:
-                    bid_price = float(bid[0])
-                    if bid_price != 0:
-                        asks_and_bids.append(bid_price)
-                except:
-                    pass
-
-        if (sum(asks_and_bids) != 0) and (len(asks_and_bids) != 0):                                                   
-            last_bid_ask_price_sum = sum(asks_and_bids) / (len(asks_and_bids))
-            if last_bid_ask_price_sum < price_threshold:
-                # print(f"last_bid/ask_price: {last_bid_ask_price_sum}")
-                return True            
-        return False
-
-
-    symbol = 'BEERUSDT'
-    order_book_data = get_order_book(symbol, limit=10)
-
-    if order_book_data:
-        asks, bids = order_book_data 
-        # print(asks)
-        is_moving_on_true = is_book_price_belov_price_threshold(asks, bids, 2.0)
-        print(f"is_moving_on_true: {is_moving_on_true}")
-
-start_time = int(time.time()*1000)
-test()
-fin_time = int(time.time()*1000)
-delta_timee = fin_time - start_time
-print(f"delta_timee: {delta_timee}")
-
-
-
-
-    # def is_book_price_belov_price_threshold(self, asks, bids, price_threshold):
-    #     ask_prices = []
-    #     bid_prices = []
-
-    #     for ask, bid in zip(asks[:5], bids[:5]):
-    #         if isinstance(ask, (list, tuple)) and len(ask) > 0:
-    #             try:
-    #                 ask_price = float(ask[0])
-    #                 if ask_price != 0:
-    #                     ask_prices.append(ask_price)
-                        
-    #             except:
-    #                 pass
-    #         if isinstance(bid, (list, tuple)) and len(bid) > 0:
-    #             try:
-    #                 bid_price = float(bid[0])
-    #                 if bid_price != 0:
-    #                     bid_prices.append(bid_price)
-    #             except:
-    #                 pass
-    #     asks_and_bids = ask_prices + bid_prices
-    #     if (sum(asks_and_bids) != 0) and (len(ask_prices)+len(bid_prices) != 0):                                                   
-    #         last_bid_ask_pricesum = sum(asks_and_bids) / (len(ask_prices)+len(bid_prices))
-    #         if last_bid_ask_pricesum < price_threshold:
-    #             print(f"last_bid/ask_price: {last_bid_ask_pricesum}")
-    #             return True            
-    #     return False
-
-
-# def is_book_price_below_price_threshold(asks, bids, price_threshold):
-#     try:
-#         # Объединяем аски и биды в один список
-#         prices = [float(order[0]) for order in asks[:5] + bids[:5] if isinstance(order, (list, tuple)) and len(order) > 0 and float(order[0]) != 0]
-        
-#         # Если список пустой, возвращаем False
-#         if not prices:
-#             return False
-        
-#         # Вычисляем среднее значение цен
-#         avg_price = sum(prices) / len(prices)
-        
-#         # Проверяем, находится ли среднее значение ниже порогового
-#         if avg_price < price_threshold:
-#             print(f"Средняя цена: {avg_price}")
-#             return True
+#         if response.status_code == 200:
+#             data = response.json()
+#             asks = data['data']['asks']
+#             bids = data['data']['bids']
+#             return asks, bids
 #         else:
-#             return False
-#     except Exception as e:
-#         print(f"Произошла ошибка: {e}")
+#             print(f"Error: {response.status_code}, {response.text}")
+#             return None
+        
+#     def is_book_price_belov_price_threshold(asks, bids, price_threshold):
+#         asks_and_bids = []
+
+#         for ask, bid in zip(asks[:5], bids[:5]):
+#             if isinstance(ask, (list, tuple)) and len(ask) > 0:
+#                 try:
+#                     ask_price = float(ask[0])
+#                     if ask_price != 0:
+#                         asks_and_bids.append(ask_price)
+                        
+#                 except:
+#                     pass
+#             if isinstance(bid, (list, tuple)) and len(bid) > 0:
+#                 try:
+#                     bid_price = float(bid[0])
+#                     if bid_price != 0:
+#                         asks_and_bids.append(bid_price)
+#                 except:
+#                     pass
+
+#         if (sum(asks_and_bids) != 0) and (len(asks_and_bids) != 0):                                                   
+#             last_bid_ask_price_sum = sum(asks_and_bids) / (len(asks_and_bids))
+#             if last_bid_ask_price_sum < price_threshold:
+#                 # print(f"last_bid/ask_price: {last_bid_ask_price_sum}")
+#                 return True            
 #         return False
+
+
+#     symbol = 'BEERUSDT'
+#     order_book_data = get_order_book(symbol, limit=10)
+
+#     if order_book_data:
+#         asks, bids = order_book_data 
+#         # print(asks)
+#         is_moving_on_true = is_book_price_belov_price_threshold(asks, bids, 2.0)
+#         print(f"is_moving_on_true: {is_moving_on_true}")
+
+# start_time = int(time.time()*1000)
+# test()
+# fin_time = int(time.time()*1000)
+# delta_timee = fin_time - start_time
+# print(f"delta_timee: {delta_timee}")
+
+
+
+
+#     # def is_book_price_belov_price_threshold(self, asks, bids, price_threshold):
+#     #     ask_prices = []
+#     #     bid_prices = []
+
+#     #     for ask, bid in zip(asks[:5], bids[:5]):
+#     #         if isinstance(ask, (list, tuple)) and len(ask) > 0:
+#     #             try:
+#     #                 ask_price = float(ask[0])
+#     #                 if ask_price != 0:
+#     #                     ask_prices.append(ask_price)
+                        
+#     #             except:
+#     #                 pass
+#     #         if isinstance(bid, (list, tuple)) and len(bid) > 0:
+#     #             try:
+#     #                 bid_price = float(bid[0])
+#     #                 if bid_price != 0:
+#     #                     bid_prices.append(bid_price)
+#     #             except:
+#     #                 pass
+#     #     asks_and_bids = ask_prices + bid_prices
+#     #     if (sum(asks_and_bids) != 0) and (len(ask_prices)+len(bid_prices) != 0):                                                   
+#     #         last_bid_ask_pricesum = sum(asks_and_bids) / (len(ask_prices)+len(bid_prices))
+#     #         if last_bid_ask_pricesum < price_threshold:
+#     #             print(f"last_bid/ask_price: {last_bid_ask_pricesum}")
+#     #             return True            
+#     #     return False
+
+
+# # def is_book_price_below_price_threshold(asks, bids, price_threshold):
+# #     try:
+# #         # Объединяем аски и биды в один список
+# #         prices = [float(order[0]) for order in asks[:5] + bids[:5] if isinstance(order, (list, tuple)) and len(order) > 0 and float(order[0]) != 0]
+        
+# #         # Если список пустой, возвращаем False
+# #         if not prices:
+# #             return False
+        
+# #         # Вычисляем среднее значение цен
+# #         avg_price = sum(prices) / len(prices)
+        
+# #         # Проверяем, находится ли среднее значение ниже порогового
+# #         if avg_price < price_threshold:
+# #             print(f"Средняя цена: {avg_price}")
+# #             return True
+# #         else:
+# #             return False
+# #     except Exception as e:
+# #         print(f"Произошла ошибка: {e}")
+# #         return False
 
