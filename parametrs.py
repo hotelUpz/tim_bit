@@ -23,7 +23,7 @@ class PARAMS():
         self.symbol_list_el_position = 0 #fj,bh
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
-        self.common_depo = 50
+        self.common_depo = 20
         self.depo_test = 10
         self.sell_mode = 't100' # t100 -- sell for all qty by time
         self.common_delay_time_ms = 90
