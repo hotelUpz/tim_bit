@@ -2,7 +2,6 @@ import time
 from datetime import datetime as dttm
 import datetime
 import math 
-import numpy as np
 from log import log_exceptions_decorator
 
 @log_exceptions_decorator
