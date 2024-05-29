@@ -1,4 +1,5 @@
 # import decimal
+import numpy as np
 import time
 import random
 from utils import UTILS
@@ -95,17 +96,26 @@ class MANAGER(TEMPLATES):
                 self.symbol = symbol = set_item["symbol_list"][0]  
             else:
                 self.message_template("List index out of range. There is nothing to trade")
-                return  
+                return False
         # ///////////////////////////////////////////////////////////////////////////////// 
         tg_mess = f'symbol: {symbol}\ndepo: {set_item.get(f"depo_server{self.railway_server_number}", None)}\ndelay: {set_item.get(f"delay_time_ms_server{self.railway_server_number}", None)}\nlisting time: {set_item.get(f"listing_time_ms", None)}'
         self.message_template(tg_mess)
         self.message_template("It is waiting time for buy!...")
-        # /////////////////////////////////////////////////////////////////////////////////  
-        schedule_time_ms = self.listing_time_ms - 4000
+        # ///////////////////////
+        schedule_time_ms = self.listing_time_ms - 5000
         time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)  
-        self.send_fake_request(self.symbol_fake) 
+        self.send_fake_request(self.symbol_fake)
+        # /////////////////////////////////////// defencive mehanizm
+        order_book_data = self.get_order_book(symbol, limit=10)
+        if order_book_data:
+            asks, bids = order_book_data
+            if not self.is_book_price_belov_price_threshold(asks, bids, self.price_threshold):
+                self.message_template("The average price of this coin is higher than the specified filter. Therefore, this set is ignored")
+                return False
+        # ///////////////////////////////////////////////////////////////////////////////// 
         time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)             
-        self.buy_market_temp(symbol, set_item.get(f"depo_server{self.railway_server_number}", None))            
+        self.buy_market_temp(symbol, set_item.get(f"depo_server{self.railway_server_number}", None))
+        return True          
   
     @log_exceptions_decorator   
     def sell_manager(self, set_item):
@@ -144,7 +154,8 @@ class MANAGER(TEMPLATES):
                 
     @log_exceptions_decorator
     def trading_little_temp(self, set_item):                                
-        self.buy_manager(set_item)
+        if not self.buy_manager(set_item):
+            return False
         if len(self.response_success_list) != 0:
             self.sell_manager(set_item)        
         else:
@@ -206,7 +217,8 @@ class MAIN_CONTROLLER(MANAGER):
             if 0 < self.left_time_in_minutes_func(self.listing_time_ms) <= 3:
                 try:
                     # //////////////////////////////////////////////////////////////////////
-                    self.trading_little_temp(set_item) # main func
+                    if not self.trading_little_temp(set_item):
+                        continue
                     # //////////////////////////////////////////////////////////////////////          
                     cur_time = int(time.time()* 1000)
                     result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')

@@ -27,6 +27,7 @@ class PARAMS():
         self.timedelta_stamps = 'hours'
         self.timedelta_stamps_value = 1
         self.problem_with_fetching_trades_data_flag = False
+        self.price_threshold = 2.0 # 
 
     def default_tg_vars(self):    
         self.block_acess_flag = False

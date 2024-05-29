@@ -88,6 +88,20 @@ class BITGET_API(PARAMS):
             "locale": "en-US"
         }
         return self.session.get(self.base_url + request_path, headers=headers)  
+        
+    def get_order_book(self, symbol, limit=10):
+        url = f"https://api.bitget.com/api/v2/spot/market/orderbook?symbol={symbol}&type=step0&limit={limit}"
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            data = response.json()
+            asks = data['data']['asks']
+            bids = data['data']['bids']
+            return asks, bids
+        else:
+            print(f"Error: {response.status_code}, {response.text}")
+        return None
+
 
 # {'code': '00000', 'msg': 'success', 'requestTime': 1715598961792, 'data': [{'userId': '5604086735', 'symbol': 'ARBUSDT', 'orderId': '1173872613484412935', 'clientOid': '75eac07f-7d86-4209-bda6-d4c364cefd97', 'price': '0', 'size': '10', 'orderType': 'market', 'side': 'buy', 'status': 'filled', 'priceAvg': '0.9911100000000000', 'baseVolume': '10.08', 'quoteVolume': '9.9903888000000000', 'enterPointSource': 'API', 'feeDetail': '{"newFees":{"c":0,"d":0,"deduction":false,"r":-0.01008,"t":-0.01008,"totalDeductionFee":0},"ARB":{"deduction":false,"feeCoinCode":"ARB","totalDeductionFee":0,"totalFee":-0.0100800000000000}}', 'orderSource': 'market', 'tpslType': 'normal', 'triggerPrice': None, 'quoteCoin': 'USDT', 'baseCoin': 'ARB', 'cTime': '1715598961230', 'uTime': '1715598961334'}]}
       
