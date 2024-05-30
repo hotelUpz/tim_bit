@@ -213,14 +213,14 @@ class MAIN_CONTROLLER(MANAGER):
                     show_counter += 1
                     # self.send_mess_to_tg(str(temporary_set_item))
                     # print(temporary_set_item)
-                    # if show_counter == 3:
-                    try:
-                        temporary_set_item.update(self.set_item)
-                        self.db_fetch_template(db_coordinator, temporary_set_item)
-                        self.send_mess_to_tg(str(temporary_set_item))
-                        show_counter = 0
-                    except Exception as ex:
-                        self.handle_exception(ex, inspect.currentframe().f_lineno)
+                    if show_counter == 3:
+                        try:
+                            temporary_set_item.update(self.set_item)
+                            self.db_fetch_template(db_coordinator, temporary_set_item)
+                            self.send_mess_to_tg(str(temporary_set_item))
+                            show_counter = 0
+                        except Exception as ex:
+                            self.handle_exception(ex, inspect.currentframe().f_lineno)
                 else:
                     print(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
                     self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
