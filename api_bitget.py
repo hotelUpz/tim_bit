@@ -5,8 +5,7 @@ import json
 import time
 import requests
 from urllib.parse import urlencode
-from parametrs import PARAMS
-from utils import log_exceptions_decorator
+from SETTINGSS import PARAMS
 
 class BITGET_API(PARAMS):
     def __init__(self):
@@ -18,13 +17,13 @@ class BITGET_API(PARAMS):
         self.session = requests.Session()
                 
     # POST ////////////////////////////////////////////////////////////////////
-    @log_exceptions_decorator
+    
     def generate_post_signature_bitget(self, timestamp, endpoint, payload):
         message = timestamp + 'POST' + endpoint + json.dumps(payload)
         signature = base64.b64encode(hmac.new(self.api_secret.encode('utf-8'), message.encode('utf-8'), sha256).digest())
         return signature
 
-    @log_exceptions_decorator    
+        
     def get_post_params(self, symbol, side, size, target_price, market_type):
         # print(symbol, side, size, target_price, market_type)
         timestamp = str(self.listing_time_ms + self.incriment_time_ms) if side == 'BUY' else str(int(time.time() * 1000))
@@ -49,7 +48,7 @@ class BITGET_API(PARAMS):
         }
         return payload, headers
     
-    @log_exceptions_decorator
+    
     def place_market_order(self, symbol, side, size):        
         market_type = 'market'
         targetprice = None
@@ -71,7 +70,7 @@ class BITGET_API(PARAMS):
     def pre_hash(self, timestamp, method, request_path, body):
         return timestamp + method.upper() + request_path + body
     
-    @log_exceptions_decorator
+    
     def get_order_data(self, orderId):
         timestamp = str(int(time.time() * 1000))        
         params = {"orderId": orderId}
@@ -101,7 +100,3 @@ class BITGET_API(PARAMS):
         else:
             print(f"Error: {response.status_code}, {response.text}")
         return None
-
-
-# {'code': '00000', 'msg': 'success', 'requestTime': 1715598961792, 'data': [{'userId': '5604086735', 'symbol': 'ARBUSDT', 'orderId': '1173872613484412935', 'clientOid': '75eac07f-7d86-4209-bda6-d4c364cefd97', 'price': '0', 'size': '10', 'orderType': 'market', 'side': 'buy', 'status': 'filled', 'priceAvg': '0.9911100000000000', 'baseVolume': '10.08', 'quoteVolume': '9.9903888000000000', 'enterPointSource': 'API', 'feeDetail': '{"newFees":{"c":0,"d":0,"deduction":false,"r":-0.01008,"t":-0.01008,"totalDeductionFee":0},"ARB":{"deduction":false,"feeCoinCode":"ARB","totalDeductionFee":0,"totalFee":-0.0100800000000000}}', 'orderSource': 'market', 'tpslType': 'normal', 'triggerPrice': None, 'quoteCoin': 'USDT', 'baseCoin': 'ARB', 'cTime': '1715598961230', 'uTime': '1715598961334'}]}
-      

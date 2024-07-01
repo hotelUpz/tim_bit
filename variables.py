@@ -1,11 +1,14 @@
+from SETTINGSS import PARAMS
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-class PARAMS():
+class VARS(PARAMS):
     def __init__(self) -> None:
+        super().__init__()
         self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!'
         self.run_flag = False
+        self.symbol = None
         self.default_trade_vars()
         self.default_tg_vars()
         self.init_keys()
@@ -13,7 +16,6 @@ class PARAMS():
     def default_trade_vars(self):
         self.market_place = 'bitget'  
         self.response_data_list, self.response_success_list = [], [] 
-        self.railway_server_number = 1 
         self.incriment_time_ms = self.railway_server_number         
         self.symbol_list_el_position = self.railway_server_number - 1
         self.listing_time_ms = None        
@@ -22,12 +24,9 @@ class PARAMS():
         self.symbol_fake = 'T'
         self.sell_mode = 't100' # t100 -- sell for all qty by time       
         self.sell_attempts_number = 2
-        self.work_to = 17 # hoor in UTC
-        self.sleep_to = 5 # hoor in UTC 
         self.timedelta_stamps = 'hours'
         self.timedelta_stamps_value = 1
         self.problem_with_fetching_trades_data_flag = False
-        self.price_threshold = 2.0 # 
 
     def default_tg_vars(self):    
         self.block_acess_flag = False
@@ -42,13 +41,18 @@ class PARAMS():
 
     def init_keys(self):  
         self.api_key  = os.getenv(f"{self.market_place.upper()}_API_PUBLIC_KEY", "")
-        self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "")        
+        self.api_secret = os.getenv(f"{self.market_place.upper()}_API_PRIVATE_KEY", "") 
         self.api_passphrase = os.getenv("API_PASSPHRASE", "")
         self.tg_api_token = os.getenv("TG_TOKEN", "")
+        # print(self.tg_api_token)
         self.seq_control_token = os.getenv("ACESS_TOKEN", "")
-        # ////////////////for db//////////////////////////////:
         self.db_user = os.getenv("DB_USER", "")
         self.db_password = os.getenv("DB_PASSWORD", "")
         self.db_name = os.getenv("DB_NAME", "")
         self.db_host = os.getenv("DB_HOST", "")
         self.db_port = os.getenv("DB_PORT", "")
+        self.proxy_host = os.getenv("proxy_host", "")
+        self.proxy_port = os.getenv("proxy_port", "")
+        self.proxy_socks5_port = os.getenv("proxy_socks5_port", "")        
+        self.proxy_username = os.getenv("proxy_username", "")
+        self.proxy_password = os.getenv("proxy_password", "")
