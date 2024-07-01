@@ -1,5 +1,5 @@
 is_only_terminale = True # только терминал/только терминал + тг интерфейс
-is_switch_on = False # бот включен/бот отключен
+is_switch_on = True # бот включен/бот отключен
 
 class PARAMS():
     def __init__(self) -> None:
