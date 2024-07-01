@@ -20,7 +20,7 @@ class TEMPLATES(DB_COOORDINATOR):
         response['status'] = 'filled'                           
         self.response_data_list.append(response)                   
         if response['msg'] == 'success': 
-            self.last_message.text = self.connector_func(self.last_message, 'buy success!')
+            self.handle_messagee('buy success!')
             self.response_success_list.append(response)
        
     def sell_market_temp(self, item):      
@@ -32,20 +32,21 @@ class TEMPLATES(DB_COOORDINATOR):
         response['status'] = 'filled' 
         self.response_data_list.append(response)   
         if response['msg'] == 'success':
-            self.last_message.text = self.connector_func(self.last_message, 'sell success!') 
+            self.handle_messagee('sell success!') 
         else:                
-            self.last_message.text = self.connector_func(self.last_message, f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
+            self.handle_messagee(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
     
     def db_fetch_template(self, set_item):
         db_connect_true = self.db_connector()
         if db_connect_true:
             dbb_coordinator_repl = self.db_writer(set_item) 
             if dbb_coordinator_repl:
-                self.last_message.text = self.connector_func(self.last_message, 'Writing set_item data was making successfully!')
+                self.handle_messagee('Writing set_item data was making successfully!')
             else:
-                self.last_message.text = self.connector_func(self.last_message, 'Some problems with writing set_item data...')
+                self.handle_messagee('Some problem with db connecting...')
+            
         else:
-            self.last_message.text = self.connector_func(self.last_message, 'Some problem with db connecting...')                               
+            self.handle_messagee('Some problems with writing set_item data...')                          
 
 class MANAGER(TEMPLATES):
     def __init__(self) -> None:
@@ -150,7 +151,7 @@ class MANAGER(TEMPLATES):
 class MAIN_CONTROLLER(MANAGER):
     def __init__(self) -> None:
         super().__init__()
-        self.main_func = self.log_exceptions_decorator(self.main_func) 
+        # self.main_func = self.log_exceptions_decorator(self.main_func)
 
     def main_func(self): 
         self.run_flag = True        
@@ -197,17 +198,20 @@ class MAIN_CONTROLLER(MANAGER):
                 # print(temporary_set_item)
                 # if show_counter == 3:
                 try:
-                    temporary_set_item.update(self.set_item)
+                    temporary_set_item.update(self.set_item)                    
                     self.db_fetch_template(temporary_set_item)
-                    self.handle_messagee(str(temporary_set_item))
+                    self.handle_messagee(temporary_set_item)
                     show_counter = 0
                 except Exception as ex:
+                    print('errrrrrr')
                     self.handle_exception(ex, inspect.currentframe().f_lineno)
             else:
                 self.handle_messagee(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
 
-            if last_listing_time_ms:                    
+            if last_listing_time_ms: 
+                # print(last_listing_time_ms)                   
                 if 0 < self.left_time_in_minutes_func(last_listing_time_ms) <= 15:
+                    print(True)
                     try:
                         if self.calibrator_flag:
                             self.delay_manager()
@@ -219,7 +223,7 @@ class MAIN_CONTROLLER(MANAGER):
                             temporary_set_item = previous_set_item
 
                         temporary_set_item.update(self.set_item)
-                        self.handle_messagee(str(temporary_set_item))
+                        self.handle_messagee(temporary_set_item)
                         self.db_fetch_template(temporary_set_item)
                            
                         time.sleep((last_listing_time_ms - int(time.time() * 1000)) / 1000)
@@ -232,5 +236,4 @@ class MAIN_CONTROLLER(MANAGER):
                     continue
                 
             self.handle_messagee(f"Server #Railway#{self.railway_server_number} pause...")
-            time.sleep(random.uniform(239, 299))
-            # time.sleep(random.uniform(20, 30))
+            time.sleep(random.randrange(239, 299))

@@ -9,8 +9,8 @@ class Total_Logger(CONNECTOR_TG):
     def handle_messagee(self, textt):
         textt = str(textt)
         print(textt)
-        if self.last_message:
-            self.last_message.text = self.connector_func(self.last_message, textt)
+        # if self.last_message:
+        #     self.last_message.text = self.connector_func(self.last_message, textt)
 
     def handle_exception(self, error_message):  
         self.handle_messagee(error_message)
