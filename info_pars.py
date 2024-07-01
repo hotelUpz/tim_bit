@@ -86,9 +86,8 @@ class ANNONCEMENT(UTILS):
             # print(bitget_headers)
             # time.sleep(random.randint(1, 5))
             r = self.session.get(url=data_item['annUrl'], headers=bitget_headers, proxies=self.proxiess if self.is_proxies_true else None)
-            # print(r)
-            # r = self.session.get(url=data_item['annUrl'])
-            # print(r)
+            print(r)
+
             if r is not None and r.status_code == 200:
                 soup = BeautifulSoup(r.text, 'html.parser')
                 listing_time_all_potential_string = soup.find('div', class_='ArticleDetails_actice_details_main__oIjfu').get_text()
