@@ -62,6 +62,7 @@ class ANNONCEMENT(UTILS):
         # print(self.proxy_url)
         # self.links_multiprocessor = self.log_exceptions_decorator(self.links_multiprocessor)
         # self.bitget_parser = self.log_exceptions_decorator(self.bitget_parser)
+        #
 
     def links_multiprocessor(self, data, cur_time, cpu_count=2): 
         total_list = []
