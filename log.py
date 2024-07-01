@@ -1,8 +1,8 @@
-from tg_connector import CONNECTOR_TG
+from tg_connector import TG_CONNECTOR
 import os, inspect
 current_file = os.path.basename(__file__)
 
-class Total_Logger(CONNECTOR_TG):
+class Total_Logger(TG_CONNECTOR):
     def __init__(self):
         super().__init__()
 

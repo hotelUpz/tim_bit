@@ -1,9 +1,9 @@
 import telebot
 from telebot import types 
 import time
-from api_bitget import BITGET_API 
+from variables import VARS
 
-class TG_CONNECTOR(BITGET_API):
+class TG_CONNECTOR(VARS):
     def __init__(self) -> None:
         super().__init__()
         self.bot = telebot.TeleBot(self.tg_api_token)

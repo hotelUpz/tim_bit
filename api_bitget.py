@@ -5,9 +5,9 @@ import json
 import time
 import requests
 from urllib.parse import urlencode
-from SETTINGSS import PARAMS
+from log import Total_Logger
 
-class BITGET_API(PARAMS):
+class BITGET_API(Total_Logger):
     def __init__(self):
         super().__init__()
         self.base_url = "https://api.bitget.com"
@@ -15,14 +15,20 @@ class BITGET_API(PARAMS):
         self.orders_url = self.base_url + self.orders_endpoint
         self.order_data_endpoint = "/api/v2/spot/trade/orderInfo"
         self.session = requests.Session()
+        self.generate_post_signature_bitget = self.log_exceptions_decorator(self.generate_post_signature_bitget)
+        self.get_post_params = self.log_exceptions_decorator(self.get_post_params)
+        self.place_market_order = self.log_exceptions_decorator(self.place_market_order)
+        self.send_fake_request = self.log_exceptions_decorator(self.send_fake_request)
+        self.sign_order_data_bitget = self.log_exceptions_decorator(self.sign_order_data_bitget)
+        self.pre_hash = self.log_exceptions_decorator(self.pre_hash)
+        self.get_order_data = self.log_exceptions_decorator(self.get_order_data)
+        self.get_order_book = self.log_exceptions_decorator(self.get_order_book)
                 
-    # POST ////////////////////////////////////////////////////////////////////
-    
+    # POST ////////////////////////////////////////////////////////////////////    
     def generate_post_signature_bitget(self, timestamp, endpoint, payload):
         message = timestamp + 'POST' + endpoint + json.dumps(payload)
         signature = base64.b64encode(hmac.new(self.api_secret.encode('utf-8'), message.encode('utf-8'), sha256).digest())
         return signature
-
         
     def get_post_params(self, symbol, side, size, target_price, market_type):
         # print(symbol, side, size, target_price, market_type)
