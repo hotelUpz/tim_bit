@@ -21,7 +21,7 @@ class VARSS(PARAMS):
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
         self.depo_test = 10
-        self.sell_mode = 't100' # t100 -- sell for all qty by time
+        self.sell_mode = 't100'
         self.test_listing_time_ms = None
         self.incriment_time_ms = 0
         self.sell_attempts_number = 2
@@ -36,7 +36,6 @@ class VARSS(PARAMS):
             "delay_time_ms_server3": self.common_delay_time_ms,
             "depo_server4": self.common_depo,
             "delay_time_ms_server4": self.common_delay_time_ms,
-            # //////////////////////////////////////////////////
             "market_place": self.market_place,
             "calibrator_flag": self.calibrator_flag,            
             "sell_mode": self.sell_mode,

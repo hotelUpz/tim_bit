@@ -3,7 +3,7 @@ import random
 from db_coordinator import DB_COOORDINATOR
 import os
 import inspect
-current_file = os.path.basename(__file__) #
+current_file = os.path.basename(__file__)
 
 class TEMPLATES(DB_COOORDINATOR):
     def __init__(self) -> None:
@@ -20,7 +20,6 @@ class TEMPLATES(DB_COOORDINATOR):
         response['status'] = 'filled'                           
         self.response_data_list.append(response)                   
         if response['msg'] == 'success': 
-            # print('buy success!')
             self.last_message.text = self.connector_func(self.last_message, 'buy success!')
             self.response_success_list.append(response)
        
@@ -32,11 +31,9 @@ class TEMPLATES(DB_COOORDINATOR):
         response['side'] = 'SELL' 
         response['status'] = 'filled' 
         self.response_data_list.append(response)   
-        if response['msg'] == 'success':   
-            # print('sell success!')   
+        if response['msg'] == 'success':
             self.last_message.text = self.connector_func(self.last_message, 'sell success!') 
         else:                
-            # print(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order") 
             self.last_message.text = self.connector_func(self.last_message, f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
     
     def db_fetch_template(self, set_item):
@@ -53,6 +50,10 @@ class TEMPLATES(DB_COOORDINATOR):
 class MANAGER(TEMPLATES):
     def __init__(self) -> None:
         super().__init__()
+        self.delay_manager = self.log_exceptions_decorator(self.delay_manager) 
+        self.buy_manager = self.log_exceptions_decorator(self.buy_manager) 
+        self.trading_little_temp = self.log_exceptions_decorator(self.trading_little_temp)
+        self.trades_garbage = self.log_exceptions_decorator(self.trades_garbage)
 
     def delay_manager(self):
         def delay_calibrator(test_set_item):
@@ -132,11 +133,9 @@ class MANAGER(TEMPLATES):
     def trading_little_temp(self, set_item):                                
         self.buy_manager(set_item)
         if len(self.response_success_list) == 0:
-            self.last_message.text = self.connector_func(self.last_message, 'Some problems with placing buy market orders...')
-            return False
-            # print('Some problems with placing buy market orders...')             
+            self.handle_messagee('Some problems with placing buy market orders...')
+            return False         
         return True
-        # ////////////////////////////////////////////////////////
      
     def trades_garbage(self):
         symbol = self.default_test_symbol.replace('USDT', '').strip()
@@ -151,10 +150,11 @@ class MANAGER(TEMPLATES):
 class MAIN_CONTROLLER(MANAGER):
     def __init__(self) -> None:
         super().__init__()
+        self.main_func = self.log_exceptions_decorator(self.main_func) 
 
     def main_func(self): 
-        self.run_flag = True
-        self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
+        self.run_flag = True        
+        self.handle_messagee(f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>")
         show_counter = 0
         pass_set_to_previous_flag = True
         first_iter = True
@@ -165,19 +165,19 @@ class MAIN_CONTROLLER(MANAGER):
             start_data = []
             temporary_set_item = {}                
             if self.stop_flag:
-                self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} was stopped!")
+                self.handle_messagee(f"Server #Railway#{self.railway_server_number} was stopped!")
                 self.run_flag = False
                 return
 
             time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
             if time_diff_seconds:
-                self.send_mess_to_tg("It is time to rest! Let's go to bed!")
+                self.handle_messagee("It is time to rest! Let's go to bed!")
                 time.sleep(time_diff_seconds)
             elif first_iter:
                 first_iter = False
-                self.send_mess_to_tg("It is time to work now!")
+                self.handle_messagee("It is time to work now!")
 
-            start_data = bg_parser.bitget_parser()
+            start_data = self.bitget_parser()
             if start_data:            
                 temporary_set_item = self.start_data_to_item(start_data)  
                 # print(temporary_set_item)
@@ -193,7 +193,7 @@ class MAIN_CONTROLLER(MANAGER):
 
                 last_listing_time_ms = temporary_set_item.get('listing_time_ms', None)
                 show_counter += 1
-                # self.send_mess_to_tg(str(temporary_set_item))
+                # self.handle_messagee(str(temporary_set_item))
                 # print(temporary_set_item)
                 # if show_counter == 3:
                 try:
@@ -204,8 +204,7 @@ class MAIN_CONTROLLER(MANAGER):
                 except Exception as ex:
                     self.handle_exception(ex, inspect.currentframe().f_lineno)
             else:
-                print(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
-                self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
+                self.handle_messagee(f"Server #Railway#{self.railway_server_number} There is no actual trading data yet!..")
 
             if last_listing_time_ms:                    
                 if 0 < self.left_time_in_minutes_func(last_listing_time_ms) <= 15:
@@ -220,10 +219,8 @@ class MAIN_CONTROLLER(MANAGER):
                             temporary_set_item = previous_set_item
 
                         temporary_set_item.update(self.set_item)
-                        self.send_mess_to_tg(str(temporary_set_item))
-                        self.db_fetch_template(db_coordinator, temporary_set_item)
-
-                        cur_time = int(time.time() * 1000)
+                        self.handle_messagee(str(temporary_set_item))
+                        self.db_fetch_template(temporary_set_item)
                            
                         time.sleep((last_listing_time_ms - int(time.time() * 1000)) / 1000)
                     except Exception as ex:
@@ -234,8 +231,6 @@ class MAIN_CONTROLLER(MANAGER):
                     pass_set_to_previous_flag = True
                     continue
                 
-            self.send_mess_to_tg(f"Server #Railway#{self.railway_server_number} pause...")
-            print('pause')
+            self.handle_messagee(f"Server #Railway#{self.railway_server_number} pause...")
             time.sleep(random.uniform(239, 299))
             # time.sleep(random.uniform(20, 30))
-

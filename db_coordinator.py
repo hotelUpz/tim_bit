@@ -5,11 +5,13 @@ import ast
 from info_pars import ANNONCEMENT
 import os
 import inspect
-current_file = os.path.basename(__file__) #
+current_file = os.path.basename(__file__)
 
 class DB_COOORDINATOR(ANNONCEMENT):
     def __init__(self) -> None:
         super().__init__()
+        self.db_connector = self.log_exceptions_decorator(self.db_connector)
+        self.create_table = self.log_exceptions_decorator(self.create_table)
 
     def db_connector(self):
         config = {
@@ -38,7 +40,7 @@ class DB_COOORDINATOR(ANNONCEMENT):
             )
         """)
         self.connection.commit()
-        print(f"table DB_BITGET_COORDINSTOR_LISTING_DATA was created")
+        self.handle_messagee(f"table DB_BITGET_COORDINSTOR_LISTING_DATA was created")
 
     def db_writer(self, set_item):  
         try:           

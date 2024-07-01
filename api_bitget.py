@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 from log import Total_Logger
 import os
 import inspect
-current_file = os.path.basename(__file__) #
+current_file = os.path.basename(__file__)
 
 class BITGET_API(Total_Logger):
     def __init__(self):
@@ -47,8 +47,7 @@ class BITGET_API(Total_Logger):
             "Content-Type": "application/json",
             "locale": "en-US"
         }
-        return payload, headers
-    
+        return payload, headers    
     
     def place_market_order(self, symbol, side, size):        
         market_type = 'market'
@@ -59,19 +58,18 @@ class BITGET_API(Total_Logger):
 
      # /////////////////////////////////////////////////////////////////////////
     def send_fake_request(self, fake_sumbol):
-        response = self.place_market_order(fake_sumbol, 'BUY', 7)    
+        response = self.place_market_order(fake_sumbol, 'BUY', 7)
         print("First request!")            
         self.cookies = response.cookies
         self.session.cookies.update(self.cookies)
-    # /////////////////////////////////////////////////////////////////////////
+
     #  GET //////////////////////////////////////////////////////////////////
     def sign_order_data_bitget(self, message, secret_key):
         mac = hmac.new(bytes(secret_key, encoding='utf8'), bytes(message, encoding='utf-8'), digestmod='sha256')
         return base64.b64encode(mac.digest()).decode()
 
     def pre_hash(self, timestamp, method, request_path, body):
-        return timestamp + method.upper() + request_path + body
-    
+        return timestamp + method.upper() + request_path + body    
     
     def get_order_data(self, orderId):
         timestamp = str(int(time.time() * 1000))        
@@ -88,8 +86,7 @@ class BITGET_API(Total_Logger):
             "Content-Type": "application/json",
             "locale": "en-US"
         }
-        return self.session.get(self.base_url + request_path, headers=headers)      
-
+        return self.session.get(self.base_url + request_path, headers=headers)
     
     def get_balance(self, symbol):
 
@@ -109,4 +106,4 @@ class BITGET_API(Total_Logger):
             "Content-Type": "application/json",
             "locale": "en-US"
         }
-        return requests.get(self.base_url + request_path, headers=headers)        
+        return requests.get(self.base_url + request_path, headers=headers)

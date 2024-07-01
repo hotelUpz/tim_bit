@@ -8,9 +8,7 @@ from api_bitget import BITGET_API
 
 def server_to_utc_difference_counter():
     server_time_naive = dttm.now()
-    # print(f"server_time_naive: {server_time_naive}")
     utc_time = dttm.utcnow()
-    # print(f"utc_time: {utc_time}")
     time_difference = server_time_naive - utc_time
     total_seconds = abs(time_difference.total_seconds()) * 1000
     total_seconds = math.ceil(total_seconds)
@@ -24,6 +22,22 @@ time_correction = server_to_utc_difference_counter()
 class UTILS(BITGET_API):
     def __init__(self) -> None:
         super().__init__()
+        self.datetime_to_milliseconds = self.log_exceptions_decorator(self.datetime_to_milliseconds)
+        self.milliseconds_to_datetime = self.log_exceptions_decorator(self.milliseconds_to_datetime)
+        self.milliseconds_to_datetime_for_parser = self.log_exceptions_decorator(self.milliseconds_to_datetime_for_parser)
+        self.next_one_minutes_ms = self.log_exceptions_decorator(self.next_one_minutes_ms)
+        self.left_time_in_minutes_func = self.log_exceptions_decorator(self.left_time_in_minutes_func)
+        self.show_trade_time_for_calibrator = self.log_exceptions_decorator(self.show_trade_time_for_calibrator)
+        self.next_one_minutes_ms = self.log_exceptions_decorator(self.next_one_minutes_ms)
+        self.show_trade_time = self.log_exceptions_decorator(self.show_trade_time)
+        self.work_sleep_manager = self.log_exceptions_decorator(self.work_sleep_manager)
+        self.get_start_of_day = self.log_exceptions_decorator(self.get_start_of_day)
+        self.date_of_the_month = self.log_exceptions_decorator(self.date_of_the_month)
+        self.from_string_to_date_time = self.log_exceptions_decorator(self.from_string_to_date_time)    
+        self.symbol_extracter = self.log_exceptions_decorator(self.symbol_extracter)
+        self.set_list_formator = self.log_exceptions_decorator(self.set_list_formator)
+        self.start_data_to_item = self.log_exceptions_decorator(self.start_data_to_item)
+        self.from_json_to_string_formeter = self.log_exceptions_decorator(self.from_json_to_string_formeter)
 
     def datetime_to_milliseconds(self, datetime_str):           
         dt_obj = time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
@@ -97,7 +111,7 @@ class UTILS(BITGET_API):
         now = datetime.datetime.now()
         start_of_day = datetime.datetime(now.year, now.month, now.day) - datetime.timedelta(days=4)
         return int(start_of_day.timestamp() * 1000)
-        # ////////////////////////////////////////////////////////////////////////////////
+
     def date_of_the_month(self):        
         current_time = time.time()        
         datetime_object = dttm.fromtimestamp(current_time)       
@@ -170,9 +184,8 @@ class UTILS(BITGET_API):
                 }
                 unique_data[time_ms] = new_item
 
-        return list(unique_data.values())      
-
-    
+        return list(unique_data.values())
+       
     def start_data_to_item(self, start_data):
         set_list = sorted(self.set_list_formator(start_data), key=lambda x: x["listing_time_ms"], reverse=False)
         try:

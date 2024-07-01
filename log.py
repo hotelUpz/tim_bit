@@ -7,7 +7,7 @@ class Total_Logger(CONNECTOR_TG):
         super().__init__()
 
     def handle_messagee(self, textt):
-        # textt = str(textt)
+        textt = str(textt)
         print(textt)
         if self.last_message:
             self.last_message.text = self.connector_func(self.last_message, textt)

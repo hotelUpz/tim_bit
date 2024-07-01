@@ -73,6 +73,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
 
             @self.bot.message_handler(func=lambda message: self.stop_redirect_flag)             
             def handle_stop_redirect(message):
+                self.last_message = message
                 self.stop_redirect_flag = False
                 if message.text.strip().upper() == 'Y':                    
                     self.stop_flag = True 
@@ -94,6 +95,7 @@ class TG_MANAGER(MAIN_CONTROLLER):
             @self.bot.message_handler(func=lambda message: self.settings_redirect_flag)             
             def handle_settings_redirect(message):
                 try:
+                    self.last_message = message
                     self.settings_redirect_flag = False
                     delay_time_ms = None
                     depo = None
