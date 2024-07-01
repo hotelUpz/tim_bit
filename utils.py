@@ -4,7 +4,7 @@ import datetime
 import math
 import re
 import random
-from log import log_exceptions_decorator
+from api_bitget import BITGET_API
 
 def server_to_utc_difference_counter():
     server_time_naive = dttm.now()
@@ -21,9 +21,9 @@ def server_to_utc_difference_counter():
 time_correction = server_to_utc_difference_counter()
 # print("ms difference:", time_correction)
 
-class UTILS():
+class UTILS(BITGET_API):
     def __init__(self) -> None:
-        pass
+        super().__init__()
 
     def datetime_to_milliseconds(self, datetime_str):           
         dt_obj = time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
@@ -102,9 +102,8 @@ class UTILS():
         current_time = time.time()        
         datetime_object = dttm.fromtimestamp(current_time)       
         formatted_time = datetime_object.strftime('%d')
-        return int(formatted_time) 
-    
-    @log_exceptions_decorator
+        return int(formatted_time)    
+
     def from_string_to_date_time(self, date_time_str):
         pattern = r'(\d{1,2})(?:st|nd|rd|th)? (\w+) (\d{4})(?:, (\d{1,2}):(\d{2}))? \(UTC\)'
 
@@ -144,9 +143,7 @@ class UTILS():
         except:
             pass
         return []
-       
-    # ////////////////////////////////////////////////////////////////////////////////
-    @log_exceptions_decorator
+    
     def set_list_formator(self, find_data):
         unique_data = {}
         for item in find_data:
@@ -175,7 +172,7 @@ class UTILS():
 
         return list(unique_data.values())      
 
-    @log_exceptions_decorator
+    
     def start_data_to_item(self, start_data):
         set_list = sorted(self.set_list_formator(start_data), key=lambda x: x["listing_time_ms"], reverse=False)
         try:
@@ -184,5 +181,5 @@ class UTILS():
             print(ex)
         return {}
     
-
-# set_item.update(default_params)
+    def from_json_to_string_formeter(self, json_data):
+        return '\n'.join(f"{k}: {v}" for k, v in json_data.items())

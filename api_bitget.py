@@ -5,13 +5,12 @@ import json
 import time
 import requests
 from urllib.parse import urlencode
-from parametrs import PARAMS
-from utils import log_exceptions_decorator
-# import logging, os, inspect
-# logging.basicConfig(filename='log.log', level=logging.INFO)
-# current_file = os.path.basename(__file__)
+from log import Total_Logger
+import os
+import inspect
+current_file = os.path.basename(__file__) #
 
-class BITGET_API(PARAMS):
+class BITGET_API(Total_Logger):
     def __init__(self):
         super().__init__()
         self.base_url = "https://api.bitget.com"
@@ -50,7 +49,7 @@ class BITGET_API(PARAMS):
         }
         return payload, headers
     
-    @log_exceptions_decorator
+    
     def place_market_order(self, symbol, side, size):        
         market_type = 'market'
         targetprice = None
@@ -73,7 +72,7 @@ class BITGET_API(PARAMS):
     def pre_hash(self, timestamp, method, request_path, body):
         return timestamp + method.upper() + request_path + body
     
-    @log_exceptions_decorator
+    
     def get_order_data(self, orderId):
         timestamp = str(int(time.time() * 1000))        
         params = {"orderId": orderId}
@@ -91,7 +90,7 @@ class BITGET_API(PARAMS):
         }
         return self.session.get(self.base_url + request_path, headers=headers)      
 
-    @log_exceptions_decorator
+    
     def get_balance(self, symbol):
 
         timestamp = str(int(time.time() * 1000)) 

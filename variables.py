@@ -1,9 +1,11 @@
+from SETTINGSS import PARAMS
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-class PARAMS():
+class VARSS(PARAMS):
     def __init__(self) -> None:
+        super().__init__()
         self.default_trade_vars()
         self.default_tg_vars()
         self.init_keys()
@@ -12,21 +14,14 @@ class PARAMS():
         self.SOLI_DEO_GLORIA = 'Soli Deo Gloria!'   
         self.railway_server_number = 'base' 
         self.total_server_number = 4  
-        self.controls_mode = 'a'
         self.run_flag = False #
-        self.calibrator_flag = False
         self.stop_flag = False        
-        self.work_to = 23 # hoor in UTC
-        self.sleep_to = 5 # hoor in UTC
         self.default_test_symbol = 'ARBUSDT'
         self.response_data_list, self.response_success_list = [], []
-        self.symbol_list_el_position = 0 #fj,bh
         self.market_place = 'bitget'
         self.symbol_fake = 'T'
-        self.common_depo = 20
         self.depo_test = 10
         self.sell_mode = 't100' # t100 -- sell for all qty by time
-        self.common_delay_time_ms = 90
         self.test_listing_time_ms = None
         self.incriment_time_ms = 0
         self.sell_attempts_number = 2
@@ -74,10 +69,9 @@ class PARAMS():
         self.db_port = os.getenv("DB_PORT", "")
         self.proxy_host = os.getenv("proxy_host", "")
         self.proxy_port = os.getenv("proxy_port", "")
+        self.proxy_socks5_port = os.getenv("proxy_socks5_port", "")        
         self.proxy_username = os.getenv("proxy_username", "")
         self.proxy_password = os.getenv("proxy_password", "")
 
-
-# p = PARAMS()
 
 

@@ -1,26 +1,23 @@
-# from utils import UTILS
-from log import log_exceptions_decorator
 import mysql.connector
 import time
 import random 
 import ast
+from info_pars import ANNONCEMENT
+import os
+import inspect
+current_file = os.path.basename(__file__) #
 
-class DB_COOORDINATOR():
-    def __init__(self, host, port, user, password, database) -> None:
-        # super().__init__()
-        self.host, self.port, self.user, self.password, self.database = host, port, user, password, database
+class DB_COOORDINATOR(ANNONCEMENT):
+    def __init__(self) -> None:
+        super().__init__()
 
-    @log_exceptions_decorator
     def db_connector(self):
         config = {
-            'user': self.user,
-            'password': self.password,            
-            # 'host': 'localhost',
-            # 'host': 'roundhouse.proxy.rlwy.net',
-            # 'port': '15775',
-            'host': self.host,
-            'port': self.port,
-            'database': self.database,
+            'user': self.db_user,
+            'password': self.db_password,            
+            'host': self.db_host,
+            'port': self.db_port,
+            'database': self.db_name,
         }
         for _ in range(2):
             try:
@@ -28,12 +25,11 @@ class DB_COOORDINATOR():
                 # print("Writerr connection established")
                 self.cursor = self.connection.cursor()
                 return True
-            except Exception as e:
-                print(f"Error connecting to MySQL: {e}")
+            except Exception as ex:
+                self.handle_exception(ex, inspect.currentframe().f_lineno)
                 time.sleep(random.randrange(1,4))                
         return False
 
-    @log_exceptions_decorator
     def create_table(self):
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS DB_BITGET_COORDINSTOR_LISTING_DATA (
@@ -44,7 +40,6 @@ class DB_COOORDINATOR():
         self.connection.commit()
         print(f"table DB_BITGET_COORDINSTOR_LISTING_DATA was created")
 
-    @log_exceptions_decorator
     def db_writer(self, set_item):  
         try:           
             set_item = str(set_item)
@@ -58,7 +53,7 @@ class DB_COOORDINATOR():
             self.connection.commit()
             return True
         except Exception as ex:
-            print(ex)
+            self.handle_exception(ex, inspect.currentframe().f_lineno)
             return False
         finally:    
             self.connection.close()
