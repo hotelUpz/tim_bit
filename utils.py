@@ -2,14 +2,13 @@ import time
 from datetime import datetime as dttm
 import datetime
 import math 
-from log import log_exceptions_decorator
+from api_bitget import BITGET_API
 
-@log_exceptions_decorator
 def server_to_utc_difference_counter():
     server_time_naive = dttm.now()
-    print(f"server_time_naive: {server_time_naive}")
+    # print(f"server_time_naive: {server_time_naive}")
     utc_time = dttm.utcnow()
-    print(f"utc_time: {utc_time}")
+    # print(f"utc_time: {utc_time}")
     time_difference = server_time_naive - utc_time
     total_seconds = abs(time_difference.total_seconds()) * 1000
     total_seconds = math.ceil(total_seconds)
@@ -20,37 +19,40 @@ def server_to_utc_difference_counter():
 time_correction = server_to_utc_difference_counter()
 # print("ms difference:", time_correction)
 
-class UTILS():
+class UTILS(BITGET_API):
     def __init__(self) -> None:
-        pass
-
-    @log_exceptions_decorator
+        super().__init__()
+        self.datetime_to_milliseconds = self.log_exceptions_decorator(self.datetime_to_milliseconds)
+        self.milliseconds_to_datetime = self.log_exceptions_decorator(self.milliseconds_to_datetime)
+        self.left_time_in_minutes_func = self.log_exceptions_decorator(self.left_time_in_minutes_func)
+        self.show_trade_time = self.log_exceptions_decorator(self.show_trade_time)
+        self.work_sleep_manager = self.log_exceptions_decorator(self.work_sleep_manager)
+        self.date_of_the_month = self.log_exceptions_decorator(self.date_of_the_month)
+        self.is_order_book_valid = self.log_exceptions_decorator(self.is_order_book_valid)
+        self.from_json_to_string_formeter = self.log_exceptions_decorator(self.from_json_to_string_formeter)
+    
     def datetime_to_milliseconds(self, datetime_str):           
         dt_obj = time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
         return int(time.mktime(dt_obj) * 1000)
-
-    @log_exceptions_decorator
+    
     def milliseconds_to_datetime(self, milliseconds):
         milliseconds = milliseconds + time_correction
         seconds, milliseconds = divmod(milliseconds, 1000)
         time = datetime.datetime.utcfromtimestamp(seconds)
         milliseconds_str = str(milliseconds).zfill(3)
-        return time.strftime('%Y-%m-%d %H:%M:%S') + '.' + milliseconds_str
+        return time.strftime('%Y-%m-%d %H:%M:%S') + '.' + milliseconds_str    
     
-    @log_exceptions_decorator
     def date_of_the_month(self):        
         current_time = time.time()        
         datetime_object = dttm.fromtimestamp(current_time)       
         formatted_time = datetime_object.strftime('%d')
-        return int(formatted_time) 
-
-    @log_exceptions_decorator
+        return int(formatted_time)
+    
     def left_time_in_minutes_func(self, set_time):
         current_time_ms = int(time.time() * 1000)
         time_left_minutes = round((set_time - current_time_ms) / (1000 * 60), 2)
         return time_left_minutes
-
-    @log_exceptions_decorator       
+           
     def show_trade_time(self, response_data_list, market_place):
         result_time = ''
         dataa = None
@@ -67,9 +69,8 @@ class UTILS():
                 response_data_list[i]["process_time"] = form_time            
             except:
                 pass
-        return result_time, response_data_list
+        return result_time, response_data_list    
     
-    @log_exceptions_decorator
     def work_sleep_manager(self, work_to, sleep_to):
         if not work_to or not sleep_to:
             return None
@@ -79,32 +80,36 @@ class UTILS():
             current_time_utc = time.gmtime(time.time())
             desired_time_utc = time.struct_time((current_time_utc.tm_year, current_time_utc.tm_mon, current_time_utc.tm_mday + 1, sleep_to, 0, 0, 0, 0, 0))
             time_diff_seconds = time.mktime(desired_time_utc) - time.mktime(current_time_utc)
-            print("It is time to rest! Let's go to bed!")
+            # print("It is time to rest! Let's go to bed!")
             return time_diff_seconds
         return None
-        
-    def is_book_price_belov_price_threshold(self, asks, bids, price_threshold):
-        asks_and_bids = []
+    
+    def from_json_to_string_formeter(self, json_data):
+        if json_data and isinstance(json_data, list):
+            return '\n'.join(f"{k}: {v}" for item in json_data for k, v in item.items())
+        return "None trading data for showing"
 
-        for ask, bid in zip(asks[:5], bids[:5]):
-            if isinstance(ask, (list, tuple)) and len(ask) > 0:
-                try:
-                    ask_price = float(ask[0])
-                    if ask_price != 0:
-                        asks_and_bids.append(ask_price)
-                        
-                except:
-                    pass
-            if isinstance(bid, (list, tuple)) and len(bid) > 0:
-                try:
-                    bid_price = float(bid[0])
-                    if bid_price != 0:
-                        asks_and_bids.append(bid_price)
-                except:
-                    pass
-        if (sum(asks_and_bids) != 0) and (len(asks_and_bids) != 0):                                                   
-            last_bid_ask_price_sum = sum(asks_and_bids) / (len(asks_and_bids))
-            if last_bid_ask_price_sum < price_threshold:
-                # print(f"last_bid/ask_price: {last_bid_ask_price_sum}")
-                return True            
-        return False
+    def is_order_book_valid(self, asks, bids):
+        total_ask_volume = 0
+        total_ask_volume = 0
+        try:          
+            total_bid_volume = sum(float(bid[1]) for bid in bids if isinstance(bid, (list, tuple)))
+            total_ask_volume = sum(float(ask[1]) for ask in asks if isinstance(ask, (list, tuple)))
+        except Exception as ex:
+            # print(ex)
+            return False
+
+        if total_bid_volume == 0:
+            return False
+        # print(total_bid_volume)
+        # print(total_ask_volume)
+
+        if total_bid_volume != 0 and total_ask_volume != 0:
+        
+            if total_ask_volume/total_bid_volume < self.price_threshold:
+                return False
+        
+        return True
+
+
+

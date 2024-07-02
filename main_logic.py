@@ -1,24 +1,14 @@
 import time
 import random
-from utils import UTILS
-from tg_connector import TG_CONNECTOR 
 from db_coordinator import DB_COOORDINATOR  
 
-class TEMPLATES():
+class TEMPLATES(DB_COOORDINATOR):
     def __init__(self) -> None:
         super().__init__()
-
-
-    @log_exceptions_decorator
-    def message_template(self, textt):
-        print(textt)
-        if self.last_message:
-            if textt:
-                self.last_message.text = self.connector_func(self.last_message, str(textt))
-                return
-            self.last_message.text = self.connector_func(self.last_message, "Opss... text data is empty!")
+        self.buy_market_temp = self.log_exceptions_decorator(self.buy_market_temp) 
+        self.sell_market_temp = self.log_exceptions_decorator(self.sell_market_temp) 
+        self.extract_data_temp = self.log_exceptions_decorator(self.extract_data_temp) 
     
-    @log_exceptions_decorator
     def buy_market_temp(self, symbol, depo):  
         response = self.place_market_order(symbol, 'BUY', depo)                
         response = response.json() 
@@ -27,10 +17,9 @@ class TEMPLATES():
         response['status'] = 'filled'                           
         self.response_data_list.append(response)                   
         if response['msg'] == 'success': 
-            self.message_template('buy success!')
+            self.handle_messagee('buy success!')
             self.response_success_list.append(response)
-
-    @log_exceptions_decorator   
+       
     def sell_market_temp(self, item):      
         response = None               
         response = self.place_market_order(item['data'][0]['symbol'], 'SELL', item['qnt_to_sell_start'])           
@@ -40,11 +29,10 @@ class TEMPLATES():
         response['status'] = 'filled' 
         self.response_data_list.append(response)   
         if response['msg'] == 'success':
-            self.message_template('sell success!')  
+            self.handle_messagee('sell success!')  
         else:                
-            self.message_template(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
-
-    @log_exceptions_decorator        
+            self.handle_messagee(f"Symbol: {item['data'][0]['symbol']}:... some problems with placing the sell order")
+            
     def extract_data_temp(self, item):            
         orderId = item.get('data', None).get('orderId', None)
         if orderId is not None:    
@@ -74,13 +62,15 @@ class TEMPLATES():
                 item_copy.update(response_data)      
                 self.response_data_list.append(item_copy) 
         except Exception as ex:
-            self.message_template(ex)
+            self.handle_exception(ex)
 
 class MANAGER(TEMPLATES):
     def __init__(self) -> None:
         super().__init__()
-
-    @log_exceptions_decorator
+        self.buy_manager = self.log_exceptions_decorator(self.buy_manager) 
+        self.sell_manager = self.log_exceptions_decorator(self.sell_manager)
+        self.trading_little_temp = self.log_exceptions_decorator(self.trading_little_temp) 
+    
     def buy_manager(self, set_item):
         symbol = None
         self.response_data_list, self.response_success_list = [], []
@@ -92,29 +82,34 @@ class MANAGER(TEMPLATES):
             if self.trade_duble_flag:
                 self.symbol = symbol = set_item["symbol_list"][0]  
             else:
-                self.message_template("List index out of range. There is nothing to trade")
+                self.handle_messagee("List index out of range. There is nothing to trade")
+                time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)
                 return False
         # ///////////////////////////////////////////////////////////////////////////////// 
         tg_mess = f'symbol: {symbol}\ndepo: {set_item.get(f"depo_server{self.railway_server_number}", None)}\ndelay: {set_item.get(f"delay_time_ms_server{self.railway_server_number}", None)}\nlisting time: {set_item.get(f"listing_time_ms", None)}'
-        self.message_template(tg_mess)
-        self.message_template("It is waiting time for buy!...")
+        self.handle_messagee(tg_mess + '\n' + "It is waiting time for buy!...")
         # ///////////////////////
-        schedule_time_ms = self.listing_time_ms - 5000
+        schedule_time_ms_1 = self.listing_time_ms - 15000
+        time.sleep((schedule_time_ms_1 - int(time.time()*1000))/ 1000)  
+        # /////////////////////////////////////// defencive mehanizm
+        if self.is_order_book_defencive_meh:
+            asks, bids = None, None
+            order_book_data = self.get_order_book(symbol, limit=10)
+            if order_book_data:
+                asks, bids = order_book_data
+                if asks or bids:
+                    if not self.is_order_book_valid(asks, bids):
+                        self.handle_messagee(f'{symbol} was skiped by is_order_book_valid func')
+                        time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)
+                        return False
+        # ////////////////////
+        schedule_time_ms = self.listing_time_ms - 4000
         time.sleep((schedule_time_ms - int(time.time()*1000))/ 1000)  
         self.send_fake_request(self.symbol_fake)
-        # /////////////////////////////////////// defencive mehanizm
-        # order_book_data = self.get_order_book(symbol, limit=10)
-        # if order_book_data:
-        #     asks, bids = order_book_data
-        #     if not self.is_book_price_belov_price_threshold(asks, bids, self.price_threshold):
-        #         self.message_template("The average price of this coin is higher than the specified filter. Therefore, this set is ignored")
-        #         return False
-        # ///////////////////////////////////////////////////////////////////////////////// 
         time.sleep((buy_time_ms - int(time.time()*1000))/ 1000)             
         self.buy_market_temp(symbol, set_item.get(f"depo_server{self.railway_server_number}", None))
-        # return True          
-  
-    @log_exceptions_decorator   
+        return True
+       
     def sell_manager(self, set_item):
         # Получаем значение задержки из set_item с использованием значения по умолчанию 1.6
         time_duration = set_item.get(f"t100_mode_pause_server{self.railway_server_number}", 1.6)
@@ -132,7 +127,7 @@ class MANAGER(TEMPLATES):
 
             # Проверяем, все ли элементы списка response_data_list не выполнены
             if all(not item.get('done', False) for item in self.response_data_list):
-                self.message_template(f"Some problems with fetching trades data. Attempt number {i}")
+                self.handle_messagee(f"Some problems with fetching trades data. Attempt number {i}")
                 continue
             else:
                 # Если есть выполненные элементы, обрабатываем их
@@ -146,93 +141,100 @@ class MANAGER(TEMPLATES):
                         break
                 return
         # Если ни одна из попыток не удалась
-        self.message_template("All attempts to fetch trades data have failed.")
-        self.message_template(f"Failed to sell the {self.symbol} coin")
-                
-    @log_exceptions_decorator
+        self.handle_messagee("All attempts to fetch trades data have failed." + '\n' + f"Failed to sell the {self.symbol} coin")           
+    
     def trading_little_temp(self, set_item):                                
-        self.buy_manager(set_item)
-            # return False
+        if not self.buy_manager(set_item):
+            return False
         if len(self.response_success_list) != 0:
             self.sell_manager(set_item)        
         else:
-            self.message_template('Some problems with placing buy market orders...')      
+            self.handle_messagee('Some problems with placing buy market orders...')      
         return True
                         
 class MAIN_CONTROLLER(MANAGER):
     def __init__(self) -> None:
         super().__init__()
+        self.main_func = self.log_exceptions_decorator(self.main_func)
 
     def main_func(self): 
         self.run_flag = True 
-        dbb = DB_COOORDINATOR(self.db_host, self.db_port, self.db_user, self.db_password, self.db_name)
-        self.message_template(f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>") 
+        self.handle_messagee(f"Server #Railway#{self.railway_server_number} <<{self.market_place}>>") 
         show_counter = 0
         first_req_flag = True
-        # ////////////////////////////////////////////////////////////////////////
+
         while True:
             set_item = {} 
             self.listing_time_ms = None               
             if self.stop_flag:
-                self.message_template(f"Server #Railway#{self.railway_server_number} was stoped!") 
+                self.handle_messagee(f"Server #Railway#{self.railway_server_number} was stoped!") 
                 self.run_flag = False
                 return
             time_diff_seconds = self.work_sleep_manager(self.work_to, self.sleep_to)
             if time_diff_seconds:
-                self.message_template("It is time to rest! Let's go to bed!")     
+                self.handle_messagee("It is time to rest! Let's go to bed!")     
                 time.sleep(time_diff_seconds)
                 continue
             else:
                 if first_req_flag:
                     first_req_flag = False
-                    self.message_template("It is time to work!")
+                    self.handle_messagee("It is time to work!")
             try:
-                if dbb.db_connector():
+                if self.db_connector():
                     db_reading_data = None
-                    db_reading_data = dbb.read_db_data()
-                    # self.message_template(db_reading_data)
+                    db_reading_data = self.read_db_data()
+       
                     if db_reading_data:
-                        self.listing_time_ms, set_item = dbb.formate_db_data(db_reading_data)
-                        # self.message_template(f"{self.listing_time_ms},\n{set_item})
+                        self.listing_time_ms, set_item = self.formate_db_data(db_reading_data)
+                        self.handle_messagee(f"{self.listing_time_ms},\n{set_item}")
                 else:
-                    self.message_template(f"Server #Railway#{self.railway_server_number} some problems with db connecting...")
+                    self.handle_messagee(f"Server #Railway#{self.railway_server_number} some problems with db connecting...")
 
                 if set_item and self.listing_time_ms:            
                     show_counter += 1
                     if show_counter == 15:
                         if 0 < self.left_time_in_minutes_func(self.listing_time_ms):
-                            self.message_template(f"symbol_list: {set_item.get('symbol_list', 'No symbol list available')}\nlisting_time: {set_item.get('listing_time', 'No listing time available')}\ndelay_time_ms_server{self.railway_server_number}: {set_item.get(f'delay_time_ms_server{self.railway_server_number}', 'No delay data available')}\ndepo_server{self.railway_server_number}: {set_item.get(f'depo_server{self.railway_server_number}', 'No depo data available')}")
+
+                            symbol_list = set_item.get('symbol_list', 'No symbol list available')
+                            listing_time = set_item.get('listing_time', 'No listing time available')
+                            delay_time = set_item.get(f'delay_time_ms_server{self.railway_server_number}', 'No delay data available')
+                            depo_data = set_item.get(f'depo_server{self.railway_server_number}', 'No depo data available')
+
+                            message = (
+                                f"Symbol List: {symbol_list}\n"
+                                f"Listing Time: {listing_time}\n"
+                                f"Delay Time (Server {self.railway_server_number}): {delay_time}\n"
+                                f"Depo Data (Server {self.railway_server_number}): {depo_data}"
+                            )
+
+                            self.handle_messagee(message)
+
                         else:
-                            self.message_template("There is no trading data at the current moment!..")
+                            self.handle_messagee("There is no trading data at the current moment!..")
                         show_counter = 0
                 else:
                     time.sleep(random.randrange(59, 69))
                     continue
             except Exception as ex:
-                self.message_template(ex)
+                self.handle_exception(ex)
 
             if 0 < self.left_time_in_minutes_func(self.listing_time_ms) <= 3:
                 try:
                     # //////////////////////////////////////////////////////////////////////
-                    self.trading_little_temp(set_item)
-                        # continue
+                    if not self.trading_little_temp(set_item):
+                        self.response_data_list = []
+                        self.listing_time_ms = None
+                        continue
                     # //////////////////////////////////////////////////////////////////////          
-                    cur_time = int(time.time()* 1000)
+                    # cur_time = int(time.time()* 1000)
                     result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')
-                    self.message_template(result_time)                        
-                    cur_time = int(time.time()* 1000)
-                    total_log_instance.json_to_buffer('TRADES', cur_time, self.response_data_list)   
-                    json_file = total_log_instance.get_json_data()                
-                    self.bot.send_document(self.last_message.chat.id, json_file)   
-                    log_file = total_log_instance.get_logs()
-                    self.bot.send_document(self.last_message.chat.id, log_file)    
+                    self.handle_messagee(result_time)
+                    self.handle_messagee(self.from_json_to_string_formeter(self.response_data_list))       
                 except Exception as ex:
-                    self.message_template(ex)
+                    self.handle_exception(ex)
 
-                print("pause 30 sec...")   
                 time.sleep(30)
                 continue
-                # ////////////////////////////////////////////////////////////////////////////
-            # print("pause...")
+
             time.sleep(random.randrange(59, 69)) 
 

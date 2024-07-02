@@ -1,24 +1,21 @@
-# from utils import UTILS
-from log import log_exceptions_decorator
 import mysql.connector
 import time
 import random 
 import ast
+from utils import UTILS
 
-class DB_COOORDINATOR():
-    def __init__(self, host, port, user, password, database) -> None:
-        # super().__init__()
-        self.host, self.port, self.user, self.password, self.database = host, port, user, password, database
-
-    @log_exceptions_decorator
+class DB_COOORDINATOR(UTILS):
+    def __init__(self) -> None:
+        super().__init__()
+        self.db_connector = self.log_exceptions_decorator(self.db_connector)
+    
     def db_connector(self):
         config = {
-            'user': self.user,
-            'password': self.password,            
-            # 'host': 'localhost',
-            'host': self.host,
-            'port': self.port,
-            'database': self.database,
+            'user': self.db_user,
+            'password': self.db_password,            
+            'host': self.db_host,
+            'port': self.db_port,
+            'database': self.db_name,
         }
         for _ in range(2):
             try:
@@ -26,8 +23,8 @@ class DB_COOORDINATOR():
                 # print("Writerr connection established")
                 self.cursor = self.connection.cursor()
                 return True
-            except Exception as e:
-                print(f"Error connecting to MySQL: {e}")
+            except Exception as ex:
+                self.handle_exception(ex)
                 time.sleep(random.randrange(1,4))                
         return False
         
@@ -37,7 +34,7 @@ class DB_COOORDINATOR():
             self.cursor.execute("SELECT * FROM DB_BITGET_COORDINSTOR_LISTING_DATA")
             records = self.cursor.fetchall()
         except Exception as ex:
-            print(ex)
+            self.handle_exception(ex)
             return
         finally:
             self.connection.close()
@@ -49,7 +46,7 @@ class DB_COOORDINATOR():
             set_item = ast.literal_eval(db_reading_data[0][1])        
             return set_item.get("listing_time_ms", None), set_item
         except Exception as ex:
-            print(ex)
+            self.handle_exception(ex)
         return {}, None
 
             
