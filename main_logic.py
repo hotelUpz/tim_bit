@@ -186,7 +186,7 @@ class MAIN_CONTROLLER(MANAGER):
        
                     if db_reading_data:
                         self.listing_time_ms, set_item = self.formate_db_data(db_reading_data)
-                        self.handle_messagee(f"{self.listing_time_ms},\n{set_item}")
+                        # self.handle_messagee(f"{self.listing_time_ms},\n{set_item}")
                 else:
                     self.handle_messagee(f"Server #Railway#{self.railway_server_number} some problems with db connecting...")
 

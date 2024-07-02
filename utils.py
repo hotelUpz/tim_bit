@@ -88,28 +88,52 @@ class UTILS(BITGET_API):
         if json_data and isinstance(json_data, list):
             return '\n'.join(f"{k}: {v}" for item in json_data for k, v in item.items())
         return "None trading data for showing"
-
+    
     def is_order_book_valid(self, asks, bids):
-        total_ask_volume = 0
-        total_ask_volume = 0
-        try:          
+        total_bid_volume = 0
+        total_bid_price = 0
+        average_bid_price = 0
+        total_ask_price = 0
+        average_ask_price = 0
+        bid_count = 0
+        ask_count = 0
+
+        try:
             total_bid_volume = sum(float(bid[1]) for bid in bids if isinstance(bid, (list, tuple)))
-            total_ask_volume = sum(float(ask[1]) for ask in asks if isinstance(ask, (list, tuple)))
+            total_bid_price = sum(float(bid[0]) for bid in bids if isinstance(bid, (list, tuple)))
+            bid_count = sum(1 for bid in bids if isinstance(bid, (list, tuple)))     
+            total_ask_price = sum(float(ask[0]) for ask in asks if isinstance(ask, (list, tuple)))
+            ask_count = sum(1 for ask in asks if isinstance(ask, (list, tuple)))  
         except Exception as ex:
-            # print(ex)
+            pass
+
+        # Проверка наличия бидов и их количества
+        if total_bid_volume == 0 or bid_count == 0:
+            self.handle_messagee("total_bid_volume == 0 or bid_count == 0")
             return False
 
-        if total_bid_volume == 0:
-            return False
-        # print(total_bid_volume)
-        # print(total_ask_volume)
+        if total_bid_price and bid_count:
+            # Средняя цена бидов
+            average_bid_price = total_bid_price / bid_count
 
-        if total_bid_volume != 0 and total_ask_volume != 0:
+        # Проверка средней цены бидов
+        if average_bid_price > self.price_threshold:
+            self.handle_messagee("average_bid_price > self.price_threshold")
+            return False
         
-            if total_ask_volume/total_bid_volume < self.price_threshold:
+        if total_ask_price and ask_count:
+            # Средняя цена бидов
+            average_ask_price = total_ask_price / ask_count
+        
+        if average_ask_price and average_bid_price:
+            # Проверка соотношения суммарных цен асков к суммарным ценам бидов
+            if average_ask_price / average_bid_price < self.price_relation_threshold:
+                self.handle_messagee("average_ask_price / average_bid_price < self.price_relation_threshold")
                 return False
-        
+
         return True
+
+
 
 
 

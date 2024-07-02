@@ -26,3 +26,26 @@
     #             # print(f"last_bid/ask_price: {last_bid_ask_price_sum}")
     #             return True            
     #     return False
+
+
+    # def is_order_book_valid(self, asks, bids):
+    #     total_ask_volume = 0
+    #     total_ask_volume = 0
+    #     try:          
+    #         total_bid_volume = sum(float(bid[1]) for bid in bids if isinstance(bid, (list, tuple)))
+    #         total_ask_volume = sum(float(ask[1]) for ask in asks if isinstance(ask, (list, tuple)))
+    #     except Exception as ex:
+    #         # print(ex)
+    #         return False
+
+    #     if total_bid_volume == 0:
+    #         return False
+    #     # print(total_bid_volume)
+    #     # print(total_ask_volume)
+
+    #     if total_bid_volume != 0 and total_ask_volume != 0:
+        
+    #         if total_ask_volume/total_bid_volume < self.price_threshold:
+    #             return False
+        
+    #     return True
