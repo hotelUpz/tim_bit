@@ -229,7 +229,7 @@ class MAIN_CONTROLLER(MANAGER):
                     # cur_time = int(time.time()* 1000)
                     result_time, self.response_data_list = self.show_trade_time(self.response_data_list, 'bitget')
                     self.handle_messagee(result_time)
-                    self.handle_messagee(self.from_json_to_string_formeter(self.response_data_list))       
+                    # self.handle_messagee(self.from_json_to_string_formeter(self.response_data_list))       
                 except Exception as ex:
                     self.handle_exception(ex)
 
