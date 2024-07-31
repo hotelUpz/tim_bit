@@ -8,4 +8,4 @@ class PARAMS():
         self.sleep_to = 4 # hoor in UTC до скольки спать
         self.price_threshold = 5 # максимальная бидовая цена
         self.price_relation_threshold = 1.1 # минимальное отношение асков к бидам
-        self.is_order_book_defencive_meh = False
+        self.is_order_book_defencive_meh = True
