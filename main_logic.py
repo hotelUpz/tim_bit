@@ -213,7 +213,7 @@ class MAIN_CONTROLLER(MANAGER):
                             self.handle_messagee("There is no trading data at the current moment!..")
                         show_counter = 0
                 else:
-                    time.sleep(random.randrange(59, 69))
+                    time.sleep(60)
                     continue
             except Exception as ex:
                 self.handle_exception(ex)
@@ -236,5 +236,5 @@ class MAIN_CONTROLLER(MANAGER):
                 time.sleep(30)
                 continue
 
-            time.sleep(random.randrange(59, 69)) 
+            time.sleep(60) 
 
